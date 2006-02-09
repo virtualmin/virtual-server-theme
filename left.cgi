@@ -209,6 +209,9 @@ elsif ($mode eq "virtualmin") {
 	}
 
 if ($mode eq "virtualmin") {
+	# See if we need a config check (such as after first install)
+	$recheck = &virtual_server::need_config_check();
+
 	if (&virtual_server::can_edit_templates()) {
 		# Show collapsible section for template links
 		if (&print_category_opener("tmpl", \@admincats,
@@ -229,7 +232,8 @@ if ($mode eq "virtualmin") {
 		}
 
 	# Creation/migration forms
-	if ((&virtual_server::can_create_master_servers() ||
+	if (!$recheck &&
+	    (&virtual_server::can_create_master_servers() ||
 	     &virtual_server::can_create_sub_servers()) &&
 	    &print_category_opener("create", \@admincats,
 				   $text{'left_create'})) {
@@ -275,7 +279,8 @@ if ($mode eq "virtualmin") {
 		}
 
 	# Backup/restore forms
-	if (&virtual_server::can_backup_domains() &&
+	if (!$recheck &&
+	    &virtual_server::can_backup_domains() &&
 	    &print_category_opener("backup", \@admincats,
 				   $text{'left_backup'})) {
 		&print_category_link("/virtual-server/backup_form.cgi",

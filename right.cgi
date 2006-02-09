@@ -37,6 +37,17 @@ if ($hasvirt) {
 	print &virtual_server::licence_warning_message();
 	}
 
+# Check if server module configuration has been checked
+if ($hasvirt && &virtual_server::need_config_check() &&
+    &virtual_server::can_check_config()) {
+	# Not since last config change .. force it now
+	print &ui_form_start("virtual-server/check.cgi");
+	print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
+	print &ui_submit($virtual_server::text{'index_srefresh'});
+	print &ui_form_end();
+	print "<p>\n";
+	}
+
 if ($level == 0) {
 	# Show general system information
 	if (&collapsed_header($text{'right_header0'}, "system")) {
