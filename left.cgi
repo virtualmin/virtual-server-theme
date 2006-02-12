@@ -304,7 +304,7 @@ if ($mode eq "virtualmin") {
 
 	# Normal Virtualmin menu
   print "<table width=100%>\n";
-	print "<tr> <td><img src=images/virtualmin-small.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
+	print "<tr> <td width=8%><img src=images/virtualmin-small.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
 	}
 
 if ($mode eq "webmin") {
@@ -326,9 +326,13 @@ if ($mode eq "webmin") {
 	print "<tr> <td colspan=2><hr></td> </tr>\n";
 	}
 
+# All of these tables will go away soon.
+print "</table>\n";
+
 # Show info link
+print "<table width=100%>\n";
 print "<tr>\n";
-print "<td width=5%><img src=/images/gohome.gif></td>\n";
+print "<td width=8%><img src=/images/gohome.gif></td>\n";
 print "<td><a target=right href='/right.cgi?open=system&open=status'>$text{'left_home'}</a></td>\n";
 print "</tr>\n";
 
@@ -337,7 +341,7 @@ print "</tr>\n";
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
 	print "<tr>\n";
-	print "<td width=5%><img src=/images/stock_quit.png></td>\n";
+	print "<td width=8%><img src=/images/stock_quit.png></td>\n";
 	if ($main::session_id) {
 		print "<td><a target=_top href='/session_login.cgi?logout=1'>$text{'main_logout'}</a></td>\n";
 		}
@@ -362,10 +366,11 @@ local $others = join("&", map { $_."=".$in{$_} } @others);
 $others = "&$others" if ($others);
 $others .= "&dom=$did";
 $others .= "&mode=$mode";
+$label = $c eq "others" ? "Others" : $label;
 
 # Show link to close or open catgory
 print "<tr>\n";
-print "<td width=5%>";
+print "<td width=8%>";
 print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closed.gif' alt='[+]'></a>\n";
 print "</td>\n";
 print "<td><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></td>\n";
@@ -381,7 +386,7 @@ if ($noimage) {
 	print "<td colspan=2><a target=right href=$link><font size=-1>$label</a></td>\n";
 	}
 else {
-	print "<td width=5%>$image</td>\n";
+	print "<td width=8%>$image</td>\n";
 	print "<td><a target=right href=$link><font size=-1>$label</a></td>\n";
 	}
 print "</tr>\n";
