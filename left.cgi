@@ -14,26 +14,26 @@ do './ui-lib.pl';
 &read_file("$config_directory/webmin.catnames", \%catnames);
 foreach $m (@modules) {
 	$c = $m->{'category'};
-	next if ($cats{$c});
+	$cname = $c || "others";
+	next if ($cats{$cname});
 	if (defined($catnames{$c})) {
-		$cats{$c} = $catnames{$c};
+		$cats{$cname} = $catnames{$c};
 		}
 	elsif ($text{"category_$c"}) {
-		$cats{$c} = $text{"category_$c"};
+		$cats{$cname} = $text{"category_$c"};
 		}
 	else {
 		# try to get category name from module ..
 		local %mtext = &load_language($m->{'dir'});
 		if ($mtext{"category_$c"}) {
-			$cats{$c} = $mtext{"category_$c"};
+			$cats{$cname} = $mtext{"category_$c"};
 			}
 		else {
-			$c = $m->{'category'} = "";
-			$cats{$c} = $text{"category_$c"};
+			$cats{$cname} = $c;
 			}
 		}
 	}
-@cats = sort { $b cmp $a } keys %cats;
+@cats = sort { ($b eq "others" ? "" : $b) cmp ($a eq "others" ? "" : $a) } keys %cats;
 
 &PrintHeader();
 print <<EOF;
@@ -314,7 +314,8 @@ if ($mode eq "webmin") {
 		&print_category_opener($c, \@cats, $cats{$c});
   	print "<div class='itemhidden' id='$c'>";
 		print "<table width=100%>\n";
-		@inmodules = grep { $_->{'category'} eq $c } @modules;
+		$creal = $c eq "others" ? "" : $c;
+		@inmodules = grep { $_->{'category'} eq $creal } @modules;
 		foreach $minfo (@inmodules) {
 			&print_category_link("/$minfo->{'dir'}/",
 					     $minfo->{'desc'});
