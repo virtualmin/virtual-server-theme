@@ -41,6 +41,10 @@ print <<EOF;
 <html>
 <head>
 $tconfig{'headhtml'}
+<script type='text/javascript' src='/toggleview.js'></script>
+<!--[if gte IE 5.5000]>
+  <script type='text/javascript' src='/pngfix.js'></script>
+<![endif]-->
 </head>
 <body bgcolor=#e8e8ea>
 <table width=100%>
@@ -208,35 +212,38 @@ elsif ($mode eq "virtualmin") {
 	print "</td> </tr>\n";
 	}
 
-if ($mode eq "virtualmin") {
-	# See if we need a config check (such as after first install)
-	$recheck = &virtual_server::need_config_check();
+print "</table>\n";
 
+if ($mode eq "virtualmin") {
 	if (&virtual_server::can_edit_templates()) {
 		# Show collapsible section for template links
-		if (&print_category_opener("tmpl", \@admincats,
-					   $text{'left_tmpl'})) {
-			($tlinks, $ttitles) = &virtual_server::get_template_pages();
-			for($i=0; $i<@$tlinks; $i++) {
-				&print_category_link(
-					"/virtual-server/$tlinks->[$i]",
-					$ttitles->[$i]);
-				}
+		&print_category_opener("tmpl", \@admincats,
+					   $text{'left_tmpl'});
+		print "<div class='itemhidden' id='tmpl'>\n";
+		print "<table width=100%>\n";
+		($tlinks, $ttitles) = &virtual_server::get_template_pages();
+		for($i=0; $i<@$tlinks; $i++) {
 			&print_category_link(
-				"/config.cgi?virtual-server",
-				$text{'header_config'});
-			&print_category_link(
-				"/virtual-server/check.cgi",
-				$text{'left_check'});
+				"/virtual-server/$tlinks->[$i]",
+				$ttitles->[$i]);
 			}
+		&print_category_link(
+			"/config.cgi?virtual-server",
+			$text{'header_config'});
+		&print_category_link(
+			"/virtual-server/check.cgi",
+			$text{'left_check'});
+		print "</table>\n";
+		print "</div><br>\n";
 		}
 
 	# Creation/migration forms
-	if (!$recheck &&
-	    (&virtual_server::can_create_master_servers() ||
-	     &virtual_server::can_create_sub_servers()) &&
-	    &print_category_opener("create", \@admincats,
-				   $text{'left_create'})) {
+	if (&virtual_server::can_create_master_servers() ||
+	    &virtual_server::can_create_sub_servers()) {
+	   &print_category_opener("create", \@admincats,
+				   $text{'left_create'});
+    print "<div class='itemhidden' id='create'>";
+    print "<table width=100%>\n";
 		($dleft, $dreason, $dmax) = &virtual_server::count_domains(
 						"realdoms");
 		($aleft, $areason, $amax) = &virtual_server::count_domains(
@@ -276,22 +283,27 @@ if ($mode eq "virtualmin") {
 			&print_category_link("/virtual-server/migrate_form.cgi",
 					     $text{'left_migrate'});
 			}
+	  print "</table>\n";
+    print "</div><br>\n";		
 		}
 
-	# Backup/restore forms
-	if (!$recheck &&
-	    &virtual_server::can_backup_domains() &&
-	    &print_category_opener("backup", \@admincats,
-				   $text{'left_backup'})) {
+ 	# Backup/restore forms
+  if (&virtual_server::can_backup_domains()) {
+    &print_category_opener("backup", \@admincats, $text{'left_backup'});
+    print "<div class='itemhidden' id='backup'>";
+		print "<table width=100%>\n";
 		&print_category_link("/virtual-server/backup_form.cgi",
 				     $virtual_server::text{'index_backup'});
 		&print_category_link("/virtual-server/backup_form.cgi?sched=1",
 				     $virtual_server::text{'index_sched'});
 		&print_category_link("/virtual-server/restore_form.cgi",
 				     $virtual_server::text{'index_restore'});
+		print "</table>\n";
+		print "</div><br>\n";
 		}
 
 	# Normal Virtualmin menu
+  print "<table width=100%>\n";
 	print "<tr> <td><img src=images/virtualmin-small.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
 	}
 
@@ -299,13 +311,16 @@ if ($mode eq "webmin") {
 	# Show all modules under categories
 	foreach $c (@cats) {
 		# Show category opener, plus modules under it
-		if (&print_category_opener($c, \@cats, $cats{$c})) {
-			@inmodules = grep { $_->{'category'} eq $c } @modules;
-			foreach $minfo (@inmodules) {
-				&print_category_link("/$minfo->{'dir'}/",
-						     $minfo->{'desc'});
-				}
+		&print_category_opener($c, \@cats, $cats{$c});
+  	print "<div class='itemhidden' id='$c'>";
+		print "<table width=100%>\n";
+		@inmodules = grep { $_->{'category'} eq $c } @modules;
+		foreach $minfo (@inmodules) {
+			&print_category_link("/$minfo->{'dir'}/",
+					     $minfo->{'desc'});
 			}
+		print "</table>\n";
+		print "</div><br>\n";
 		}
 	print "<tr> <td colspan=2><hr></td> </tr>\n";
 	}
@@ -349,17 +364,13 @@ $others .= "&mode=$mode";
 
 # Show link to close or open catgory
 print "<tr>\n";
-if ($in{$c}) {
-	print "<td width=5%><img src=images/open.gif></td>\n";
-	}
-else {
-	print "<td width=5%><img src=images/closed.gif></td>\n";
-	}
-local $act = $in{$c} ? 0 : 1;
-print "<td><a target=left href='left.cgi?$c=$act$others'><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></td>\n";
+print "<td width=5%>";
+print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closed.gif' alt='[+]'></a>\n";
+print "</td>\n";
+print "<td><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></td>\n";
 print "</tr>\n";
-return !$act;
 }
+
 
 sub print_category_link
 {
