@@ -37,50 +37,42 @@ if ($hasvirt) {
 	print &virtual_server::licence_warning_message();
 	}
 
-# Check if server module configuration has been checked
-if ($hasvirt && &virtual_server::need_config_check() &&
-    &virtual_server::can_check_config()) {
-	# Not since last config change .. force it now
-	print &ui_form_start("virtual-server/check.cgi");
-	print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
-	print &ui_submit($virtual_server::text{'index_srefresh'});
-	print &ui_form_end();
-	print "<p>\n";
-	}
-
 if ($level == 0) {
 	# Show general system information
-	if (&collapsed_header($text{'right_header0'}, "system")) {
-		print "<table width=70%>\n";
+	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='/images/open.gif' alt='[&ndash;]'></a>";
+	print "<b> System</b><p>";
+	print "<div class='itemshown' id='system'>";
 
-		# Host and login info
-		print "<tr> <td><b>$text{'right_host'}</b></td>\n";
-		print "<td>",&get_system_hostname(),"</td> </tr>\n";
+	print "<table width=70%>\n";
 
-		print "<tr> <td><b>$text{'right_os'}</b></td>\n";
-		if ($gconfig{'os_version'} eq '*') {
-			print "<td>$gconfig{'real_os_type'}</td> </tr>\n";
+	# Host and login info
+	print "<tr> <td><b>$text{'right_host'}</b></td>\n";
+	print "<td>",&get_system_hostname(),"</td> </tr>\n";
+
+	print "<tr> <td><b>$text{'right_os'}</b></td>\n";
+	if ($gconfig{'os_version'} eq '*') {
+		print "<td>$gconfig{'real_os_type'}</td> </tr>\n";
+		}
+	else {
+		print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
+		}
+
+	if (&get_product_name() eq 'webmin') {
+		print "<tr> <td><b>$text{'right_webmin'}</b></td>\n";
+		print "<td>",&get_webmin_version(),"</td> </tr>\n";
+
+		print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
+		if ($hasvirt) {
+			print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
 			}
 		else {
-			print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
+			print "<td>",$text{'right_not'},"</td> </tr>\n";
 			}
-
-		if (&get_product_name() eq 'webmin') {
-			print "<tr> <td><b>$text{'right_webmin'}</b></td>\n";
-			print "<td>",&get_webmin_version(),"</td> </tr>\n";
-
-			print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
-			if ($hasvirt) {
-				print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
-				}
-			else {
-				print "<td>",$text{'right_not'},"</td> </tr>\n";
-				}
-			}
-		else {
-			print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
-			print "<td>",&get_webmin_version(),"</td> </tr>\n";
-			}
+		}
+	else {
+		print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
+		print "<td>",&get_webmin_version(),"</td> </tr>\n";
+		}
 
 		# Load and memory info
 		if (&foreign_check("proc")) {
@@ -142,12 +134,14 @@ if ($level == 0) {
 			}
 
 		print "</table>\n";
-		}
+		print "</div></p>\n";
 
 	if ($hasvirt) {
 		# Show Virtualmin feature statuses
-		if (&virtual_server::can_stop_servers() &&
-		    &collapsed_header($text{'right_header6'}, "status")) {
+		if (&virtual_server::can_stop_servers()) {
+			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='/images/open.gif' alt='[&ndash;]'></a>";
+			print "<b> Status</b><p>";
+	  	print "<div class='itemshown' id='status'>";	
 			@ss = &virtual_server::get_startstop_links();
 			print "<table>\n";
 			foreach $status (@ss) {
@@ -172,19 +166,26 @@ if ($level == 0) {
 					}
 				print "</tr>\n";
 				}
-			print "</table>\n";
+			print "</table><p>\n";
+			print "</div>\n";
 			}
+		}
 
 		# Show Virtualmin information
 		@doms = &virtual_server::list_domains();
-		if (&collapsed_header($text{'right_header1'}, "virtualmin")) {
-			&show_domains_info(\@doms);
-			}
-		if (&virtual_server::has_home_quotas() &&
-		    &collapsed_header($text{'right_header4'}, "quotas")) {
+    print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='/images/closed.gif' alt='[+]'></a>";
+    print "<b> Virtualmin Information</b><p>";
+  	print "<div class='itemhidden' id='virtualmin'>";
+		&show_domains_info(\@doms);
+		print "</div>\n";
+		if (&virtual_server::has_home_quotas()) {
+			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='/images/closed.gif' alt='[+]'></a>";
+	    print "<b> Quotas</b><p>";
+  	  print "<div class='itemhidden' id='quotas'>";
 			&show_quotas_info(\@doms);
+			print "</div><p>\n";
 			}
-		}
+		#}
 	}
 elsif ($level == 1) {
 	# Show a reseller info about his domains
