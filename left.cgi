@@ -304,7 +304,7 @@ if ($mode eq "virtualmin") {
 
 	# Normal Virtualmin menu
   print "<table width=100%>\n";
-	print "<tr> <td width=8%><img src=images/virtualmin-small.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
+	print "<tr> <td width=8%><img src=images/virtualmin-smallbg.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
 	}
 
 if ($mode eq "webmin") {
@@ -371,7 +371,7 @@ $label = $c eq "others" ? "Others" : $label;
 # Show link to close or open catgory
 print "<tr>\n";
 print "<td width=8%>";
-print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closed.gif' alt='[+]'></a>\n";
+print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>\n";
 print "</td>\n";
 print "<td><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></td>\n";
 print "</tr>\n";
