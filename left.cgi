@@ -341,7 +341,7 @@ print "</tr>\n";
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
 	print "<tr>\n";
-	print "<td width=8%><img src=/images/stock_quit.png></td>\n";
+	print "<td width=8%><img src=/images/stock_quitbg.png></td>\n";
 	if ($main::session_id) {
 		print "<td><a target=_top href='/session_login.cgi?logout=1'>$text{'main_logout'}</a></td>\n";
 		}
