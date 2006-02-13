@@ -1,7 +1,7 @@
 cs_header=dadaf8 class='maintitle'
 cs_table=e8e8ea class='mainbody'
 cs_link=ff6600
-headinclude=include.html
+headhtml=<link rel="stylesheet" type="text/css" href="/style.css" />
 texttitles=1
 functions=theme.pl
 applet_body=e8e8ea
