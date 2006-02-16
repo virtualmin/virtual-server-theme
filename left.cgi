@@ -116,7 +116,7 @@ if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each
 	print "<form action=left.cgi>\n";
-	print "<br><div id='domainmenu'>\n";
+	print "<div id='domainmenu'>\n";
 	if ($virtual_server::config{'display_max'} &&
 	    @doms > $virtual_server::config{'display_max'}) {
 		# Show text field for domain name
