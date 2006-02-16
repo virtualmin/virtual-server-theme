@@ -41,13 +41,13 @@ print <<EOF;
 <html>
 <head>
 $tconfig{'headhtml'}
+<link rel="stylesheet" type="text/css" href="/left.css" />
 <script type='text/javascript' src='/toggleview.js'></script>
 <!--[if gte IE 5.5000]>
   <script type='text/javascript' src='/pngfix.js'></script>
 <![endif]-->
 </head>
 <body bgcolor=#e8e8ea>
-<table width=100%>
 EOF
 
 # Find editable domains
@@ -81,7 +81,7 @@ $did = $d ? $d->{'id'} : undef;
 
 # Show virtualmin / webmin mode selector
 if ($hasvirt) {
-	print "<tr> <td colspan=2 nowrap>";
+	print "<div id='mode'>";
 	foreach $m ("virtualmin", "webmin") {
 		if ($m ne $mode) {
 			print "<a href='left.cgi?mode=$m&dom=$did'>";
@@ -97,11 +97,11 @@ if ($hasvirt) {
 			print "</b>\n";
 			}
 		}
-	print "</td> </tr>\n";
+		print "</div>";
 	}
 
 # Show login and Virtualmin access level
-print "<tr> <td colspan=2>\n";
+print "<br>\n";
 print &text('left_login', $remote_user);
 if (@doms) {
 	$level = &virtual_server::master_admin() ? $text{'left_master'} :
@@ -111,13 +111,12 @@ if (@doms) {
 						       $text{'left_user'};
 	print " ($level)";
 	}
-print "</td><tr>\n";
 
 if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each
 	print "<form action=left.cgi>\n";
-	print "<tr> <td colspan=2 nowrap>";
+	print "<br><div id='domainmenu'>\n";
 	if ($virtual_server::config{'display_max'} &&
 	    @doms > $virtual_server::config{'display_max'}) {
 		# Show text field for domain name
@@ -137,48 +136,49 @@ if ($mode eq "virtualmin" && @doms) {
 	print "</form>\n";
 	if (!$d) {
 		if ($in{'dname'}) {
-			print "<tr> <td colspan=2>$text{'left_nosuch'}</td> </tr>\n";
+			print "\n";
 			}
 		goto nodomain;
 		}
+	print "</div>\n";
 
 	# Users and aliases links
 	if (&virtual_server::can_domain_have_users($d) &&
 	    &virtual_server::can_edit_users()) {
-		print "<tr> <td colspan=2><a href='virtual-server/list_users.cgi?dom=$d->{'id'}' target=right>$text{'left_users'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/list_users.cgi?dom=$d->{'id'}' target=right>$text{'left_users'}</a></div>\n";
 		}
 	if ($d->{'mail'} && &virtual_server::can_edit_aliases()) {
-		print "<tr> <td colspan=2><a href='virtual-server/list_aliases.cgi?dom=$d->{'id'}' target=right>$text{'left_aliases'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/list_aliases.cgi?dom=$d->{'id'}' target=right>$text{'left_aliases'}</a></div>\n";
 		}
 
 	# Editing options
 	$canconfig = &virtual_server::can_config_domain($d);
 	if (&virtual_server::database_feature($d) &&
 	    &virtual_server::can_edit_databases()) {
-		print "<tr> <td colspan=2><a href='virtual-server/list_databases.cgi?dom=$d->{'id'}' target=right>$text{'left_databases'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/list_databases.cgi?dom=$d->{'id'}' target=right>$text{'left_databases'}</a></div>\n";
 		}
 	if (!$d->{'parent'} && &virtual_server::can_edit_admins()) {
-		print "<tr> <td colspan=2><a href='virtual-server/list_admins.cgi?dom=$d->{'id'}' target=right>$text{'left_admins'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/list_admins.cgi?dom=$d->{'id'}' target=right>$text{'left_admins'}</a></div>\n";
 		}
 	if ($d->{'web'} && &virtual_server::can_edit_scripts() &&
 	    !$d->{'subdom'}) {
-		print "<tr> <td colspan=2><a href='virtual-server/list_scripts.cgi?dom=$d->{'id'}' target=right>$text{'left_scripts'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/list_scripts.cgi?dom=$d->{'id'}' target=right>$text{'left_scripts'}</a></div>\n";
 		}
 	if ($canconfig) {
-		print "<tr> <td colspan=2><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></div>\n";
 		}
 	else {
-		print "<tr> <td colspan=2><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></td> </tr>\n";
+		print "<div if='leftlink'><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></div>\n";
 		}
 	if ($d->{'unix'} && &virtual_server::can_edit_limits($d) && !$d->{'alias'}) {
-		print "<tr> <td colspan=2><a href='virtual-server/edit_limits.cgi?dom=$d->{'id'}' target=right>$text{'left_limits'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/edit_limits.cgi?dom=$d->{'id'}' target=right>$text{'left_limits'}</a></div>\n";
 		}
 	if ($virtual_server::config{'bw_active'} && !$d->{'parent'} &&
 	    &virtual_server::can_monitor_bandwidth($d)) {
-		print "<tr> <td colspan=2><a href='virtual-server/bwgraph.cgi?dom=$d->{'id'}&mode=2' target=right>$text{'left_bw'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/bwgraph.cgi?dom=$d->{'id'}&mode=2' target=right>$text{'left_bw'}</a></div>\n";
 		}
 	if (&virtual_server::can_delete_domain($d)) {
-		print "<tr> <td colspan=2><a href='virtual-server/delete_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_delete'}</a></td> </tr>\n";
+		print "<div id='leftlink'><a href='virtual-server/delete_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_delete'}</a></div>\n";
 		}
 
 	# Feature and plugin links
@@ -189,30 +189,28 @@ if ($mode eq "virtualmin" && @doms) {
 	foreach $lt (\@flinks, \@plinks, \@olinks) {
 		if (@$lt) {
 			if ($lt eq \@flinks || $lt eq \@olinks) {
-				print "<tr> <td colspan=2><hr></td> </tr>\n";
+				print "<div id='leftlink'><hr></div>\n";
 				}
 			foreach $l (@$lt) {
-				print "<tr> <td colspan=2><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></td> </tr>\n";
+				print "<div id='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div\n";
 				}
 			}
 		}
 
-	print "<tr> <td colspan=2><hr></td> </tr>\n";
+	print "<div id='leftlink'><hr></div>\n";
 	nodomain:
 	}
 elsif ($mode eq "virtualmin") {
 	# No domains
-	print "<tr> <td colspan=2>";
+	print "<div id='leftlink'>";
 	if (@alldoms) {
 		print $text{'left_noaccess'};
 		}
 	else {
 		print $text{'left_nodoms'};
 		}
-	print "</td> </tr>\n";
+	print "</div>\n";
 	}
-
-print "</table>\n";
 
 if ($mode eq "virtualmin") {
 	if (&virtual_server::can_edit_templates()) {
@@ -220,7 +218,6 @@ if ($mode eq "virtualmin") {
 		&print_category_opener("tmpl", \@admincats,
 					   $text{'left_tmpl'});
 		print "<div class='itemhidden' id='tmpl'>\n";
-		print "<table width=100%>\n";
 		($tlinks, $ttitles) = &virtual_server::get_template_pages();
 		for($i=0; $i<@$tlinks; $i++) {
 			&print_category_link(
@@ -233,8 +230,7 @@ if ($mode eq "virtualmin") {
 		&print_category_link(
 			"/virtual-server/check.cgi",
 			$text{'left_check'});
-		print "</table>\n";
-		print "</div><br>\n";
+		print "</div>\n";
 		}
 
 	# Creation/migration forms
@@ -243,14 +239,13 @@ if ($mode eq "virtualmin") {
 	   &print_category_opener("create", \@admincats,
 				   $text{'left_create'});
     print "<div class='itemhidden' id='create'>";
-    print "<table width=100%>\n";
 		($dleft, $dreason, $dmax) = &virtual_server::count_domains(
 						"realdoms");
 		($aleft, $areason, $amax) = &virtual_server::count_domains(
 						"aliasdoms");
 		if ($dleft == 0) {
 			# Cannot add
-			print "<tr> <td></td> <td>",&virtual_server::text('index_noadd'.$dreason, $dmax),"</td> </tr>\n";
+			print "<div id='leftlink'>",&virtual_server::text('index_noadd'.$dreason, $dmax),"</div>\n";
 			}
 		elsif (!&virtual_server::can_create_master_servers() &&
 		       &virtual_server::can_create_sub_servers()) {
@@ -283,28 +278,24 @@ if ($mode eq "virtualmin") {
 			&print_category_link("/virtual-server/migrate_form.cgi",
 					     $text{'left_migrate'});
 			}
-	  print "</table>\n";
-    print "</div><br>\n";		
+    print "</div>\n";		
 		}
 
  	# Backup/restore forms
   if (&virtual_server::can_backup_domains()) {
     &print_category_opener("backup", \@admincats, $text{'left_backup'});
     print "<div class='itemhidden' id='backup'>";
-		print "<table width=100%>\n";
 		&print_category_link("/virtual-server/backup_form.cgi",
 				     $virtual_server::text{'index_backup'});
 		&print_category_link("/virtual-server/backup_form.cgi?sched=1",
 				     $virtual_server::text{'index_sched'});
 		&print_category_link("/virtual-server/restore_form.cgi",
 				     $virtual_server::text{'index_restore'});
-		print "</table>\n";
-		print "</div><br>\n";
+		print "</div>\n";
 		}
 
 	# Normal Virtualmin menu
-  print "<table width=100%>\n";
-	print "<tr> <td width=8%><img src=images/virtualmin-small.gif></td> <td><b><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></td> </tr>\n";
+	print "<div id='linkwithicon'><img src=images/virtualmin-small.gif><b><div id='aftericon'><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></div></div>\n";
 	}
 
 if ($mode eq "webmin") {
@@ -313,46 +304,37 @@ if ($mode eq "webmin") {
 		# Show category opener, plus modules under it
 		&print_category_opener($c, \@cats, $cats{$c});
   	print "<div class='itemhidden' id='$c'>";
-		print "<table width=100%>\n";
 		$creal = $c eq "others" ? "" : $c;
 		@inmodules = grep { $_->{'category'} eq $creal } @modules;
 		foreach $minfo (@inmodules) {
 			&print_category_link("/$minfo->{'dir'}/",
 					     $minfo->{'desc'});
 			}
-		print "</table>\n";
-		print "</div><br>\n";
+		print "</div>\n";
 		}
-	print "<tr> <td colspan=2><hr></td> </tr>\n";
+	print "<div id='leftlink'><hr></div>\n";
 	}
 
 # All of these tables will go away soon.
-print "</table>\n";
 
 # Show info link
-print "<table width=100%>\n";
-print "<tr>\n";
-print "<td width=8%><img src=/images/gohome.gif></td>\n";
-print "<td><a target=right href='/right.cgi?open=system&open=status'>$text{'left_home'}</a></td>\n";
-print "</tr>\n";
+print "<div id='linkwithicon'><img src=/images/gohome.gif>\n";
+print "<div id='aftericon'><a target=right href='/right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
 
 # Show logout link
 &get_miniserv_config(\%miniserv);
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
-	print "<tr>\n";
-	print "<td width=8%><img src=/images/stock_quit.png></td>\n";
+	print "<div id='linkwithicon'><img src=/images/stock_quit.gif>\n";
 	if ($main::session_id) {
-		print "<td><a target=_top href='/session_login.cgi?logout=1'>$text{'main_logout'}</a></td>\n";
+		print "<div id='aftericon'><a target=_top href='/session_login.cgi?logout=1'>$text{'main_logout'}</a></div></div>\n";
 		}
 	else {
-		print "<td><a target=_top href='/switch_user.cgi'>$text{'main_switch'}</a></td>\n";
+		print "<div id='linkindented'><a target=_top href='/switch_user.cgi'>$text{'main_switch'}</a></div>\n";
 		}
-	print "</tr>\n";
 	}
 
 print <<EOF;
-</table>
 </body>
 EOF
 
@@ -369,26 +351,21 @@ $others .= "&mode=$mode";
 $label = $c eq "others" ? "Others" : $label;
 
 # Show link to close or open catgory
-print "<tr>\n";
-print "<td width=8%>";
-print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closed.gif' alt='[+]'></a>\n";
-print "</td>\n";
-print "<td><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></td>\n";
-print "</tr>\n";
+print "<div id='linkwithicon'>";
+print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>\n";
+print "<div id='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></div></div>\n";
 }
 
 
 sub print_category_link
 {
 local ($link, $label, $image, $noimage) = @_;
-print "<tr>\n";
-if ($noimage) {
-	print "<td colspan=2><a target=right href=$link><font size=-1>$label</a></td>\n";
-	}
-else {
-	print "<td width=8%>$image</td>\n";
-	print "<td><a target=right href=$link><font size=-1>$label</a></td>\n";
-	}
-print "</tr>\n";
+#if ($noimage) {
+	print "<div id='linkindented'><a target=right href=$link><font size=-1>$label</a></div>\n";
+#	}
+# {
+#	print "<div id='linkwithicon'>$image\n";
+#	print "<div id='aftericon'><a target=right href=$link><font size=-1>$label</a></div></div>\n";
+#	}
 }
 

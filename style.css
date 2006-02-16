@@ -108,7 +108,6 @@ tr.mainbody { border-style: solid;
 	border-top-width: 0px;
 	border-left-width: 1px;
 	border-right-width: 1px;
-	border-collapse: collapse;
 }
 
 tr.maintitle { border-style: solid;
@@ -118,7 +117,6 @@ tr.maintitle { border-style: solid;
 	border-left-width: 1px;
 	border-right-width: 1px;
 	background-image: url("/images/title-bar-selected.png");
-	border-collapse: collapse;
 }
 
 .itemhidden {display:none}
