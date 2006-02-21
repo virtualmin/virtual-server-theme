@@ -58,10 +58,28 @@ if ($hasvirt) {
 	}
 $mode = $in{'mode'} ? $in{'mode'} : $hasvirt ? "virtualmin" : "webmin";
 if ($mode eq "virtualmin" && $hasvirt) {
+	# Get and sort the domains
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
 	@alldoms = &virtual_server::list_domains();
 	@doms = grep { &virtual_server::can_edit_domain($_) } @alldoms;
-	@doms = sort { lc($a->{'dom'}) cmp lc($b->{'dom'}) } @doms;
+	if ($virtual_server::config{'domains_sort'} eq 'dom') {
+		# By domain name
+		@doms = sort { lc($a->{'dom'}) cmp lc($b->{'dom'}) } @doms;
+		}
+	elsif ($virtual_server::config{'domains_sort'} eq 'user') {
+		# By username, with indents
+		@doms = sort { lc($a->{'user'}) cmp lc($b->{'user'}) ||
+			       $a->{'created'} <=> $b->{'created'} } @doms;
+		foreach my $d (@doms) {
+			local $show = $d->{'dom'};
+			$show = "  ".$show if ($d->{'parent'});
+			$show = "  ".$show if ($d->{'alias'});
+			#$show = $show." ($d->{'user'})" if (!$d->{'parent'});
+			$d->{'showdom'} = $show;
+			}
+		}
+
+	# Work out which domain we are editing
 	if (defined($in{'dom'})) {
 		$d = &virtual_server::get_domain($in{'dom'});
 		}
