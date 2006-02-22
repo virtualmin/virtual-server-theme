@@ -2,6 +2,7 @@
 
 do './web-lib.pl';
 &init_config();
+%text = &load_language($current_theme);
 
 $minfo = &get_goto_module();
 $goto = $minfo && $minfo->{'dir'} ne 'virtual-server' ?
@@ -24,15 +25,23 @@ else {
 	}
 $host = &get_display_hostname();
 
+# Work out the page title
+if ($gconfig{'os_version'} eq "*") {
+	$ostr = $gconfig{'real_os_type'};
+	}
+else {
+	$ostr = "$gconfig{'real_os_type'} $gconfig{'real_os_version'}";
+	}
+$title = $gconfig{'nohostname'} ? $text{'main_title2'}
+			        : &text('main_title', $ver, $hostname, $ostr);
+
 # Show frameset
 &PrintHeader();
 print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
-<head>
-	<title>$ver on $host ($ostr)</title>
-</head>
+<head> <title>$title</title> </head>
 
 <frameset cols="230,*">
 	<frame name="left" src="left.cgi$cat" scrolling="auto">
