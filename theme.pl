@@ -56,7 +56,7 @@ print "</script>\n";
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
-	print "link rel='stylesheet' type='text/css' href='/unauthenticated/style.css'>\n";
+	print "<link rel='stylesheet' type='text/css' href='/unauthenticated/style.css'>\n";
 	}
 }
 
