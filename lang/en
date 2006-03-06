@@ -75,5 +75,5 @@ right_up=Running
 right_down=Not Running
 right_restart=Restart $1
 
-main_title=Virtualmin $1 on $2 ($3)
-main_title2=Virtualmin
+vmain_title=Virtualmin $1 on $2 ($3)
+vmain_title2=Virtualmin

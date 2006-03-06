@@ -10,13 +10,7 @@ $goto = $minfo && $minfo->{'dir'} ne 'virtual-server' ?
 if ($minfo) {
 	$cat = "?$minfo->{'category'}=1";
 	}
-if (&foreign_available("virtual-server")) {
-	%minfo = &get_module_info("virtual-server");
-	$ver = "Virtualmin $minfo{'version'}";
-	}
-else {
-	$ver = ucfirst(&get_product_name())." ".&get_webmin_version();
-	}
+
 if ($gconfig{'os_version'} eq "*") {
 	$ostr = $gconfig{'real_os_type'};
 	}
@@ -24,16 +18,20 @@ else {
 	$ostr = "$gconfig{'real_os_type'} $gconfig{'real_os_version'}";
 	}
 $host = &get_display_hostname();
-
-# Work out the page title
-if ($gconfig{'os_version'} eq "*") {
-	$ostr = $gconfig{'real_os_type'};
+if (&foreign_available("virtual-server")) {
+	# Show Virtualmin version
+	%minfo = &get_module_info("virtual-server");
+	$title = $gconfig{'nohostname'} ? $text{'vmain_title2'} :
+		&text('vmain_title', $minfo{'version'}, $host, $ostr);
 	}
 else {
-	$ostr = "$gconfig{'real_os_type'} $gconfig{'real_os_version'}";
+	# Show Webmin version
+	$title = $gconfig{'nohostname'} ? $text{'main_title2'} :
+		&text('main_title', &get_webmin_version(), $host, $ostr);
 	}
-$title = $gconfig{'nohostname'} ? $text{'main_title2'}
-			        : &text('main_title', $ver, $hostname, $ostr);
+if ($gconfig{'showlogin'}) {
+	$title = $remote_user." : ".$title;
+	}
 
 # Show frameset
 &PrintHeader();
