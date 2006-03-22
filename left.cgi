@@ -115,11 +115,11 @@ if ($hasvirt) {
 			print "</b>\n";
 			}
 		}
-		print "</div>";
+	print "</div>";
+	print "<br>\n";
 	}
 
 # Show login and Virtualmin access level
-print "<br>\n";
 print &text('left_login', $remote_user);
 if (@doms) {
 	$level = &virtual_server::master_admin() ? $text{'left_master'} :

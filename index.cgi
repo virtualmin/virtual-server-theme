@@ -35,13 +35,14 @@ if ($gconfig{'showlogin'}) {
 
 # Show frameset
 &PrintHeader();
+$cols = $module_info{'usermin'} ? 180 : 230;
 print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
 <head> <title>$title</title> </head>
 
-<frameset cols="230,*">
+<frameset cols="$cols,*">
 	<frame name="left" src="left.cgi$cat" scrolling="auto">
 	<frame name="right" src="$goto" noresize>
 <noframes>
