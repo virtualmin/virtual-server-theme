@@ -1,10 +1,10 @@
-div#mode {
+.mode {
   position: absolute;
   left: 5px;
   top: 5px;
 }
 
-div#linkwithicon {
+.linkwithicon {
   position: relative;
 	white-space: nowrap;
   left: 4px;
@@ -12,20 +12,21 @@ div#linkwithicon {
 	padding-top: 2px;
 }
 
-div#leftlink {
+.leftlink {
   position: relative;
   left: 4px;
 	right: 4px;
 	padding-top: 2px;
 }
 
-div#linkindented {
-  position: relative;
-  left: 26px;
+.linkindented {
+	border: none;
+	position: relative;
   padding-top: 2px;
+	left: 26px;
 }
 
-div#aftericon {
+.aftericon {
 	position: relative;
 	display: inline;
 	left: 2px;
@@ -33,7 +34,7 @@ div#aftericon {
 	padding-top: 2px;
 }
 
-div#domainmenu {
+.domainmenu {
 	white-space: nowrap;
 	position: relative;
   left: 4px;
