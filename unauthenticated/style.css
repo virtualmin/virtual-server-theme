@@ -32,41 +32,32 @@ title { color: #000000;
    }
 
 h1 { color: #000000;
+			font-size: 150%;
      font-family: sans-serif;
    }
 
-h2 { color: #333399;
-     font-size: large;
+h2 { color: #111199;
+     font-size: 130%;
      font-family: sans-serif;
    }
 
-h3 { color: #FF9933;
-     font-size: large;
+h3 { color: #111199;
+     font-size: 125%;
      font-family: sans-serif;
    }
    
-h4 { color: #333399;
-     font-size: medium;
+h4 { color: #111199;
+     font-size: 120%;
      font-family: sans-serif;
    }
-	 
-	 th { font-size: small; }
+ 
+th { font-size: small; }
 
-pre { font-size: 12pt; 
+pre { font-size: 8pt; 
     }
 
-input:hover, textarea {
-    color: #333399;
-}
-
-input.button:hover {
-    color: #333399;
-		background-image: url("/unauthenticated/images/title-bar-selected.png");
-}
-
-select:focus, textarea:focus, input:focus {
-    background-color: #eeeeff;
-}
+tt { font-size: 8pt; 
+    }
 
 #main { border-style: solid;
 	border-color: #ccccff;
@@ -77,19 +68,19 @@ select:focus, textarea:focus, input:focus {
 #menubarun { border-style: solid;
 	border-color: #c9c9c9;
 	border-bottom-width: 0px;
-	border-top-width: 0px;
+	border-top-width: 1px;
 	border-left-width: 1px;
 	border-right-width: 1px;
-	background-image: url("/unauthenticated/images/title-bar.png");
+	background-image: url("images/title-bar.png");
 }
 
 #menubar { border-style: solid;
 	border-color: #adade4;
 	border-bottom-width: 0px;
-	border-top-width: 0px;
+	border-top-width: 1px;
 	border-left-width: 1px;
 	border-right-width: 1px;
-	background-image: url("/unauthenticated/images/title-bar-selected.png");
+	background-image: url("images/title-bar-selected.png");
 }
 
 #forms { border-style: solid;
@@ -104,7 +95,6 @@ tr.mainbody { border-style: solid;
 	border-top-width: 0px;
 	border-left-width: 1px;
 	border-right-width: 1px;
-	border-collapse;
 }
 
 tr.maintitle { border-style: solid;
@@ -113,7 +103,8 @@ tr.maintitle { border-style: solid;
 	border-top-width: 1px;
 	border-left-width: 1px;
 	border-right-width: 1px;
-	background-image: url("/unauthenticated/images/title-bar-selected.png");
-	border-collapse;
+	background-image: url("/images/title-bar-selected.png");
 }
 
+.itemhidden {display:none}
+.itemshown {display:inline}
