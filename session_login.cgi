@@ -29,7 +29,7 @@ print "Set-Cookie: testing=1; path=/$sec\r\n";
 	"onLoad='document.forms[0].pass.value = \"\"; document.forms[0].user.focus()'");
 print "\n";
 
-print "<link rel='stylesheet' type='text/css' href='/unauthenticated/style.css' />";
+#print "<link rel='stylesheet' type='text/css' href='/unauthenticated/style.css' />";
 
 print "<center>\n";
 if (defined($in{'failed'})) {
