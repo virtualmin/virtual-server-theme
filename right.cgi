@@ -169,23 +169,22 @@ if ($level == 0) {
 			print "</table><p>\n";
 			print "</div>\n";
 			}
-		}
 
 		# Show Virtualmin information
 		@doms = &virtual_server::list_domains();
-    print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>";
+		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>";
     print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> Virtualmin Information</b></a><p>";
-  	print "<div class='itemhidden' id='virtualmin'>";
+		print "<div class='itemhidden' id='virtualmin'>";
 		&show_domains_info(\@doms);
 		print "</div>\n";
 		if (&virtual_server::has_home_quotas()) {
 			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>";
 	    print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> Quotas</b></a><p>";
-  	  print "<div class='itemhidden' id='quotas'>";
+			print "<div class='itemhidden' id='quotas'>";
 			&show_quotas_info(\@doms);
 			print "</div><p>\n";
 			}
-		#}
+		}
 	}
 elsif ($level == 1) {
 	# Show a reseller info about his domains
