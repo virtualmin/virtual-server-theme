@@ -6,7 +6,7 @@ do './web-lib.pl';
 
 $minfo = &get_goto_module();
 $goto = $minfo && $minfo->{'dir'} ne 'virtual-server' ?
-	"/$minfo->{'dir'}/" : "/right.cgi?open=system&open=status";
+	"$minfo->{'dir'}/" : "right.cgi?open=system&open=status";
 if ($minfo) {
 	$cat = "?$minfo->{'category'}=1";
 	}

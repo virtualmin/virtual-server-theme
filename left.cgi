@@ -41,10 +41,10 @@ print <<EOF;
 <html>
 <head>
 $tconfig{'headhtml'}
-<link rel="stylesheet" type="text/css" href="/left.css" />
-<script type='text/javascript' src='/toggleview.js'></script>
+<link rel="stylesheet" type="text/css" href="left.css" />
+<script type='text/javascript' src='toggleview.js'></script>
 <!--[if gte IE 5.5000]>
-  <script type='text/javascript' src='/pngfix.js'></script>
+  <script type='text/javascript' src='pngfix.js'></script>
 <![endif]-->
 </head>
 <body bgcolor=#e8e8ea>
@@ -176,7 +176,7 @@ if ($mode eq "virtualmin" && @doms) {
 		# Show 'objects' category actions
 		my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
 		foreach my $b (@incat) {
-			$url = "/virtual-server/$b->{'page'}?dom=$d->{'id'}&".
+			$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
 			 join("?", map { $_->[0]."=".&urlize($_->[1]) }
 				       @{$b->{'hidden'}});
 			print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
@@ -192,7 +192,7 @@ if ($mode eq "virtualmin" && @doms) {
 			print "<div class='itemhidden' id='cat_$c'>\n";
 			foreach my $b (@incat) {
 				$url =
-				 "/virtual-server/$b->{'page'}?dom=$d->{'id'}&".
+				 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
 				 join("?", map { $_->[0]."=".&urlize($_->[1]) }
 					       @{$b->{'hidden'}});
 				&print_category_link($url, $b->{'title'});
@@ -282,14 +282,14 @@ if ($mode eq "virtualmin") {
 		($tlinks, $ttitles) = &virtual_server::get_template_pages();
 		for($i=0; $i<@$tlinks; $i++) {
 			&print_category_link(
-				"/virtual-server/$tlinks->[$i]",
+				"virtual-server/$tlinks->[$i]",
 				$ttitles->[$i]);
 			}
 		&print_category_link(
-			"/config.cgi?virtual-server",
+			"config.cgi?virtual-server",
 			$text{'header_config'});
 		&print_category_link(
-			"/virtual-server/check.cgi",
+			"virtual-server/check.cgi",
 			$text{'left_check'});
 		print "</div>\n";
 		}
@@ -311,32 +311,32 @@ if ($mode eq "virtualmin") {
 		elsif (!&virtual_server::can_create_master_servers() &&
 		       &virtual_server::can_create_sub_servers()) {
 			# Can just add sub-server
-			&print_category_link("/virtual-server/domain_form.cgi", $text{'left_addsub'});
+			&print_category_link("virtual-server/domain_form.cgi", $text{'left_addsub'});
 			}
 		elsif (&virtual_server::can_create_master_servers()) {
 			# Can add master or sub-server
-			&print_category_link("/virtual-server/domain_form.cgi",
+			&print_category_link("virtual-server/domain_form.cgi",
 					     $text{'left_add'});
-			&print_category_link("/virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1", $text{'left_addsub'});
+			&print_category_link("virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1", $text{'left_addsub'});
 			}
 		if (&virtual_server::can_create_sub_servers() &&
 		    !$d->{'alias'} && !$d->{'subdom'} && $dleft) {
 			# Can add sub-domain
-			&print_category_link("/virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1&subdom=$d->{'id'}", $text{'left_addsubdom'});
+			&print_category_link("virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1&subdom=$d->{'id'}", $text{'left_addsubdom'});
 			}
 		if (&virtual_server::can_create_sub_servers() &&
 		    !$d->{'alias'} && $aleft) {
 			# Can add alias domain
-			&print_category_link("/virtual-server/domain_form.cgi?to=$d->{'id'}", $text{'left_addalias'});
+			&print_category_link("virtual-server/domain_form.cgi?to=$d->{'id'}", $text{'left_addalias'});
 			}
 
 		# Migration/import
 		if (&virtual_server::can_import_servers()) {
-			&print_category_link("/virtual-server/import_form.cgi",
+			&print_category_link("virtual-server/import_form.cgi",
 					     $text{'left_import'});
 			}
 		if (&virtual_server::can_migrate_servers()) {
-			&print_category_link("/virtual-server/migrate_form.cgi",
+			&print_category_link("virtual-server/migrate_form.cgi",
 					     $text{'left_migrate'});
 			}
     print "</div>\n";		
@@ -346,11 +346,11 @@ if ($mode eq "virtualmin") {
   if (&virtual_server::can_backup_domains()) {
     &print_category_opener("backup", \@admincats, $text{'left_backup'});
     print "<div class='itemhidden' id='backup'>";
-		&print_category_link("/virtual-server/backup_form.cgi",
+		&print_category_link("virtual-server/backup_form.cgi",
 				     $virtual_server::text{'index_backup'});
-		&print_category_link("/virtual-server/backup_form.cgi?sched=1",
+		&print_category_link("virtual-server/backup_form.cgi?sched=1",
 				     $virtual_server::text{'index_sched'});
-		&print_category_link("/virtual-server/restore_form.cgi",
+		&print_category_link("virtual-server/restore_form.cgi",
 				     $virtual_server::text{'index_restore'});
 		print "</div>\n";
 		}
@@ -368,7 +368,7 @@ if ($mode eq "webmin") {
 		$creal = $c eq "others" ? "" : $c;
 		@inmodules = grep { $_->{'category'} eq $creal } @modules;
 		foreach $minfo (@inmodules) {
-			&print_category_link("/$minfo->{'dir'}/",
+			&print_category_link("$minfo->{'dir'}/",
 					     $minfo->{'desc'});
 			}
 		print "</div>\n";
@@ -379,19 +379,19 @@ if ($mode eq "webmin") {
 # All of these tables will go away soon.
 
 # Show info link
-print "<div class='linkwithicon'><img src=/images/gohome.gif>\n";
-print "<div class='aftericon'><a target=right href='/right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
+print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
+print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
 
 # Show logout link
 &get_miniserv_config(\%miniserv);
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
-	print "<div class='linkwithicon'><img src=/images/stock_quit.gif>\n";
+	print "<div class='linkwithicon'><img src=images/stock_quit.gif>\n";
 	if ($main::session_id) {
-		print "<div class='aftericon'><a target=_top href='/session_login.cgi?logout=1'>$text{'main_logout'}</a></div></div>\n";
+		print "<div class='aftericon'><a target=_top href='session_login.cgi?logout=1'>$text{'main_logout'}</a></div></div>\n";
 		}
 	else {
-		print "<div class='linkindented'><a target=_top href='/switch_user.cgi'>$text{'main_switch'}</a></div>\n";
+		print "<div class='linkindented'><a target=_top href='switch_user.cgi'>$text{'main_switch'}</a></div>\n";
 		}
 	}
 
@@ -413,7 +413,7 @@ $label = $c eq "others" ? "Others" : $label;
 
 # Show link to close or open catgory
 print "<div class='linkwithicon'>";
-print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>\n";
+print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='images/closedbg.gif' alt='[+]'></a>\n";
 print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></div></div>\n";
 }
 

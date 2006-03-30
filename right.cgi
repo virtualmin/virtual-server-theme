@@ -39,7 +39,7 @@ if ($hasvirt) {
 
 if ($level == 0) {
 	# Show general system information
-	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='/images/openbg.gif' alt='[&ndash;]'></a>";
+	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
 	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> System</b></a><p>";
 	print "<div class='itemshown' id='system'>";
 
@@ -139,7 +139,7 @@ if ($level == 0) {
 	if ($hasvirt) {
 		# Show Virtualmin feature statuses
 		if (&virtual_server::can_stop_servers()) {
-			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='/images/openbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> Status</b></a><p>";
 	  	print "<div class='itemshown' id='status'>";	
 			@ss = &virtual_server::get_startstop_links();
@@ -172,13 +172,13 @@ if ($level == 0) {
 
 		# Show Virtualmin information
 		@doms = &virtual_server::list_domains();
-		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>";
+		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
     print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> Virtualmin Information</b></a><p>";
 		print "<div class='itemhidden' id='virtualmin'>";
 		&show_domains_info(\@doms);
 		print "</div>\n";
 		if (&virtual_server::has_home_quotas()) {
-			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='/images/closedbg.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
 	    print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> Quotas</b></a><p>";
 			print "<div class='itemhidden' id='quotas'>";
 			&show_quotas_info(\@doms);
