@@ -378,6 +378,13 @@ if ($mode eq "webmin") {
 
 # All of these tables will go away soon.
 
+# Show change password link for resellers
+if (&virtual_server::reseller_admin() &&
+    $virtual_server::module_info{'version'} >= 3.121) {
+	print "<div class='linkwithicon'><img src=images/pass.gif>\n";
+	print "<div class='aftericon'><a target=right href='virtual-server/edit_pass.cgi'>$text{'left_pass'}</a></div></div>\n";
+	}
+
 # Show info link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
