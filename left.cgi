@@ -182,10 +182,10 @@ if ($mode eq "virtualmin" && @doms) {
 			print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
 			}
 
-		# Show others by category
+		# Show others by category (except those for creation)
 		my @cats = &unique(map { $_->{'cat'} } @buts);
 		foreach my $c (@cats) {
-			next if ($c eq 'objects');
+			next if ($c eq 'objects' || $c eq 'create');
 			my @incat = grep { $_->{'cat'} eq $c } @buts;
 			&print_category_opener("cat_$c", \@cats,
 				$virtual_server::text{'cat_'.$c});
