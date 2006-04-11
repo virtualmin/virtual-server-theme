@@ -177,7 +177,7 @@ if ($mode eq "virtualmin" && @doms) {
 		my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
 		foreach my $b (@incat) {
 			$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-			 join("?", map { $_->[0]."=".&urlize($_->[1]) }
+			 join("&", map { $_->[0]."=".&urlize($_->[1]) }
 				       @{$b->{'hidden'}});
 			print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
 			}
@@ -193,7 +193,7 @@ if ($mode eq "virtualmin" && @doms) {
 			foreach my $b (@incat) {
 				$url =
 				 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-				 join("?", map { $_->[0]."=".&urlize($_->[1]) }
+				 join("&", map { $_->[0]."=".&urlize($_->[1]) }
 					       @{$b->{'hidden'}});
 				&print_category_link($url, $b->{'title'});
 				}
