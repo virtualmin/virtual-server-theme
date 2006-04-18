@@ -11,28 +11,9 @@ do './ui-lib.pl';
 
 # Work out what categories we have
 @modules = &get_visible_module_infos();
-&read_file("$config_directory/webmin.catnames", \%catnames);
-foreach $m (@modules) {
-	$c = $m->{'category'};
-	$cname = $c || "others";
-	next if ($cats{$cname});
-	if (defined($catnames{$c})) {
-		$cats{$cname} = $catnames{$c};
-		}
-	elsif ($text{"category_$c"}) {
-		$cats{$cname} = $text{"category_$c"};
-		}
-	else {
-		# try to get category name from module ..
-		local %mtext = &load_language($m->{'dir'});
-		if ($mtext{"category_$c"}) {
-			$cats{$cname} = $mtext{"category_$c"};
-			}
-		else {
-			$cats{$cname} = $c;
-			}
-		}
-	}
+%cats = &list_categories(\@modules);
+$cats{'others'} = $cats{''};
+delete($cats{''});
 @cats = sort { ($b eq "others" ? "" : $b) cmp ($a eq "others" ? "" : $a) } keys %cats;
 
 &PrintHeader();

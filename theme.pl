@@ -60,3 +60,12 @@ if ($script_name =~ /session_login.cgi/) {
 	}
 }
 
+sub theme_prehead
+{
+print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css' />\n";
+print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
+print "<!--[if gte IE 5.5000]>\n";
+print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/pngfix.js'></script>\n";
+print "<![endif]-->\n";
+}
+
