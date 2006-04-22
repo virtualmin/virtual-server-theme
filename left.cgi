@@ -310,6 +310,12 @@ if ($mode eq "virtualmin") {
 			# Can add alias domain
 			&print_category_link("virtual-server/domain_form.cgi?to=$d->{'id'}", $text{'left_addalias'});
 			}
+		if ((&virtual_server::can_create_sub_servers() ||
+		     &virtual_server::can_create_master_servers()) && $dleft &&
+		    $minfo{'version'} >= 3.131) {
+			# Can create servers from batch file
+			&print_category_link("virtual-server/mass_create_form.cgi", $text{'left_cmass'});
+			}
 
 		# Migration/import
 		if (&virtual_server::can_import_servers()) {
