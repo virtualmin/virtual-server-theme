@@ -97,6 +97,33 @@ tr.mainbody { border-style: solid;
 	border-right-width: 1px;
 }
 
+tr.mainhigh { border-style: solid;
+	border-color: #ddddff;
+	border-bottom-width: 1px;
+	border-top-width: 0px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	background-color: #aaaaff;
+}
+
+tr.mainsel { border-style: solid;
+	border-color: #ddddff;
+	border-bottom-width: 1px;
+	border-top-width: 0px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	background-color: #ffc8ca;
+}
+
+tr.mainhighsel { border-style: solid;
+	border-color: #ddddff;
+	border-bottom-width: 1px;
+	border-top-width: 0px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	background-color: #ffaaff;
+}
+
 tr.maintitle { border-style: solid;
 	border-color: #adade4;
 	border-bottom-width: 0px;

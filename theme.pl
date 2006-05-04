@@ -67,5 +67,70 @@ print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated
 print "<!--[if gte IE 5.5000]>\n";
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/pngfix.js'></script>\n";
 print "<![endif]-->\n";
+print "<script>\n";
+print "var rowsel = new Array();\n";
+print "</script>\n";
 }
 
+# theme_ui_columns_row(&columns, &tdtags)
+# Returns HTML for a row in a multi-column table
+sub theme_ui_columns_row
+{
+local ($cols, $tdtags) = @_;
+local $rv;
+$rv .= "<tr $cb onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody'\">\n";
+local $i;
+for($i=0; $i<@$cols; $i++) {
+	$rv .= "<td ".$tdtags->[$i].">".
+	       ($cols->[$i] eq "" ? "<br>" : $cols->[$i])."</td>\n";
+	}
+$rv .= "</tr>\n";
+return $rv;
+}
+
+# theme_select_all_link(field, form, text)
+# Adds support for row highlighting to the normal select all
+sub theme_select_all_link
+{
+local ($field, $form, $text) = @_;
+$form = int($form);
+$text ||= $text{'ui_selall'};
+return "<a href='#' onClick='f = document.forms[$form]; f.$field.checked = true; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" } } return false'>$text</a>";
+}
+
+# theme_select_invert_link(field, form, text)
+# Adds support for row highlighting to the normal invert selection
+sub theme_select_invert_link
+{
+local ($field, $form, $text) = @_;
+$form = int($form);
+$text ||= $text{'ui_selinv'};
+return "<a href='#' onClick='f = document.forms[$form]; f.$field.checked = !f.$field.checked; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = !ff.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" } } return false'>$text</a>";
+}
+
+sub theme_ui_checked_columns_row
+{
+local ($cols, $tdtags, $checkname, $checkvalue) = @_;
+local $rv;
+local $cbid = &quote_escape("${checkname}_${checkvalue}");
+local $rid = &quote_escape("row_${checkname}_${checkvalue}");
+$rv .= "<tr $cb id=\"$rid\" onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody'\">\n";
+$rv .= "<td ".$tdtags->[0].">".
+       &ui_checkbox($checkname, $checkvalue, undef, 0, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
+       "</td>\n";
+local $i;
+for($i=0; $i<@$cols; $i++) {
+	$rv .= "<td ".$tdtags->[$i+1].">";
+	if ($cols->[$i] !~ /<a\s+href/) {
+		$rv .= "<label for=\"".
+			&quote_escape("${checkname}_${checkvalue}")."\">";
+		}
+	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
+	if ($cols->[$i] !~ /<a\s+href/) {
+		$rv .= "</label>";
+		}
+	$rv .= "</td>\n";
+	}
+$rv .= "</tr>\n";
+return $rv;
+}
