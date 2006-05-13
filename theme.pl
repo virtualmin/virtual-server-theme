@@ -95,7 +95,7 @@ sub theme_select_all_link
 local ($field, $form, $text) = @_;
 $form = int($form);
 $text ||= $text{'ui_selall'};
-return "<a href='#' onClick='f = document.forms[$form]; f.$field.checked = true; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" } } return false'>$text</a>";
+return "<a href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" } } return false'>$text</a>";
 }
 
 # theme_select_invert_link(field, form, text)
@@ -105,7 +105,7 @@ sub theme_select_invert_link
 local ($field, $form, $text) = @_;
 $form = int($form);
 $text ||= $text{'ui_selinv'};
-return "<a href='#' onClick='f = document.forms[$form]; f.$field.checked = !f.$field.checked; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = !ff.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" } } return false'>$text</a>";
+return "<a href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = !f.$field.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = !ff.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" } } return false'>$text</a>";
 }
 
 sub theme_ui_checked_columns_row
