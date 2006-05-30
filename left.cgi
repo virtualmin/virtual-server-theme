@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 # Show the left-side menu of Virtualmin domains, plus modules
-# XXX show all possible domain action buttons?
 
 do './web-lib.pl';
 do './ui-lib.pl';
@@ -31,13 +30,19 @@ $tconfig{'headhtml'}
 <body bgcolor=#e8e8ea>
 EOF
 
-# Find editable domains
+# Find out which modules we have
 $hasvirt = &foreign_available("virtual-server");
 if ($hasvirt) {
 	%minfo = &get_module_info("virtual-server");
 	$hasvirt = 0 if ($minfo{'version'} < 2.99);
 	}
-$mode = $in{'mode'} ? $in{'mode'} : $hasvirt ? "virtualmin" : "webmin";
+$hasmail = &foreign_available("mailbox");
+
+# Find editable domains
+$mode = $in{'mode'} ? $in{'mode'} :
+	$hasvirt ? "virtualmin" :
+	$hasmail ? "mail" :
+		   &get_product_name();
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
@@ -78,10 +83,12 @@ else {
 	}
 $did = $d ? $d->{'id'} : undef;
 
-# Show virtualmin / webmin mode selector
-if ($hasvirt) {
+# Show virtualmin / folders / webmin mode selector
+if ($hasvirt || $hasmail) {
 	print "<div class='mode'>";
-	foreach $m ("virtualmin", "webmin") {
+	foreach $m ($hasvirt ? ( "virtualmin" ) : ( ),
+		    $hasmail ? ( "mail" ) : ( ),
+		    &get_product_name()) {
 		if ($m ne $mode) {
 			print "<a href='left.cgi?mode=$m&dom=$did'>";
 			}
@@ -346,7 +353,24 @@ if ($mode eq "virtualmin") {
 	print "<div class='linkwithicon'><img src=images/virtualmin-small.gif><b><div class='aftericon'><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></div></div>\n";
 	}
 
-if ($mode eq "webmin") {
+if ($mode eq "mail") {
+	# Show mail folders
+	&foreign_require("mailbox", "mailbox-lib.pl");
+	@folders = &mailbox::list_folders_sorted();
+	foreach $f (@folders) {
+		$fid = &mailbox::folder_name($f);
+		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$f->{'name'}</a></div>\n";
+		}
+
+	# Show change password link
+	print "<hr>\n";
+	if (&foreign_available("changepass")) {
+		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
+		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
+		}
+	}
+
+if ($mode eq "webmin" || $mode eq "usermin") {
 	# Show all modules under categories
 	foreach $c (@cats) {
 		# Show category opener, plus modules under it
