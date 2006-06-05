@@ -106,7 +106,24 @@ if ($hasvirt || $hasmail) {
 	print "</div>";
 	print "<br>\n";
 	}
-print "<form action=left.cgi>\n";
+
+if ($hasvirt) {
+	# Left form is for changing domain
+	print "<form action=left.cgi>\n";
+	$doneform = 1;
+	}
+elsif ($mode eq "mail") {
+	# Left form is form a mail server
+	&foreign_require("mailbox", "mailbox-lib.pl");
+	@folders = &mailbox::list_folders_sorted();
+	$df = $mailbox::userconfig{'default_folder'};
+	$dfolder = $df ? &mailbox::find_named_folder($df, \@folders) :
+			 $folders[0];
+	print "<form action=mailbox/mail_search.cgi target=right>\n";
+	print &ui_hidden("simple", 1),"\n";
+	print &ui_hidden("folder", $dfolder->{'index'}),"\n";
+	$doneform = 1;
+	}
 
 # Show login and Virtualmin access level
 print &text('left_login', $remote_user);
@@ -354,15 +371,17 @@ if ($mode eq "virtualmin") {
 
 if ($mode eq "mail") {
 	# Show mail folders
-	&foreign_require("mailbox", "mailbox-lib.pl");
-	@folders = &mailbox::list_folders_sorted();
 	foreach $f (@folders) {
 		$fid = &mailbox::folder_name($f);
 		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$f->{'name'}</a></div>\n";
 		}
 
+	# Show search box
+	print "<div class='leftlink'>$text{'left_search'} ",
+	      &ui_textbox("search", undef, 10),"</div>\n";
+
 	# Show change password link
-	print "<hr>\n";
+	print "<div class='leftlink'><hr></div>\n";
 	if (&foreign_available("changepass")) {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
@@ -385,8 +404,6 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 		}
 	print "<div class='leftlink'><hr></div>\n";
 	}
-
-# All of these tables will go away soon.
 
 # Show change password link for resellers
 if ($hasvirt &&
@@ -413,8 +430,8 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 		}
 	}
 
+print "</form>\n" if ($doneform);
 print <<EOF;
-</form>
 </body>
 EOF
 
