@@ -106,6 +106,7 @@ if ($hasvirt || $hasmail) {
 	print "</div>";
 	print "<br>\n";
 	}
+print "<form action=left.cgi>\n";
 
 # Show login and Virtualmin access level
 print &text('left_login', $remote_user);
@@ -121,7 +122,6 @@ if (@doms) {
 if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each
-	print "<form action=left.cgi>\n";
 	print "<div class='domainmenu'>\n";
 	if ($virtual_server::config{'display_max'} &&
 	    @doms > $virtual_server::config{'display_max'}) {
@@ -139,7 +139,6 @@ if ($mode eq "virtualmin" && @doms) {
 	foreach $a (@admincats) {
 		print &ui_hidden($a, 1),"\n" if ($in{$a});
 		}
-	print "</form>\n";
 	if (!$d) {
 		if ($in{'dname'}) {
 			print "\n";
@@ -241,7 +240,7 @@ if ($mode eq "virtualmin" && @doms) {
 				print "<div class='leftlink'><hr></div>\n";
 				}
 			foreach $l (@$lt) {
-				print "<div class='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div\n";
+				print "<div class='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div>\n";
 				}
 			}
 		}
@@ -415,6 +414,7 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 	}
 
 print <<EOF;
+</form>
 </body>
 EOF
 
