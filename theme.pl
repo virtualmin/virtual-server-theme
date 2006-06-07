@@ -77,7 +77,6 @@ print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated
 # Returns HTML for a multi-column table, with the given headings
 sub theme_ui_columns_start
 {
-return &theme_ui_columns_start(@_) if (defined(&theme_ui_columns_start));
 local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local $rv;
 $rv .= "<table".($noborder ? "" : " border").
@@ -116,7 +115,6 @@ return $rv;
 # Returns HTML to end a table started by ui_columns_start
 sub theme_ui_columns_end
 {
-return &theme_ui_columns_end(@_) if (defined(&theme_ui_columns_end));
 return "</tbody> </table>\n";
 }
 
