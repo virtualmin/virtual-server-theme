@@ -73,9 +73,9 @@ print "</script>\n";
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/sorttable.js'></script>\n";
 }
 
-# ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
+# theme_ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
 # Returns HTML for a multi-column table, with the given headings
-sub ui_columns_start
+sub theme_ui_columns_start
 {
 return &theme_ui_columns_start(@_) if (defined(&theme_ui_columns_start));
 local ($heads, $width, $noborder, $tdtags, $heading) = @_;
@@ -112,9 +112,9 @@ $rv .= "</tr>\n";
 return $rv;
 }
 
-# ui_columns_end()
+# theme_ui_columns_end()
 # Returns HTML to end a table started by ui_columns_start
-sub ui_columns_end
+sub theme_ui_columns_end
 {
 return &theme_ui_columns_end(@_) if (defined(&theme_ui_columns_end));
 return "</tbody> </table>\n";
