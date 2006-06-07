@@ -82,14 +82,14 @@ local $rv;
 $rv .= "<table".($noborder ? "" : " border").
     (defined($width) ? " width=$width%" : "")." class='sortable'>\n";
 if ($heading) {
-  $rv .= "<thead> <tr $tb><th colspan=".scalar(@$heads).
-         "><b>$heading</b></th></tr> </thead> <tbody>\n";
+  $rv .= "<thead> <tr $tb><td colspan=".scalar(@$heads).
+         "><b>$heading</b></td></tr> </thead> <tbody>\n";
   }
 $rv .= "<thead> <tr $tb>\n";
 local $i;
 for($i=0; $i<@$heads; $i++) {
-  $rv .= "<th ".$tdtags->[$i]."><b>".
-         ($heads->[$i] eq "" ? "<br>" : $heads->[$i])."</b></th>\n";
+  $rv .= "<td ".$tdtags->[$i]."><b>".
+         ($heads->[$i] eq "" ? "<br>" : $heads->[$i])."</b></td>\n";
   }
 $rv .= "</tr></thead> <tbody>\n";
 return $rv;
