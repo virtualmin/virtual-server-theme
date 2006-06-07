@@ -70,6 +70,30 @@ print "<![endif]-->\n";
 print "<script>\n";
 print "var rowsel = new Array();\n";
 print "</script>\n";
+print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/sorttable.js'></script>\n";
+}
+
+# ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
+# Returns HTML for a multi-column table, with the given headings
+sub ui_columns_start
+{
+return &theme_ui_columns_start(@_) if (defined(&theme_ui_columns_start));
+local ($heads, $width, $noborder, $tdtags, $heading) = @_;
+local $rv;
+$rv .= "<table".($noborder ? "" : " border").
+    (defined($width) ? " width=$width%" : "")." class='sortable'>\n";
+if ($heading) {
+  $rv .= "<thead> <tr $tb><th colspan=".scalar(@$heads).
+         "><b>$heading</b></th></tr> </thead> <tbody>\n";
+  }
+$rv .= "<thead> <tr $tb>\n";
+local $i;
+for($i=0; $i<@$heads; $i++) {
+  $rv .= "<th ".$tdtags->[$i]."><b>".
+         ($heads->[$i] eq "" ? "<br>" : $heads->[$i])."</b></th>\n";
+  }
+$rv .= "</tr></thead> <tbody>\n";
+return $rv;
 }
 
 # theme_ui_columns_row(&columns, &tdtags)
@@ -86,6 +110,14 @@ for($i=0; $i<@$cols; $i++) {
 	}
 $rv .= "</tr>\n";
 return $rv;
+}
+
+# ui_columns_end()
+# Returns HTML to end a table started by ui_columns_start
+sub ui_columns_end
+{
+return &theme_ui_columns_end(@_) if (defined(&theme_ui_columns_end));
+return "</tbody> </table>\n";
 }
 
 # theme_select_all_link(field, form, text)
@@ -134,5 +166,3 @@ for($i=0; $i<@$cols; $i++) {
 $rv .= "</tr>\n";
 return $rv;
 }
-
-

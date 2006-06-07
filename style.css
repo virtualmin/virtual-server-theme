@@ -97,6 +97,15 @@ tr.mainbody { border-style: solid;
 	border-right-width: 1px;
 }
 
+tr.mainsel { border-style: solid;
+	background-color: #fcfcc9;
+  border-color: #ddddff;
+  border-bottom-width: 1px;
+  border-top-width: 0px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+}
+
 tr.maintitle { border-style: solid;
 	border-color: #adade4;
 	border-bottom-width: 0px;
