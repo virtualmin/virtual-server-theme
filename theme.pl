@@ -78,9 +78,11 @@ print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated
 sub theme_ui_columns_start
 {
 local ($heads, $width, $noborder, $tdtags, $heading) = @_;
+local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
 $rv .= "<table".($noborder ? "" : " border").
-    (defined($width) ? " width=$width%" : "")." class='sortable'>\n";
+    (defined($width) ? " width=$width%" : "").
+    ($href ? "" : " class='sortable'").">\n";
 if ($heading) {
   $rv .= "<thead> <tr $tb><td colspan=".scalar(@$heads).
          "><b>$heading</b></td></tr> </thead> <tbody>\n";
