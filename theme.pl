@@ -56,8 +56,20 @@ print "</script>\n";
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
+	# Generate CSS link
 	print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css'>\n";
 	}
+}
+
+sub theme_postbody
+{
+# If we are in Usermin's mailbox module, refresh the left page of folders
+if ($module_name eq "mailbox" && $0 =~ /list_folders.cgi/) {
+        # Refresh the left menu too, if folders have changed
+        $rv .= "<script>\n";
+        $rv .= "top.frames[0].document.location = top.frames[0].document.location;\n";
+        $rv .= "</script>\n";
+        }
 }
 
 sub theme_prehead
