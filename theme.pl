@@ -63,12 +63,12 @@ if ($script_name =~ /session_login.cgi/) {
 
 sub theme_postbody
 {
-# If we are in Usermin's mailbox module, refresh the left page of folders
-if ($module_name eq "mailbox" && $0 =~ /list_folders.cgi/) {
-        # Refresh the left menu too, if folders have changed
-        $rv .= "<script>\n";
-        $rv .= "top.frames[0].document.location = top.frames[0].document.location;\n";
-        $rv .= "</script>\n";
+# If we just came from a folder editing page, refresh the folder list
+if ($module_name eq "mailbox" && $ENV{'HTTP_REFERER'} =~ /(edit|save)_(folder|comp|imap|pop3|virt)\.cgi|mail_search\.cgi/) {
+	print "refreshing!<p>\n";
+        print "<script>\n";
+        print "top.frames[0].document.location = top.frames[0].document.location;\n";
+        print "</script>\n";
         }
 }
 

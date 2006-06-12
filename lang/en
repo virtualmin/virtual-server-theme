@@ -13,6 +13,7 @@ left_limits=Edit Owner Limits
 left_bw=Bandwidth Usage
 left_home=System Information
 left_pass=Change Password
+left_folders=Manage Folders
 left_login=Login: $1
 left_level=Level: $1
 left_master=Master admin

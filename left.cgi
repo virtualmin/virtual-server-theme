@@ -380,12 +380,14 @@ if ($mode eq "mail") {
 	print "<div class='leftlink'>$text{'left_search'} ",
 	      &ui_textbox("search", undef, 10),"</div>\n";
 
-	# Show change password link
+	# Show change password and manage folders link
 	print "<div class='leftlink'><hr></div>\n";
 	if (&foreign_available("changepass")) {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
 		}
+	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
+	print "<div class='aftericon'><a target=right href='mailbox/list_folders.cgi'>$text{'left_folders'}</a></div></div>\n";
 	}
 
 if ($mode eq "webmin" || $mode eq "usermin") {
