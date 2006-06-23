@@ -256,7 +256,8 @@ if ($mode eq "virtualmin" && @doms) {
 			if ($lt eq \@flinks || $lt eq \@olinks) {
 				print "<div class='leftlink'><hr></div>\n";
 				}
-			foreach $l (@$lt) {
+			foreach $l (sort { $a->{'desc'} cmp $b->{'desc'} }
+					 @$lt) {
 				print "<div class='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div>\n";
 				}
 			}
