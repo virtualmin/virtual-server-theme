@@ -416,6 +416,14 @@ if ($hasvirt &&
 	print "<div class='aftericon'><a target=right href='virtual-server/edit_pass.cgi'>$text{'left_pass'}</a></div></div>\n";
 	}
 
+# Show bandwidth link for resellers
+if ($hasvirt &&
+    $virtual_server::module_info{'version'} >= 3.171 &&
+    &virtual_server::reseller_admin()) {
+	print "<div class='linkwithicon'><img src=images/bw.gif>\n";
+	print "<div class='aftericon'><a target=right href='virtual-server/bwgraph.cgi'>$text{'left_bw'}</a></div></div>\n";
+	}
+
 # Show info link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
