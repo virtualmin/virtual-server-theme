@@ -77,7 +77,15 @@ right_uquota=Disk quota and usage
 right_header6=Service Status
 right_up=Running
 right_down=Not Running
+right_systemheader=System
+right_statusheader=Status
+right_virtheader=Virtualmin Information
+right_quotasheader=Quotas
+right_ipheader=IP Address Allocation
 right_restart=Restart $1
+right_defip=(Default IP)
+right_ip=(Private IP)
+right_ips=$1 virtual servers
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

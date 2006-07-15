@@ -40,7 +40,7 @@ if ($hasvirt) {
 if ($level == 0) {
 	# Show general system information
 	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
-	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> System</b></a><p>";
+	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
 	print "<div class='itemshown' id='system'>";
 
 	print "<table width=70%>\n";
@@ -140,7 +140,7 @@ if ($level == 0) {
 		# Show Virtualmin feature statuses
 		if (&virtual_server::can_stop_servers()) {
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
-			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> Status</b></a><p>";
+			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
 	  	print "<div class='itemshown' id='status'>";	
 			@ss = &virtual_server::get_startstop_links();
 			print "<table>\n";
@@ -173,15 +173,49 @@ if ($level == 0) {
 		# Show Virtualmin information
 		@doms = &virtual_server::list_domains();
 		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
-    print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> Virtualmin Information</b></a><p>";
+		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
 		print "<div class='itemhidden' id='virtualmin'>";
 		&show_domains_info(\@doms);
 		print "</div>\n";
+
 		if (&virtual_server::has_home_quotas()) {
 			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
-	    print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> Quotas</b></a><p>";
+		        print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
 			print "<div class='itemhidden' id='quotas'>";
 			&show_quotas_info(\@doms);
+			print "</div><p>\n";
+			}
+
+		# Show virtual IPs used
+		local (%ipcount, %ipdom);
+		foreach my $d (@doms) {
+			next if ($d->{'alias'});
+			$ipcount{$d->{'ip'}}++;
+			$ipdom{$d->{'ip'}} ||= $d;
+			}
+		if (keys %ipdom > 1) {
+			print "<a href=\"javascript:toggleview('ips','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+		        print "<a href=\"javascript:toggleview('ips','toggler4')\"><b> $text{'right_ipheader'}</b></a><p>";
+			print "<div class='itemhidden' id='ips'>";
+			print "<table>\n";
+			$defip = &virtual_server::get_default_ip();
+			foreach $ip ($defip,
+				     (grep { $_ ne $defip } 
+					   sort { $a cmp $b } keys %ipcount)) {
+				print "<tr>\n";
+				print "<td width=30%>$ip</td>\n";
+				print "<td>",$ip eq $defip ?
+					      $text{'right_defip'} :
+					      $text{'right_ip'},"</td>\n";
+				if ($ipcount{$ip} == 1) {
+					print "<td><tt>".$ipdom{$ip}->{'dom'}."</tt></td>\n";
+					}
+				else {
+					print "<td>",&text('right_ips', $ipcount{$ip}),"</td>\n";
+					}
+				print "</tr>\n";
+				}
+			print "</table>\n";
 			print "</div><p>\n";
 			}
 		}
@@ -427,6 +461,7 @@ foreach my $f ("virtualmin", "dns", "web", "ssl", "mail",
 print "</table>\n";
 }
 
+# show_quotas_info(&domains)
 sub show_quotas_info
 {
 local @doms = @{$_[0]};

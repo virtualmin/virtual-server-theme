@@ -106,6 +106,7 @@ for($i=0; $i<@$heads; $i++) {
          ($heads->[$i] eq "" ? "<br>" : $heads->[$i])."</b></td>\n";
   }
 $rv .= "</tr></thead> <tbody>\n";
+$theme_ui_columns_count++;
 return $rv;
 }
 
