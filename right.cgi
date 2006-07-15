@@ -194,8 +194,8 @@ if ($level == 0) {
 			$ipdom{$d->{'ip'}} ||= $d;
 			}
 		if (keys %ipdom > 1) {
-			print "<a href=\"javascript:toggleview('ips','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
-		        print "<a href=\"javascript:toggleview('ips','toggler4')\"><b> $text{'right_ipheader'}</b></a><p>";
+			print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+		        print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipheader'}</b></a><p>";
 			print "<div class='itemhidden' id='ips'>";
 			print "<table>\n";
 			$defip = &virtual_server::get_default_ip();
