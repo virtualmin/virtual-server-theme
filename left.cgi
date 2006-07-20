@@ -434,11 +434,12 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
 	print "<div class='linkwithicon'><img src=images/stock_quit.gif>\n";
 	if ($main::session_id) {
-		print "<div class='aftericon'><a target=_top href='session_login.cgi?logout=1'>$text{'main_logout'}</a></div></div>\n";
+		print "<div class='aftericon'><a target=_top href='session_login.cgi?logout=1'>$text{'main_logout'}</a></div>";
 		}
 	else {
-		print "<div class='linkindented'><a target=_top href='switch_user.cgi'>$text{'main_switch'}</a></div>\n";
+		print "<div class='aftericon'><a target=_top href='switch_user.cgi'>$text{'main_switch'}</a></div>";
 		}
+	print "</div>\n";
 	}
 
 print "</form>\n" if ($doneform);
