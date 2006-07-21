@@ -35,6 +35,16 @@ print "<center>\n";
 if ($hasvirt) {
 	# Check licence
 	print &virtual_server::licence_warning_message();
+
+	# See if module config needs to be checked
+	if (&virtual_server::need_config_check() &&
+	    &virtual_server::can_check_config()) {
+		print &ui_form_start("../virtual-server/check.cgi");
+		print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
+		print &ui_submit($virtual_server::text{'index_srefresh'});
+		print &ui_form_end();
+		print "<p>\n";
+		}
 	}
 
 if ($level == 0) {
@@ -454,7 +464,7 @@ foreach my $f ("virtualmin", "dns", "web", "ssl", "mail",
 	    "dbs", "users", "aliases") {
 	print "<tr>\n" if ($i%2 == 0);
 	print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
-	print "<td width=25%>",$fcount{$f},"</td>\n";
+	print "<td width=25%>",int($fcount{$f}),"</td>\n";
 	print "</tr>\n" if ($i%2 == 1);
 	$i++;
 	}
