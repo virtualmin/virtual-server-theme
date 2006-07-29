@@ -336,7 +336,7 @@ if ($mode eq "virtualmin") {
 			}
 		if ((&virtual_server::can_create_sub_servers() ||
 		     &virtual_server::can_create_master_servers()) && $dleft &&
-		    $minfo{'version'} >= 3.131) {
+		    $virtual_server::virtualmin_pro) {
 			# Can create servers from batch file
 			&print_category_link("virtual-server/mass_create_form.cgi", $text{'left_cmass'});
 			}

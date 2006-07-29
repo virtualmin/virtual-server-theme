@@ -179,3 +179,31 @@ for($i=0; $i<@$cols; $i++) {
 $rv .= "</tr>\n";
 return $rv;
 }
+
+sub theme_ui_radio_columns_row
+{
+local ($cols, $tdtags, $checkname, $checkvalue) = @_;
+local $rv;
+local $cbid = &quote_escape("${checkname}_${checkvalue}");
+local $rid = &quote_escape("row_${checkname}_${checkvalue}");
+$rv .= "<tr $cb id=\"$rid\" onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody'\">\n";
+$rv .= "<td ".$tdtags->[0].">".
+       &ui_oneradio($checkname, $checkvalue, undef, 0, "onClick=\"for(i=0; i<form.$checkname.length; i++) { ff = form.${checkname}[i]; r = document.getElementById('row_'+ff.id); if (r) { r.className = 'mainbody' } } document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
+       "</td>\n";
+local $i;
+for($i=0; $i<@$cols; $i++) {
+	$rv .= "<td ".$tdtags->[$i+1].">";
+	if ($cols->[$i] !~ /<a\s+href/) {
+		$rv .= "<label for=\"".
+			&quote_escape("${checkname}_${checkvalue}")."\">";
+		}
+	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
+	if ($cols->[$i] !~ /<a\s+href/) {
+		$rv .= "</label>";
+		}
+	$rv .= "</td>\n";
+	}
+$rv .= "</tr>\n";
+return $rv;
+}
+

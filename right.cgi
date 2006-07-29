@@ -39,11 +39,12 @@ if ($hasvirt) {
 	# See if module config needs to be checked
 	if (&virtual_server::need_config_check() &&
 	    &virtual_server::can_check_config()) {
+		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
 		print &ui_form_start("../virtual-server/check.cgi");
 		print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
 		print &ui_submit($virtual_server::text{'index_srefresh'});
 		print &ui_form_end();
-		print "<p>\n";
+		print "</td></tr></table>\n";
 		}
 	}
 
