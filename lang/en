@@ -89,3 +89,7 @@ right_ips=$1 virtual servers
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
+
+config_section=Configuration category:
+config_change=Change
+config_return=system information
