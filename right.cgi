@@ -506,7 +506,10 @@ if (@quota) {
 		}
 	foreach my $q (@quota) {
 		print "<tr>\n";
-		print "<td width=30%>$q->[0]->{'dom'}</td>\n";
+		my $ed = &virtual_server::can_config_domain($q->[0]) ?
+			"edit_domain.cgi" : "view_domain.cgi";
+		print "<td width=30%><a href='virtual-server/$ed?",
+		      "dom=$q->[0]->{'id'}'>$q->[0]->{'dom'}</a></td>\n";
 		print "<td>",&bar_chart_two($maxquota, $q->[5], $q->[6] ? $q->[6]-$q->[5] : 0, 1),"</td>\n";
 		if ($q->[6]) {
 			print "<td>",&text('right_out',
