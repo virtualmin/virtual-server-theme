@@ -166,7 +166,7 @@ $rv .= "<td ".$tdtags->[0].">".
 local $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i+1].">";
-	if ($cols->[$i] !~ /<a\s+href/) {
+	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "<label for=\"".
 			&quote_escape("${checkname}_${checkvalue}")."\">";
 		}
