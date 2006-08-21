@@ -77,8 +77,7 @@ function ts_resortTable(lnk,clid) {
     if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
     if (itm.match(/^[\d\.]+\s*(bytes|b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
     // Special cases for our mailbox lists
-		if (itm.match(/None/)) sortfn = ts_sort_filesize;
-		if (itm.match(/Empty/)) sortfn = ts_sort_filesize;
+		if (itm.match(/(None|Empty|Unlimited)/)) sortfn = ts_sort_filesize;
     SORT_COLUMN_INDEX = column;
     var firstRow = new Array();
     var newRows = new Array();
@@ -158,14 +157,16 @@ function ts_sort_filesize(a,b) {
     if (aa.length == 0) return -1;
     else if (bb.length == 0) return 1;
 
-    var regex = /^([\d\.]*|none|empty)\s*(bytes|b|kb|tb|gb|mb)?$/i;
+    var regex = /^([\d\.]*|none|empty|unlimited)\s*(bytes|b|kb|tb|gb|mb)?$/i;
     matchA = aa.match(regex);
     matchB = bb.match(regex);
 
     if (matchA[1] == 'none') valA = -1
 		else if (matchA[1] == 'empty') valA = 0;
+		else if (matchA[1] == 'unlimited') valA = 999;
 		if (matchB[1] == 'none') valB = -1
     else if (matchB[1] == 'empty') valB = 0;
+    else if (matchB[1] == 'unlimited') valB = 999;
 
     // Give file size class an integer value
     if (matchA[2] == 'b') valA = 1;
