@@ -75,7 +75,7 @@ function ts_resortTable(lnk,clid) {
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^[£$]/)) sortfn = ts_sort_currency;
     if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
-    if (itm.match(/^[\d\.,]+\s*(bytes|b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
+    if (itm.match(/^[\d\.]+\s*(bytes|b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
     // Special cases for our mailbox lists
 		if (itm.match(/None/)) sortfn = ts_sort_filesize;
 		if (itm.match(/Empty/)) sortfn = ts_sort_filesize;
@@ -158,7 +158,7 @@ function ts_sort_filesize(a,b) {
     if (aa.length == 0) return -1;
     else if (bb.length == 0) return 1;
 
-    var regex = /^([\d\.,]*|none|empty)\s*(bytes|b|kb|tb|gb|mb)?$/i;
+    var regex = /^([\d\.]*|none|empty)\s*(bytes|b|kb|tb|gb|mb)?$/i;
     matchA = aa.match(regex);
     matchB = bb.match(regex);
 
@@ -183,10 +183,11 @@ function ts_sort_filesize(a,b) {
     else if (matchB[2] == 'tb') valB = 5;
 
     if (valA == valB) {
+			if ( isNaN(matchA[1])) return -1;
+      if ( isNaN(matchA[1])) return 1;
       // Files are in the same size class kb/gb/mb/etc
-      // just do a normal sort on the file size
-      if (matchA[1] < matchB[1]) return -1
-      else if (matchA[1] > matchB[1]) return 1
+      // just do a numeric sort on the file size
+			return matchA[1]-matchB[1];
       return 0;
     } else if (valA < valB) {
       return -1;
