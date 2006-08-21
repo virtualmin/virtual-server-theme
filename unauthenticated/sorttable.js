@@ -74,8 +74,11 @@ function ts_resortTable(lnk,clid) {
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^[£$]/)) sortfn = ts_sort_currency;
-    if (itm.match(/^[\d\.,]+\s*(b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
     if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
+    if (itm.match(/^[\d\.,]+\s*(b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
+    // Special cases for our mailbox lists
+		if (itm.match(/None/)) sortfn = ts_sort_filesize;
+		if (itm.match(/Empty/)) sortfn = ts_sort_filesize;
     SORT_COLUMN_INDEX = column;
     var firstRow = new Array();
     var newRows = new Array();
@@ -149,28 +152,34 @@ function ts_sort_currency(a,b) {
 }
 
 function ts_sort_filesize(a,b) {
-    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
-    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
+    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).toLowerCase();
+    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).toLowerCase();
 
     if (aa.length == 0) return -1;
     else if (bb.length == 0) return 1;
 
-    var regex = /^([\d\.,]+)\s*(b|kb|tb|gb|mb)?$/i;
+    var regex = /^([\d\.,]*|none|empty)\s*(b|kb|tb|gb|mb)?$/i;
     matchA = aa.match(regex);
     matchB = bb.match(regex);
 
-    // Give file size class an integer value
-    if (matchA[2].toLowerCase() == 'b') valA = 1;
-    else if (matchA[2].toLowerCase() == 'kb') valA = 2;
-    else if (matchA[2].toLowerCase() == 'mb') valA = 3;
-    else if (matchA[2].toLowerCase() == 'gb') valA = 4;
-    else if (matchA[2].toLowerCase() == 'tb') valA = 5;
+    if (matchA[1] == 'none') valA = -1
+		else if (matchA[1] == 'empty') valA = 0;
+		if (matchB[1] == 'none') valB = -1
+    else if (matchB[1] == 'empty') valB = 0;
 
-    if (matchB[2].toLowerCase() == 'b') valB = 1;
-    else if (matchB[2].toLowerCase() == 'kb') valB = 2;
-    else if (matchB[2].toLowerCase() == 'mb') valB = 3;
-    else if (matchB[2].toLowerCase() == 'gb') valB = 4;
-    else if (matchB[2].toLowerCase() == 'tb') valB = 5;
+    // Give file size class an integer value
+    if (matchA[2] == 'b') valA = 1;
+    else if (matchA[2] == 'kb') valA = 2;
+    else if (matchA[2] == 'mb') valA = 3;
+    else if (matchA[2] == 'gb') valA = 4;
+    else if (matchA[2] == 'tb') valA = 5;
+
+    if (matchB[2] == 'b') valB = 1;
+    else if (matchB[2] == 'kb') valB = 2;
+    else if (matchB[2] == 'mb') valB = 3;
+    else if (matchB[2] == 'gb') valB = 4;
+    else if (matchB[2] == 'tb') valB = 5;
+
     if (valA == valB) {
       // Files are in the same size class kb/gb/mb/etc
       // just do a normal sort on the file size
@@ -178,9 +187,9 @@ function ts_sort_filesize(a,b) {
       else if (matchA[1] > matchB[1]) return 1
       return 0;
     } else if (valA < valB) {
-      return -1
+      return -1;
     } else if (valA > valB) {
-      return 1
+      return 1;
     }
 }
 
