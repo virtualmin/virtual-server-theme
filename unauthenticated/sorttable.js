@@ -75,7 +75,7 @@ function ts_resortTable(lnk,clid) {
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^[£$]/)) sortfn = ts_sort_currency;
     if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
-    if (itm.match(/^[\d\.,]+\s*(b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
+    if (itm.match(/^[\d\.,]+\s*(bytes|b|kb|tb|gb|mb)?$/i)) sortfn = ts_sort_filesize;
     // Special cases for our mailbox lists
 		if (itm.match(/None/)) sortfn = ts_sort_filesize;
 		if (itm.match(/Empty/)) sortfn = ts_sort_filesize;
@@ -158,7 +158,7 @@ function ts_sort_filesize(a,b) {
     if (aa.length == 0) return -1;
     else if (bb.length == 0) return 1;
 
-    var regex = /^([\d\.,]*|none|empty)\s*(b|kb|tb|gb|mb)?$/i;
+    var regex = /^([\d\.,]*|none|empty)\s*(bytes|b|kb|tb|gb|mb)?$/i;
     matchA = aa.match(regex);
     matchB = bb.match(regex);
 
@@ -169,12 +169,14 @@ function ts_sort_filesize(a,b) {
 
     // Give file size class an integer value
     if (matchA[2] == 'b') valA = 1;
+		else if (matchA[2] == 'bytes') valA = 1;
     else if (matchA[2] == 'kb') valA = 2;
     else if (matchA[2] == 'mb') valA = 3;
     else if (matchA[2] == 'gb') valA = 4;
     else if (matchA[2] == 'tb') valA = 5;
 
     if (matchB[2] == 'b') valB = 1;
+    else if (matchB[2] == 'bytes') valB = 1;
     else if (matchB[2] == 'kb') valB = 2;
     else if (matchB[2] == 'mb') valB = 3;
     else if (matchB[2] == 'gb') valB = 4;
