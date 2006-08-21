@@ -184,11 +184,10 @@ function ts_sort_filesize(a,b) {
 
     if (valA == valB) {
 			if ( isNaN(matchA[1])) return -1;
-      if ( isNaN(matchA[1])) return 1;
+      if ( isNaN(matchB[1])) return 1;
       // Files are in the same size class kb/gb/mb/etc
       // just do a numeric sort on the file size
 			return matchA[1]-matchB[1];
-      return 0;
     } else if (valA < valB) {
       return -1;
     } else if (valA > valB) {
