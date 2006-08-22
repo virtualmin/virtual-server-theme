@@ -74,10 +74,10 @@ function ts_resortTable(lnk,clid) {
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
     if (itm.match(/^[£$]/)) sortfn = ts_sort_currency;
-    if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
-    if (itm.match(/^[\d\.]+\s*(bytes|b|kb|tb|gb|mb)+$/i)) sortfn = ts_sort_filesize;
+    //if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
+    if (itm.match(/^[\d\.]+\s*(bytes|b|kb|tb|gb|mb)*$/i)) sortfn = ts_sort_filesize;
     // Special cases for our mailbox lists
-		if (itm.match(/(None|Empty|Unlimited)/)) sortfn = ts_sort_filesize;
+		if (itm.match(/^(None|Empty|Unlimited)$/)) sortfn = ts_sort_filesize;
     SORT_COLUMN_INDEX = column;
     var firstRow = new Array();
     var newRows = new Array();
@@ -150,6 +150,7 @@ function ts_sort_currency(a,b) {
     return parseFloat(aa) - parseFloat(bb);
 }
 
+// handles file sizes, simple numerics, and Unlimited/Empty/None special cases
 function ts_sort_filesize(a,b) {
     aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).toLowerCase();
     bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).toLowerCase();
@@ -161,23 +162,22 @@ function ts_sort_filesize(a,b) {
     matchA = aa.match(regex);
     matchB = bb.match(regex);
 
-    if (matchA[1] == 'none') valA = -1
+    // Give file size class an integer value, if we don't already have one
+    if (matchA[1] == 'none') valA = -999;
 		else if (matchA[1] == 'empty') valA = 0;
 		else if (matchA[1] == 'unlimited') valA = 999;
-		if (matchB[1] == 'none') valB = -1
-    else if (matchB[1] == 'empty') valB = 0;
-    else if (matchB[1] == 'unlimited') valB = 999;
-
-    // Give file size class an integer value
-    if (matchA[2] == 'b') valA = 1;
-		else if (matchA[2] == 'bytes') valA = 1;
+    else if (matchA[2] == 'b' || matchA[2] == 'bytes') valA = 1;
+    else if (matchA[2] == undefined) valA = 1;
     else if (matchA[2] == 'kb') valA = 2;
     else if (matchA[2] == 'mb') valA = 3;
     else if (matchA[2] == 'gb') valA = 4;
     else if (matchA[2] == 'tb') valA = 5;
 
-    if (matchB[2] == 'b') valB = 1;
-    else if (matchB[2] == 'bytes') valB = 1;
+		if (matchB[1] == 'none') valB = -999;
+    else if (matchB[1] == 'empty') valB = 0;
+    else if (matchB[1] == 'unlimited') valB = 999;
+    else if (matchB[2] == 'b' || matchB[2] == 'bytes') valB = 1;
+    else if (matchB[2] == undefined) valB = 1;
     else if (matchB[2] == 'kb') valB = 2;
     else if (matchB[2] == 'mb') valB = 3;
     else if (matchB[2] == 'gb') valB = 4;
