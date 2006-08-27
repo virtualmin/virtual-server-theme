@@ -382,11 +382,14 @@ if ($mode eq "mail") {
 	      &ui_textbox("search", undef, 10),"</div>\n";
 
 	# Show manage folders, mail preferences and change password links
+	%mconfig = &foreign_config("mailbox");
 	print "<div class='leftlink'><hr></div>\n";
 	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
 	print "<div class='aftericon'><a target=right href='mailbox/list_folders.cgi'>$text{'left_folders'}</a></div></div>\n";
-	print "<div class='linkwithicon'><img src=images/usermin-small.gif>\n";
-	print "<div class='aftericon'><a target=right href='uconfig.cgi?mailbox'>$text{'left_prefs'}</a></div></div>\n";
+	if (!$mconfig{'noprefs'}) {
+		print "<div class='linkwithicon'><img src=images/usermin-small.gif>\n";
+		print "<div class='aftericon'><a target=right href='uconfig.cgi?mailbox'>$text{'left_prefs'}</a></div></div>\n";
+		}
 	if (&foreign_available("changepass")) {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
