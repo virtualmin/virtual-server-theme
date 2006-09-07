@@ -382,7 +382,10 @@ if ($mode eq "mail") {
 	      &ui_textbox("search", undef, 10),"</div>\n";
 
 	# Show manage folders, mail preferences and change password links
-	%mconfig = &foreign_config("mailbox");
+	%mconfig = %mailbox::config;
+	if (!%mconfig) {
+		%mconfig = &foreign_config("mailbox");
+		}
 	print "<div class='leftlink'><hr></div>\n";
 	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
 	$fprog = $mconfig{'mail_system'} == 4 &&
