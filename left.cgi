@@ -387,15 +387,24 @@ if ($mode eq "mail") {
 		%mconfig = &foreign_config("mailbox");
 		}
 	print "<div class='leftlink'><hr></div>\n";
+
+	# Folder list link
 	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
 	$fprog = $mconfig{'mail_system'} == 4 &&
 		 &get_webmin_version() >= 1.227 ? "list_ifolders.cgi"
 					        : "list_folders.cgi";
 	print "<div class='aftericon'><a target=right href='mailbox/$fprog'>$text{'left_folders'}</a></div></div>\n";
+
+	print "<div class='linkwithicon'><img src=images/address-small.gif>\n";
+	print "<div class='aftericon'><a target=right href='mailbox/list_addresses.cgi'>$text{'left_addresses'}</a></div></div>\n";
+
+	# Preferences for read mail link
 	if (!$mconfig{'noprefs'}) {
 		print "<div class='linkwithicon'><img src=images/usermin-small.gif>\n";
 		print "<div class='aftericon'><a target=right href='uconfig.cgi?mailbox'>$text{'left_prefs'}</a></div></div>\n";
 		}
+
+	# Change password link
 	if (&foreign_available("changepass")) {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
