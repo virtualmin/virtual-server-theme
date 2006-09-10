@@ -67,8 +67,9 @@ if (-r "$mdir/uconfig_info.pl") {
 	}
 if (!$func) {
 	# Use config.info to create config inputs
-	&generate_config(\%config, "$mdir/uconfig.info", $m, undef,
-			 %canconfig ? \%canconfig : undef, $in{'section'});
+	&generate_config(\%config, "$mdir/uconfig.info", $m,
+			 %canconfig ? \%canconfig : undef,
+			 undef, $in{'section'});
 	}
 print &ui_table_end();
 print &ui_form_end([ [ "save", $text{'save'} ] ]);
