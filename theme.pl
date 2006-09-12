@@ -171,7 +171,7 @@ for($i=0; $i<@$cols; $i++) {
 			&quote_escape("${checkname}_${checkvalue}")."\">";
 		}
 	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
-	if ($cols->[$i] !~ /<a\s+href/) {
+	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "</label>";
 		}
 	$rv .= "</td>\n";
@@ -193,12 +193,12 @@ $rv .= "<td ".$tdtags->[0].">".
 local $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i+1].">";
-	if ($cols->[$i] !~ /<a\s+href/) {
+	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "<label for=\"".
 			&quote_escape("${checkname}_${checkvalue}")."\">";
 		}
 	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
-	if ($cols->[$i] !~ /<a\s+href/) {
+	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "</label>";
 		}
 	$rv .= "</td>\n";
