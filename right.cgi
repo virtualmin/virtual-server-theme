@@ -316,18 +316,18 @@ elsif ($level == 2) {
 		}
 
 	if (&virtual_server::has_home_quotas()) {
-		# Disk usage
-		local $homesize = &virtual_server::quota_bsize("home");
-		local $mailsize = &virtual_server::quota_bsize("mail");
-		local @qinfo = &virtual_server::get_domain_user_quotas($d);
-		$usage = $qinfo[0]*$homesize + $qinfo[1]*$mailsize +
-			 $qinfo[2]->{'uquota'}*$homesize + $qinfo[3];
+		# Disk usage for all owned domains
+		$homesize = &virtual_server::quota_bsize("home");
+		$mailsize = &virtual_server::quota_bsize("mail");
+		($home, $mail, $db) = &virtual_server::get_domain_quota($d, 1);
+		$usage = $home*$homesize + $mail*$mailsize + $db;
 		$limit = $d->{'quota'}*$homesize;
 		print "<tr> <td><b>$text{'right_quota'}</b></td>\n";
 		if ($limit) {
 			print "<td>",&text('right_of', &nice_size($usage), &nice_size($limit)),"</td> </tr>\n";
 			print "<tr> <td></td>\n";
-			print "<td>",&bar_chart($limit, $usage, 1),
+			print "<td>",&bar_chart_three($limit, $usage-$db, $db,
+						      $limit-$usage),
 			      "</td> </tr>\n";
 			}
 		else {
@@ -423,18 +423,20 @@ else {
 return $rv;
 }
 
-# bar_chart_two(total, used1, used2)
-# Returns HTML for a bar chart of two values
-sub bar_chart_two
+# bar_chart_three(total, used1, used2, used3)
+# Returns HTML for a bar chart of three values, stacked
+sub bar_chart_three
 {
-local ($total, $used1, $used2) = @_;
+local ($total, $used1, $used2, $used3) = @_;
 local $rv;
 local $w1 = int($bar_width*$used1/$total)+1;
 local $w2 = int($bar_width*$used2/$total);
+local $w3 = int($bar_width*$used3/$total);
 $rv .= sprintf "<img src=images/red.gif width=%s height=10>", $w1;
-$rv .= sprintf "<img src=images/blue.gif width=%s height=10>", $w2;
+$rv .= sprintf "<img src=images/purple.gif width=%s height=10>", $w2;
+$rv .= sprintf "<img src=images/blue.gif width=%s height=10>", $w3;
 $rv .= sprintf "<img src=images/grey.gif width=%s height=10>",
-	$bar_width - $w1 - $w2;
+	$bar_width - $w1 - $w2 - $w3;
 return $rv;
 }
 
@@ -485,20 +487,20 @@ local $maxquota = 0;
 foreach my $d (@doms) {
 	# If this is a parent domain, sum up quotas
 	if (!$d->{'parent'} && &virtual_server::has_home_quotas()) {
-		local @sdoms = ( $d, &virtual_server::get_domain_by("parent", $d->{'id'}) );
-		local @qinfo = &virtual_server::get_domain_user_quotas(@sdoms);
-		local $usage = $qinfo[0]*$homesize + $qinfo[1]*$mailsize +
-			       $qinfo[2]->{'uquota'}*$homesize + $qinfo[3];
+		local ($home, $mail, $dbusage) =
+			&virtual_server::get_domain_quota($d, 1);
+		local $usage = $home*$homesize +
+			       $mail*$mailsize;
 		$maxquota = $usage if ($usage > $maxquota);
 		local $limit = $d->{'quota'}*$homesize;
 		$maxquota = $limit if ($limit > $maxquota);
-		push(@quota, [ $d, @qinfo, $usage, $limit ]);
+		push(@quota, [ $d, $usage, $limit, $dbusage ]);
 		}
 	}
 
 if (@quota) {
 	# Show disk usage by various domains
-	@quota = sort { $b->[5] <=> $a->[5] } @quota;
+	@quota = sort { $b->[1] <=> $a->[1] } @quota;
 	print "<table>\n";
 	if (@quota > 10) {
 		@quota = @quota[0..9];
@@ -510,13 +512,19 @@ if (@quota) {
 			"edit_domain.cgi" : "view_domain.cgi";
 		print "<td width=30%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$q->[0]->{'dom'}</a></td>\n";
-		print "<td>",&bar_chart_two($maxquota, $q->[5], $q->[6] ? $q->[6]-$q->[5] : 0, 1),"</td>\n";
-		if ($q->[6]) {
+		print "<td>",&bar_chart_three(
+				$maxquota,		# Highest quota
+				$q->[1],		# Domain's disk usage
+				$q->[3],		# DB usage
+				$q->[2] ? $q->[2]-$q->[1]-$q->[3] : 0,	# Leftover
+				),"</td>\n";
+		if ($q->[2]) {
 			print "<td>",&text('right_out',
-				&nice_size($q->[5]), &nice_size($q->[6])),"</td>\n";
+				&nice_size($q->[1]+$q->[3]),
+				&nice_size($q->[2])),"</td>\n";
 			}
 		else {
-			print "<td>",&nice_size($q->[5]),"</td>\n";
+			print "<td>",&nice_size($q->[1]+$q->[3]),"</td>\n";
 			}
 		print "</tr>\n";
 		}
