@@ -85,67 +85,72 @@ if ($level == 0) {
 		print "<td>",&get_webmin_version(),"</td> </tr>\n";
 		}
 
-		# Load and memory info
-		if (&foreign_check("proc")) {
-			&foreign_require("proc", "proc-lib.pl");
-			if (defined(&proc::get_cpu_info)) {
-				@c = &proc::get_cpu_info();
-				print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
-				print "<td>",&text('right_load', @c),"</td> </tr>\n";
-				}
-			if (defined(&proc::get_memory_info)) {
-				@m = &proc::get_memory_info();
-				if (@m && $m[0]) {
-					print "<tr> <td><b>$text{'right_real'}</b></td>\n";
-					print "<td>",&nice_size($m[0]*1024)." total, ".
-						    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
-					print "<tr> <td></td>\n";
-					print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
-					      "</td> </tr>\n";
-					}
+	# System time
+	$tm = localtime(time());
+	print "<tr> <td><b>$text{'right_time'}</b></td>\n";
+	print "<td>$tm</td> </tr>\n";
 
-				if (@m && $m[2]) {
-					print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
-					print "<td>",&nice_size($m[2]*1024)." total, ".
-						    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
-					print "<tr> <td></td>\n";
-					print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
-					      "</td> </tr>\n";
-					}
-				}
-
-			#@procs = &proc::list_processes();
-			#print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-			#print "<td>",scalar(@procs),"</td> </tr>\n";
+	# Load and memory info
+	if (&foreign_check("proc")) {
+		&foreign_require("proc", "proc-lib.pl");
+		if (defined(&proc::get_cpu_info)) {
+			@c = &proc::get_cpu_info();
+			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
+			print "<td>",&text('right_load', @c),"</td> </tr>\n";
 			}
-
-		# Disk space on local drives
-		if (&foreign_check("mount")) {
-			&foreign_require("mount", "mount-lib.pl");
-			@mounted = &mount::list_mounted();
-			$total = 0;
-			$free = 0;
-			foreach $m (@mounted) {
-				if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
-				    $m->[2] eq "reiserfs" || $m->[2] eq "ufs") {
-					($t, $f) = &mount::disk_space($m->[2], $m->[0]);
-					$total += $t*1024;
-					$free += $f*1024;
-					}
-				}
-			if ($total) {
-				print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
-				print "<td>",&text('right_used',
-					   &nice_size($total),
-					   &nice_size($total-$free)),"</td> </tr>\n";
+		if (defined(&proc::get_memory_info)) {
+			@m = &proc::get_memory_info();
+			if (@m && $m[0]) {
+				print "<tr> <td><b>$text{'right_real'}</b></td>\n";
+				print "<td>",&nice_size($m[0]*1024)." total, ".
+					    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
 				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($total, $total-$free, 1),
+				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
+				      "</td> </tr>\n";
+				}
+
+			if (@m && $m[2]) {
+				print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
+				print "<td>",&nice_size($m[2]*1024)." total, ".
+					    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
+				print "<tr> <td></td>\n";
+				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
 				      "</td> </tr>\n";
 				}
 			}
 
-		print "</table>\n";
-		print "</div></p>\n";
+		#@procs = &proc::list_processes();
+		#print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
+		#print "<td>",scalar(@procs),"</td> </tr>\n";
+		}
+
+	# Disk space on local drives
+	if (&foreign_check("mount")) {
+		&foreign_require("mount", "mount-lib.pl");
+		@mounted = &mount::list_mounted();
+		$total = 0;
+		$free = 0;
+		foreach $m (@mounted) {
+			if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
+			    $m->[2] eq "reiserfs" || $m->[2] eq "ufs") {
+				($t, $f) = &mount::disk_space($m->[2], $m->[0]);
+				$total += $t*1024;
+				$free += $f*1024;
+				}
+			}
+		if ($total) {
+			print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
+			print "<td>",&text('right_used',
+				   &nice_size($total),
+				   &nice_size($total-$free)),"</td> </tr>\n";
+			print "<tr> <td></td>\n";
+			print "<td>",&bar_chart($total, $total-$free, 1),
+			      "</td> </tr>\n";
+			}
+		}
+
+	print "</table>\n";
+	print "</div></p>\n";
 
 	if ($hasvirt) {
 		# Show Virtualmin feature statuses

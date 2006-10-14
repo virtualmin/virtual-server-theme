@@ -88,6 +88,7 @@ right_restart=Restart $1
 right_defip=(Default IP)
 right_ip=(Private IP)
 right_ips=$1 virtual servers
+right_time=Time on server
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
