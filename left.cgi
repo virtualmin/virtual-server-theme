@@ -489,12 +489,6 @@ print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\"
 sub print_category_link
 {
 local ($link, $label, $image, $noimage) = @_;
-#if ($noimage) {
-	print "<div class='linkindented'><a target=right href=$link><font size=-1>$label</font></a></div>\n";
-#	}
-# {
-#	print "<div class='linkwithicon'>$image\n";
-#	print "<div class='aftericon'><a target=right href=$link><font size=-1>$label</a></font></div></div>\n";
-#	}
+	print "<div class='linkindented'><a target=right href=$link>$label</a></div>\n";
 }
 
