@@ -482,7 +482,7 @@ $label = $c eq "others" ? "Others" : $label;
 # Show link to close or open catgory
 print "<div class='linkwithicon'>";
 print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='images/closedbg.gif' alt='[+]'></a>\n";
-print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font size=+1 color=#000000 style='font-size:14px'>$label</font></a></div></div>\n";
+print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font color=#000000>$label</font></a></div></div>\n";
 }
 
 
