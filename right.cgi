@@ -451,9 +451,9 @@ sub show_domains_info
 # Count features for specified domains
 local @doms = @{$_[0]};
 local %fcount = map { $_, 0 } @virtual_server::features;
-$fcount{'virtualmin'} = 0;
+$fcount{'doms'} = 0;
 foreach my $d (@doms) {
-	$fcount{'virtualmin'}++;
+	$fcount{'doms'}++;
 	foreach my $f (@virtual_server::features) {
 		$fcount{$f}++ if ($d->{$f});
 		}
@@ -465,14 +465,21 @@ foreach my $d (@doms) {
 	$fcount{'aliases'} += scalar(@aliases);
 	}
 
-# Show features
+# Show counts for features, including maxes
 print "<table width=70%>\n";
 my $i = 0;
-foreach my $f ("virtualmin", "dns", "web", "ssl", "mail",
-	    "dbs", "users", "aliases") {
+foreach my $f ("doms", "dns", "web", "ssl", "mail",
+	       "dbs", "users", "aliases") {
+	local $cur = int($fcount{$f});
+	local ($extra, $reason, $max) = &virtual_server::count_feature($f);
 	print "<tr>\n" if ($i%2 == 0);
 	print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
-	print "<td width=25%>",int($fcount{$f}),"</td>\n";
+	if ($extra < 0) {
+		print "<td width=25%>",$cur,"</td>\n";
+		}
+	else {
+		print "<td width=25%>",&text('right_out', $cur, $max),"</td>\n";
+		}
 	print "</tr>\n" if ($i%2 == 1);
 	$i++;
 	}
