@@ -155,13 +155,17 @@ return "<a href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checke
 
 sub theme_ui_checked_columns_row
 {
-local ($cols, $tdtags, $checkname, $checkvalue) = @_;
+local ($cols, $tdtags, $checkname, $checkvalue, $checked) = @_;
 local $rv;
 local $cbid = &quote_escape("${checkname}_${checkvalue}");
 local $rid = &quote_escape("row_${checkname}_${checkvalue}");
-$rv .= "<tr $cb id=\"$rid\" onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody'\">\n";
+local $mycb = $cb;
+if ($checked) {
+	$mycb =~ s/mainbody/mainsel/g;
+	}
+$rv .= "<tr $mycb id=\"$rid\" class=\"$cclass\" onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody'\">\n";
 $rv .= "<td ".$tdtags->[0].">".
-       &ui_checkbox($checkname, $checkvalue, undef, 0, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
+       &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
        "</td>\n";
 local $i;
 for($i=0; $i<@$cols; $i++) {
