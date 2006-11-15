@@ -304,7 +304,7 @@ if ($mode eq "virtualmin") {
 	    &virtual_server::can_create_sub_servers()) {
 	   &print_category_opener("create", \@admincats,
 				   $text{'left_create'});
-    print "<div class='itemhidden' id='create'>";
+		print "<div class='itemhidden' id='create'>";
 		($dleft, $dreason, $dmax) = &virtual_server::count_domains(
 						"realdoms");
 		($aleft, $areason, $amax) = &virtual_server::count_domains(

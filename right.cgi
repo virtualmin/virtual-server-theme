@@ -165,6 +165,7 @@ if ($level == 0) {
 				   ($status->{'status'} ? "stop_feature.cgi" :
 							 "start_feature.cgi"));
 				print &ui_hidden("feature", $status->{'feature'});
+				print &ui_hidden("redirect", "/right.cgi");
 				print "<tr>\n";
 				print "<td><b>",$status->{'name'},"</b></td>\n";
 				print "<td>",(!$status->{'status'} ?
@@ -177,6 +178,7 @@ if ($level == 0) {
 					# Show restart button too
 					print &ui_form_start("virtual-server/restart_feature.cgi");
 					print &ui_hidden("feature", $status->{'feature'});
+					print &ui_hidden("redirect", "/right.cgi");
 					print "<td>",&ui_submit($status->{'restartdesc'} || &text('right_restart', $status->{'name'})),"</td>\n";
 					print &ui_form_end();
 					}
