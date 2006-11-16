@@ -256,8 +256,8 @@ if ($level == 0) {
 				}
 			for($i=0; $i<@info; $i++) {
 				print "<tr>\n" if ($i%2 == 0);
-				print "<td width=20%><b>$info[$i]->[0]</b></td>\n";
-				print "<td width=30%>$info[$i]->[1]</td>\n";
+				print "<td><b>$info[$i]->[0]</b></td>\n";
+				print "<td>$info[$i]->[1]</td>\n";
 				print "</tr>\n" if ($i%2 == 1);
 				}
 			print "</table>\n";
