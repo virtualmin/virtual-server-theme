@@ -81,6 +81,7 @@ right_up=Running
 right_down=Not Running
 right_systemheader=System
 right_statusheader=Status
+right_sysinfoheader=Programs
 right_virtheader=Virtualmin Information
 right_quotasheader=Quotas
 right_ipheader=IP Address Allocation

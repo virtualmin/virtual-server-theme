@@ -157,7 +157,7 @@ if ($level == 0) {
 		if (&virtual_server::can_stop_servers()) {
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
-	  	print "<div class='itemshown' id='status'>";	
+			print "<div class='itemshown' id='status'>";	
 			@ss = &virtual_server::get_startstop_links();
 			print "<table>\n";
 			foreach $status (@ss) {
@@ -232,6 +232,33 @@ if ($level == 0) {
 					print "<td>",&text('right_ips', $ipcount{$ip}),"</td>\n";
 					}
 				print "</tr>\n";
+				}
+			print "</table>\n";
+			print "</div><p>\n";
+			}
+
+		# Show system information section
+		if (&virtual_server::can_view_sysinfo()) {
+			print "<a href=\"javascript:toggleview('sysinfo','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('sysinfo','toggler2')\" id='toggler2'><b> $text{'right_sysinfoheader'}</b></a><p>";
+			print "<div class='itemshown' id='sysinfo'>";	
+			print "<table>\n";
+			foreach my $f ("virtualmin",
+					@virtual_server::features) {
+				if ($virtual_server::config{$f} ||
+				    $f eq "virtualmin") {
+					local $ifunc =
+						"virtual_server::sysinfo_$f";
+					if (defined(&$ifunc)) {
+						push(@info, &$ifunc());
+						}
+					}
+				}
+			for($i=0; $i<@info; $i++) {
+				print "<tr>\n" if ($i%2 == 0);
+				print "<td width=20%><b>$info[$i]->[0]</b></td>\n";
+				print "<td width=30%>$info[$i]->[1]</td>\n";
+				print "</tr>\n" if ($i%2 == 1);
 				}
 			print "</table>\n";
 			print "</div><p>\n";
