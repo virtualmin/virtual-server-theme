@@ -11,8 +11,10 @@ do './ui-lib.pl';
 # Work out what categories we have
 @modules = &get_visible_module_infos();
 %cats = &list_categories(\@modules);
-$cats{'others'} = $cats{''};
-delete($cats{''});
+if (defined($cats{''})) {
+	$cats{'others'} = $cats{''};
+	delete($cats{''});
+	}
 @cats = sort { ($b eq "others" ? "" : $b) cmp ($a eq "others" ? "" : $a) } keys %cats;
 
 &PrintHeader();

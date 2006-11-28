@@ -217,13 +217,22 @@ if ($level == 0) {
 			print "<div class='itemhidden' id='ips'>";
 			print "<table>\n";
 			$defip = &virtual_server::get_default_ip();
+			foreach $r (&virtual_server::list_resellers()) {
+				if ($r->{'acl'}->{'defip'}) {
+					$reselip{$r->{'acl'}->{'defip'}} = $r;
+					}
+				}
 			foreach $ip ($defip,
-				     (grep { $_ ne $defip } 
-					   sort { $a cmp $b } keys %ipcount)) {
+				     (sort { $a cmp $b } keys %reselip),
+				     (sort { $a cmp $b } keys %ipcount)) {
+				next if ($doneip{$ip}++);
 				print "<tr>\n";
 				print "<td width=30%>$ip</td>\n";
 				print "<td>",$ip eq $defip ?
 					      $text{'right_defip'} :
+					     $reselip{$ip} ?
+					      &text('right_reselip',
+						    $reselip{$ip}->{'name'}) :
 					      $text{'right_ip'},"</td>\n";
 				if ($ipcount{$ip} == 1) {
 					print "<td><tt>".$ipdom{$ip}->{'dom'}."</tt></td>\n";
@@ -239,9 +248,9 @@ if ($level == 0) {
 
 		# Show system information section
 		if (&virtual_server::can_view_sysinfo()) {
-			print "<a href=\"javascript:toggleview('sysinfo','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
-			print "<a href=\"javascript:toggleview('sysinfo','toggler2')\" id='toggler2'><b> $text{'right_sysinfoheader'}</b></a><p>";
-			print "<div class='itemshown' id='sysinfo'>";	
+			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closedbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
+			print "<div class='itemhidden' id='sysinfo'>";	
 			print "<table>\n";
 			foreach my $f ("virtualmin",
 					@virtual_server::features) {
@@ -532,7 +541,7 @@ foreach my $d (@doms) {
 			&virtual_server::get_domain_quota($d, 1);
 		local $usage = $home*$homesize +
 			       $mail*$mailsize;
-		$maxquota = $usage if ($usage > $maxquota);
+		$maxquota = $usage+$dbusage if ($usage+$dbusage > $maxquota);
 		local $limit = $d->{'quota'}*$homesize;
 		$maxquota = $limit if ($limit > $maxquota);
 		push(@quota, [ $d, $usage, $limit, $dbusage ]);
