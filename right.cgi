@@ -3,7 +3,7 @@
 
 do './web-lib.pl';
 &init_config();
-do './ui-lib.pl';
+do 'ui-lib.pl';
 &ReadParse();
 if (&foreign_available("virtual-server")) {
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
