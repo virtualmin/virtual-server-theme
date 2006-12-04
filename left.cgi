@@ -201,7 +201,8 @@ if ($mode eq "virtualmin" && @doms) {
 				 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
 				 join("&", map { $_->[0]."=".&urlize($_->[1]) }
 					       @{$b->{'hidden'}});
-				&print_category_link($url, $b->{'title'});
+				&print_category_link($url, $b->{'title'},
+					     undef, undef, $b->{'target'});
 				}
 			print "</div>\n";
 			}
@@ -490,7 +491,8 @@ print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\"
 
 sub print_category_link
 {
-local ($link, $label, $image, $noimage) = @_;
-	print "<div class='linkindented'><a target=right href=$link>$label</a></div>\n";
+local ($link, $label, $image, $noimage, $target) = @_;
+$target ||= "right";
+print "<div class='linkindented'><a target=$target href=$link>$label</a></div>\n";
 }
 
