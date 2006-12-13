@@ -65,7 +65,6 @@ sub theme_postbody
 {
 # If we just came from a folder editing page, refresh the folder list
 if ($module_name eq "mailbox" && $ENV{'HTTP_REFERER'} =~ /(edit|save)_(folder|comp|imap|pop3|virt)\.cgi|mail_search\.cgi|delete_folders\.cgi/) {
-	print "refreshing!<p>\n";
         print "<script>\n";
         print "top.frames[0].document.location = top.frames[0].document.location;\n";
         print "</script>\n";

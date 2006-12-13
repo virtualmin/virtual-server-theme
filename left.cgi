@@ -465,6 +465,12 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 	print "</div>\n";
 	}
 
+# Show link back to original Webmin server
+if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
+	print "<div class='linkwithicon'><img src=images/webmin-small.gif>\n";
+	print "<div class='aftericon'><a target=_top href='$ENV{'HTTP_WEBMIN_SERVERS'}'>$text{'header_servers'}</a></div>";
+	}
+
 print "</form>\n" if ($doneform);
 print <<EOF;
 </body>
