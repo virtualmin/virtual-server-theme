@@ -412,6 +412,12 @@ if ($mode eq "mail") {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
 		}
+
+	# Mail filter link
+	if (&foreign_available("filter")) {
+		print "<div class='linkwithicon'><img src=images/filter.gif>\n";
+		print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
+		}
 	}
 
 if ($mode eq "webmin" || $mode eq "usermin") {
