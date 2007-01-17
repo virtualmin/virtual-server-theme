@@ -255,14 +255,27 @@ if ($mode eq "virtualmin" && @doms) {
 	@plinks = grep { $_->{'plugin'} } @links;
 	@olinks = grep { $_->{'other'} } @links;
 	foreach $lt (\@flinks, \@plinks, \@olinks) {
-		if (@$lt) {
+		@notlt = grep { !$donelink{$_->{'mod'}} } @$lt;
+		if (@notlt) {
 			if ($lt eq \@flinks || $lt eq \@olinks) {
 				print "<div class='leftlink'><hr></div>\n";
 				}
 			foreach $l (sort { $a->{'desc'} cmp $b->{'desc'} }
-					 @$lt) {
+					 @notlt) {
 				print "<div class='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div>\n";
+				$donelink{$l->{'mod'}}++;
 				}
+			}
+		}
+
+	# Custom links for this domain
+	@cl = defined(&virtual_server::list_visible_custom_links) ?
+		&virtual_server::list_visible_custom_links($d) : ( );
+	if (@cl) {
+		print "<div class='leftlink'><hr></div>\n";
+		foreach $l (@cl) {
+			$target = $l->{'open'} ? "_new" : "right";
+			print "<div class='leftlink'><a href='$l->{'url'}' target=$target>$l->{'desc'}</a></div>\n";
 			}
 		}
 
@@ -357,9 +370,10 @@ if ($mode eq "virtualmin") {
 		}
 
  	# Backup/restore forms
-  if (&virtual_server::can_backup_domains()) {
-    &print_category_opener("backup", \@admincats, $text{'left_backup'});
-    print "<div class='itemhidden' id='backup'>";
+	if (&virtual_server::can_backup_domains()) {
+		&print_category_opener("backup", \@admincats,
+					$text{'left_backup'});
+		print "<div class='itemhidden' id='backup'>";
 		&print_category_link("virtual-server/backup_form.cgi",
 				     $virtual_server::text{'index_backup'});
 		&print_category_link("virtual-server/backup_form.cgi?sched=1",
