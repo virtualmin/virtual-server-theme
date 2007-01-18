@@ -59,6 +59,10 @@ if ($script_name =~ /session_login.cgi/) {
 	# Generate CSS link
 	print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css'>\n";
 	}
+if ($module_name eq "virtual-server") {
+	# No need for Module Index link, as we have the left-side frame
+	$tconfig{'nomoduleindex'} = 1;
+	}
 }
 
 sub theme_postbody
@@ -212,4 +216,44 @@ for($i=0; $i<@$cols; $i++) {
 $rv .= "</tr>\n";
 return $rv;
 }
+
+# theme_footer([page, name]+, [noendbody])
+# Output a footer for returning to some page
+sub theme_footer
+{
+local $i;
+for($i=0; $i+1<@_; $i+=2) {
+	local $url = $_[$i];
+	if ($url ne '/' || !$tconfig{'noindex'}) {
+		if ($url eq '/') {
+			$url = "/?cat=$module_info{'category'}";
+			}
+		elsif ($url eq '' && $module_name eq 'virtual-server') {
+			# Don't bother with virtualmin menu
+			next;
+			}
+		elsif ($url eq '' && $module_name) {
+			$url = "/$module_name/$module_info{'index_link'}";
+			}
+		elsif ($url =~ /^\?/ && $module_name) {
+			$url = "/$module_name/$url";
+			}
+		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
+		if ($i == 0) {
+			print "<a href=\"$url\"><img alt=\"<-\" align=middle border=0 src=$gconfig{'webprefix'}/images/left.gif></a>\n";
+			}
+		else {
+			print "&nbsp;|\n";
+			}
+		print "&nbsp;<a href=\"$url\">",&text('main_return', $_[$i+1]),"</a>\n";
+		}
+	}
+print "<br>\n";
+if (!$_[$i]) {
+	&theme_postbody(@_);
+	print "</body></html>\n";
+	}
+}
+
+
 
