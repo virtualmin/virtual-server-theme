@@ -36,7 +36,10 @@ if (!$func) {
 &write_file("$config_directory/$m/config", \%config);
 &unlock_file("$config_directory/$m/config");
 &webmin_log("_config_", undef, undef, \%in, $m);
-if ($m eq "virtual-server") {
+if ($in{'save_next'}) {
+	&redirect("config.cgi?module=$in{'module'}&section=$in{'section_next'}");
+	}
+elsif ($m eq "virtual-server") {
 	&redirect("/right.cgi");
 	}
 else {

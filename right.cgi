@@ -5,23 +5,11 @@ do './web-lib.pl';
 &init_config();
 do 'ui-lib.pl';
 &ReadParse();
-if (&foreign_available("virtual-server")) {
-	&foreign_require("virtual-server", "virtual-server-lib.pl");
-	if ($virtual_server::module_info{'version'} >= 2.99) {
-		$hasvirt = 1;
-		$level = &virtual_server::master_admin() ? 0 :
-			 &virtual_server::reseller_admin() ? 1 : 2;
-		}
-	else {
-		$level = 0;
-		}
-	}
-elsif (&get_product_name() eq "usermin") {
-	$level = 3;
-	}
-else {
-	$level = 0;
-	}
+&load_theme_library();
+
+# Work out system capabilities. Level 3 = usermin, 2 = domain owner,
+# 1 = reseller, 0 = master
+($hasvirt, $level) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
 $bar_width = 300;
 foreach $o (split(/\0/, $in{'open'})) {
@@ -30,6 +18,35 @@ foreach $o (split(/\0/, $in{'open'})) {
 	}
 
 &popup_header();
+
+if ($hasvirt) {
+	# Show link for editing what appears
+	$sects = &get_right_frame_sections();
+	if (!$sects->{'global'} || &virtual_server::master_admin()) {
+		print "<div align=right><a href='edit_right.cgi'>",
+		      "$text{'right_edit'}</a></div>\n";
+		$shown_config_link = 1;
+		}
+	}
+
+# Check for custom URL
+if ($sects->{'alt'}) {
+	$url = $sects->{'alt'};
+	if ($shown_config_link) {
+		# Show in iframe, so that the config link is visible
+		print "<iframe src='$url' width=100% height=95% frameborder=0 ",
+		      "marginwidth=0 marginheight=0>\n";
+		}
+	else {
+		# Redirect whole frame
+		print "<script>\n";
+		print "document.location = '$url';\n";
+		print "</script>\n";
+		}
+	&popup_footer();
+	exit;
+	}
+
 print "<center>\n";
 
 if ($hasvirt) {
@@ -49,112 +66,116 @@ if ($hasvirt) {
 	}
 
 if ($level == 0) {
-	# Show general system information
-	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
-	print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
-	print "<div class='itemshown' id='system'>";
+	# Show Virtualmin master admin info
+	if (!$sects->{'nosystem'}) {
+		# Show general system information
+		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
+		print "<div class='itemshown' id='system'>";
 
-	print "<table width=70%>\n";
+		print "<table width=70%>\n";
 
-	# Host and login info
-	print "<tr> <td><b>$text{'right_host'}</b></td>\n";
-	print "<td>",&get_system_hostname(),"</td> </tr>\n";
+		# Host and login info
+		print "<tr> <td><b>$text{'right_host'}</b></td>\n";
+		print "<td>",&get_system_hostname(),"</td> </tr>\n";
 
-	print "<tr> <td><b>$text{'right_os'}</b></td>\n";
-	if ($gconfig{'os_version'} eq '*') {
-		print "<td>$gconfig{'real_os_type'}</td> </tr>\n";
-		}
-	else {
-		print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
-		}
-
-	if (&get_product_name() eq 'webmin') {
-		print "<tr> <td><b>$text{'right_webmin'}</b></td>\n";
-		print "<td>",&get_webmin_version(),"</td> </tr>\n";
-
-		print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
-		if ($hasvirt) {
-			print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
+		print "<tr> <td><b>$text{'right_os'}</b></td>\n";
+		if ($gconfig{'os_version'} eq '*') {
+			print "<td>$gconfig{'real_os_type'}</td> </tr>\n";
 			}
 		else {
-			print "<td>",$text{'right_not'},"</td> </tr>\n";
+			print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
 			}
-		}
-	else {
-		print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
-		print "<td>",&get_webmin_version(),"</td> </tr>\n";
-		}
 
-	# System time
-	$tm = localtime(time());
-	print "<tr> <td><b>$text{'right_time'}</b></td>\n";
-	print "<td>$tm</td> </tr>\n";
+		if (&get_product_name() eq 'webmin') {
+			print "<tr> <td><b>$text{'right_webmin'}</b></td>\n";
+			print "<td>",&get_webmin_version(),"</td> </tr>\n";
 
-	# Load and memory info
-	if (&foreign_check("proc")) {
-		&foreign_require("proc", "proc-lib.pl");
-		if (defined(&proc::get_cpu_info)) {
-			@c = &proc::get_cpu_info();
-			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
-			print "<td>",&text('right_load', @c),"</td> </tr>\n";
+			print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
+			if ($hasvirt) {
+				print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
+				}
+			else {
+				print "<td>",$text{'right_not'},"</td> </tr>\n";
+				}
 			}
-		if (defined(&proc::get_memory_info)) {
-			@m = &proc::get_memory_info();
-			if (@m && $m[0]) {
-				print "<tr> <td><b>$text{'right_real'}</b></td>\n";
-				print "<td>",&nice_size($m[0]*1024)." total, ".
-					    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
+		else {
+			print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
+			print "<td>",&get_webmin_version(),"</td> </tr>\n";
+			}
+
+		# System time
+		$tm = localtime(time());
+		print "<tr> <td><b>$text{'right_time'}</b></td>\n";
+		print "<td>$tm</td> </tr>\n";
+
+		# Load and memory info
+		if (&foreign_check("proc")) {
+			&foreign_require("proc", "proc-lib.pl");
+			if (defined(&proc::get_cpu_info)) {
+				@c = &proc::get_cpu_info();
+				print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
+				print "<td>",&text('right_load', @c),"</td> </tr>\n";
+				}
+			if (defined(&proc::get_memory_info)) {
+				@m = &proc::get_memory_info();
+				if (@m && $m[0]) {
+					print "<tr> <td><b>$text{'right_real'}</b></td>\n";
+					print "<td>",&nice_size($m[0]*1024)." total, ".
+						    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
+					print "<tr> <td></td>\n";
+					print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
+					      "</td> </tr>\n";
+					}
+
+				if (@m && $m[2]) {
+					print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
+					print "<td>",&nice_size($m[2]*1024)." total, ".
+						    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
+					print "<tr> <td></td>\n";
+					print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
+					      "</td> </tr>\n";
+					}
+				}
+
+			#@procs = &proc::list_processes();
+			#print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
+			#print "<td>",scalar(@procs),"</td> </tr>\n";
+			}
+
+		# Disk space on local drives
+		if (&foreign_check("mount")) {
+			&foreign_require("mount", "mount-lib.pl");
+			@mounted = &mount::list_mounted();
+			$total = 0;
+			$free = 0;
+			foreach $m (@mounted) {
+				if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
+				    $m->[2] eq "reiserfs" || $m->[2] eq "ufs") {
+					($t, $f) = &mount::disk_space($m->[2], $m->[0]);
+					$total += $t*1024;
+					$free += $f*1024;
+					}
+				}
+			if ($total) {
+				print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
+				print "<td>",&text('right_used',
+					   &nice_size($total),
+					   &nice_size($total-$free)),"</td> </tr>\n";
 				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
+				print "<td>",&bar_chart($total, $total-$free, 1),
 				      "</td> </tr>\n";
 				}
-
-			if (@m && $m[2]) {
-				print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
-				print "<td>",&nice_size($m[2]*1024)." total, ".
-					    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
-				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
-				      "</td> </tr>\n";
-				}
 			}
 
-		#@procs = &proc::list_processes();
-		#print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-		#print "<td>",scalar(@procs),"</td> </tr>\n";
+		print "</table>\n";
+		print "</div></p>\n";
 		}
-
-	# Disk space on local drives
-	if (&foreign_check("mount")) {
-		&foreign_require("mount", "mount-lib.pl");
-		@mounted = &mount::list_mounted();
-		$total = 0;
-		$free = 0;
-		foreach $m (@mounted) {
-			if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
-			    $m->[2] eq "reiserfs" || $m->[2] eq "ufs") {
-				($t, $f) = &mount::disk_space($m->[2], $m->[0]);
-				$total += $t*1024;
-				$free += $f*1024;
-				}
-			}
-		if ($total) {
-			print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
-			print "<td>",&text('right_used',
-				   &nice_size($total),
-				   &nice_size($total-$free)),"</td> </tr>\n";
-			print "<tr> <td></td>\n";
-			print "<td>",&bar_chart($total, $total-$free, 1),
-			      "</td> </tr>\n";
-			}
-		}
-
-	print "</table>\n";
-	print "</div></p>\n";
 
 	if ($hasvirt) {
 		# Show Virtualmin feature statuses
-		if (&virtual_server::can_stop_servers()) {
+		if (!$sects->{'nostatus'} &&
+		    &virtual_server::can_stop_servers()) {
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
 			print "<div class='itemshown' id='status'>";	
@@ -188,15 +209,18 @@ if ($level == 0) {
 			print "</div>\n";
 			}
 
-		# Show Virtualmin information
-		@doms = &virtual_server::list_domains();
-		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
-		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
-		print "<div class='itemhidden' id='virtualmin'>";
-		&show_domains_info(\@doms);
-		print "</div>\n";
+		if (!$sects->{'novirtualmin'}) {
+			# Show Virtualmin information
+			@doms = &virtual_server::list_domains();
+			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
+			print "<div class='itemhidden' id='virtualmin'>";
+			&show_domains_info(\@doms);
+			print "</div>\n";
+			}
 
-		if (&virtual_server::has_home_quotas()) {
+		if (&virtual_server::has_home_quotas() &&
+		    !$sects->{'noquotas'}) {
 			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
 		        print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
 			print "<div class='itemhidden' id='quotas'>";
@@ -211,9 +235,9 @@ if ($level == 0) {
 			$ipcount{$d->{'ip'}}++;
 			$ipdom{$d->{'ip'}} ||= $d;
 			}
-		if (keys %ipdom > 1) {
+		if (!$sects->{'noips'} && keys %ipdom > 1) {
 			print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
-		        print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipheader'}</b></a><p>";
+		        print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipsheader'}</b></a><p>";
 			print "<div class='itemhidden' id='ips'>";
 			print "<table>\n";
 			$defip = &virtual_server::get_default_ip();
@@ -247,7 +271,8 @@ if ($level == 0) {
 			}
 
 		# Show system information section
-		if (&virtual_server::can_view_sysinfo()) {
+		if (!$sects->{'nosysinfo'} &&
+		    &virtual_server::can_view_sysinfo()) {
 			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closedbg.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
 			print "<div class='itemhidden' id='sysinfo'>";	
@@ -276,10 +301,12 @@ if ($level == 0) {
 	}
 elsif ($level == 1) {
 	# Show a reseller info about his domains
-	print "<h3>$text{'right_header2'}</h3>\n";
-	@doms = grep { $_->{'reseller'} eq $base_remote_user }
-		     &virtual_server::list_domains();
-	&show_domains_info(\@doms);
+	if (!$sects->{'novirtualmin'}) {
+		print "<h3>$text{'right_header2'}</h3>\n";
+		@doms = grep { $_->{'reseller'} eq $base_remote_user }
+			     &virtual_server::list_domains();
+		&show_domains_info(\@doms);
+		}
 	}
 elsif ($level == 2) {
 	# Show a server owner info about one domain
@@ -358,7 +385,8 @@ elsif ($level == 2) {
 				   scalar(@dbs), $dtotal),"</td> </tr>\n";
 		}
 
-	if (&virtual_server::has_home_quotas()) {
+	if (!$sects->{'noquotas'} &&
+	    &virtual_server::has_home_quotas()) {
 		# Disk usage for all owned domains
 		$homesize = &virtual_server::quota_bsize("home");
 		$mailsize = &virtual_server::quota_bsize("mail");
@@ -378,7 +406,8 @@ elsif ($level == 2) {
 			}
 		}
 
-	if ($virtual_server::config{'bw_active'} && $d->{'bw_limit'}) {
+	if (!$sects->{'nobw'} &&
+	    $virtual_server::config{'bw_active'} && $d->{'bw_limit'}) {
 		# Bandwidth usage and limit
 		print "<tr> <td><b>$text{'right_bw'}</b></td>\n";
 		print "<td>",

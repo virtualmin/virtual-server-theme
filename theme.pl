@@ -255,5 +255,95 @@ if (!$_[$i]) {
 	}
 }
 
+$right_frame_sections_file = "$config_directory/$current_theme/sections";
+@right_frame_sections = ( 'system', 'status', 'virtualmin', 'quotas', 'ips',
+			  'sysinfo' );
 
+# get_right_frame_sections()
+# Returns a hash containg details of visible right-frame sections
+sub get_right_frame_sections
+{
+local %sects;
+&read_file($right_frame_sections_file, \%sects);
+if ($sects{'global'}) {
+	# Force use of global settings
+	return \%sects;
+	}
+else {
+	# Can try personal settings, but fall back to global
+	local %usersects;
+	if (&read_file($right_frame_sections_file.".".$remote_user,
+		       \%usersects)) {
+		return \%usersects;
+		}
+	else {
+		return \%sects;
+		}
+	}
+}
+
+# save_right_frame_sections(&sects)
+sub save_right_frame_sections
+{
+local ($sects) = @_;
+&make_dir("$config_directory/$current_theme", 0700);
+if ($sects->{'global'}) {
+	# Update global settings, for all users
+	&write_file($right_frame_sections_file, $sects);
+	}
+else {
+	# Save own, and turn off global flag (if this is the master admin)
+	&foreign_require("virtual-server", "virtual-server-lib.pl");
+	if (&virtual_server::master_admin()) {
+		local %globalsect;
+		&read_file($right_frame_sections_file, \%globalsect);
+		$globalsect{'global'} = 0;
+		&write_file($right_frame_sections_file, \%globalsect);
+		}
+	&write_file($right_frame_sections_file.".".$remote_user, $sects);
+	}
+}
+
+# list_right_frame_sections()
+# Returns a list of possible sections for the current user
+sub list_right_frame_sections
+{
+local ($hasvirt, $level) = &get_virtualmin_user_level();
+if (!$hasvirt) {
+	return ( 'system' );
+	}
+elsif ($level == 0) {
+	return ( 'system', 'status', 'virtualmin', 'quotas', 'ips', 'sysinfo' );
+	}
+elsif ($level == 1) {
+	return ( 'virtualmin' );
+	}
+elsif ($level == 2) {
+	return ( 'system', 'quotas', 'bw' );
+	}
+else {
+	return ( 'system' );
+	}
+}
+
+# get_virtualmin_user_level()
+# Returns two numbers - the first being a flag if virtualmin is installed,
+# the second a user type (3=usermin, 2=domain, 1=reseller, 0=master)
+sub get_virtualmin_user_level
+{
+local ($hasvirt, $level);
+if (&foreign_available("virtual-server")) {
+	&foreign_require("virtual-server", "virtual-server-lib.pl");
+	$hasvirt = 1;
+	$level = &virtual_server::master_admin() ? 0 :
+		 &virtual_server::reseller_admin() ? 1 : 2;
+	}
+elsif (&get_product_name() eq "usermin") {
+	$level = 3;
+	}
+else {
+	$level = 0;
+	}
+return ($hasvirt, $level);
+}
 
