@@ -166,117 +166,75 @@ if ($mode eq "virtualmin" && @doms) {
 		}
 	print "</div>\n";
 
+	# Get actions and menus from Virtualmin
 	$canconfig = &virtual_server::can_config_domain($d);
-	if (defined(&virtual_server::get_domain_actions)) {
-		# Get actions and menus from Virtualmin
-		@buts = &virtual_server::get_domain_actions($d);
+	@buts = &virtual_server::get_domain_actions($d);
 
-		# Always show edit domain link
-		if ($canconfig) {
-			print "<div class='leftlink'><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></div>\n";
-			}
-		else {
-			print "<div class='leftlink'><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></div>\n";
-			}
-
-		# Show 'objects' category actions
-		my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
-		foreach my $b (@incat) {
-			$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-			 join("&", map { $_->[0]."=".&urlize($_->[1]) }
-				       @{$b->{'hidden'}});
-			print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
-			}
-
-		# Show others by category (except those for creation)
-		my @cats = &unique(map { $_->{'cat'} } @buts);
-		foreach my $c (@cats) {
-			next if ($c eq 'objects' || $c eq 'create');
-			my @incat = grep { $_->{'cat'} eq $c } @buts;
-			&print_category_opener("cat_$c", \@cats,
-				$virtual_server::text{'cat_'.$c});
-			print "<div class='itemhidden' id='cat_$c'>\n";
-			foreach my $b (@incat) {
-				$url =
-				 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-				 join("&", map { $_->[0]."=".&urlize($_->[1]) }
-					       @{$b->{'hidden'}});
-				&print_category_link($url, $b->{'title'},
-					     undef, undef, $b->{'target'});
-				}
-			print "</div>\n";
-			}
+	# Always show edit domain link
+	if ($canconfig) {
+		print "<div class='leftlink'><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></div>\n";
 		}
 	else {
-		# Use built-in links ..
+		print "<div class='leftlink'><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></div>\n";
+		}
 
-		# Users and aliases links
-		if (&virtual_server::can_domain_have_users($d) &&
-		    &virtual_server::can_edit_users()) {
-			print "<div class='leftlink'><a href='virtual-server/list_users.cgi?dom=$d->{'id'}' target=right>$text{'left_users'}</a></div>\n";
-			}
-		if ($d->{'mail'} && &virtual_server::can_edit_aliases()) {
-			print "<div class='leftlink'><a href='virtual-server/list_aliases.cgi?dom=$d->{'id'}' target=right>$text{'left_aliases'}</a></div>\n";
-			}
+	# Show 'objects' category actions
+	my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
+	foreach my $b (@incat) {
+		$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
+		 join("&", map { $_->[0]."=".&urlize($_->[1]) }
+			       @{$b->{'hidden'}});
+		print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
+		}
 
-		# Editing options
-		if (&virtual_server::database_feature($d) &&
-		    &virtual_server::can_edit_databases()) {
-			print "<div class='leftlink'><a href='virtual-server/list_databases.cgi?dom=$d->{'id'}' target=right>$text{'left_databases'}</a></div>\n";
+	# Show others by category (except those for creation)
+	my @cats = &unique(map { $_->{'cat'} } @buts);
+	foreach my $c (@cats) {
+		next if ($c eq 'objects' || $c eq 'create');
+		my @incat = grep { $_->{'cat'} eq $c } @buts;
+		&print_category_opener("cat_$c", \@cats,
+			$virtual_server::text{'cat_'.$c});
+		print "<div class='itemhidden' id='cat_$c'>\n";
+		foreach my $b (@incat) {
+			$url =
+			 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
+			 join("&", map { $_->[0]."=".&urlize($_->[1]) }
+				       @{$b->{'hidden'}});
+			&print_category_link($url, $b->{'title'},
+				     undef, undef, $b->{'target'});
 			}
-		if (!$d->{'parent'} && &virtual_server::can_edit_admins()) {
-			print "<div class='leftlink'><a href='virtual-server/list_admins.cgi?dom=$d->{'id'}' target=right>$text{'left_admins'}</a></div>\n";
-			}
-		if ($d->{'web'} && &virtual_server::can_edit_scripts() &&
-		    !$d->{'subdom'}) {
-			print "<div class='leftlink'><a href='virtual-server/list_scripts.cgi?dom=$d->{'id'}' target=right>$text{'left_scripts'}</a></div>\n";
-			}
-		if ($canconfig) {
-			print "<div class='leftlink'><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></div>\n";
-			}
-		else {
-			print "<div if='leftlink'><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></div>\n";
-			}
-		if ($d->{'unix'} && &virtual_server::can_edit_limits($d) && !$d->{'alias'}) {
-			print "<div class='leftlink'><a href='virtual-server/edit_limits.cgi?dom=$d->{'id'}' target=right>$text{'left_limits'}</a></div>\n";
-			}
-		if ($virtual_server::config{'bw_active'} && !$d->{'parent'} &&
-		    &virtual_server::can_monitor_bandwidth($d)) {
-			print "<div class='leftlink'><a href='virtual-server/bwgraph.cgi?dom=$d->{'id'}&mode=2' target=right>$text{'left_bw'}</a></div>\n";
-			}
-		if (&virtual_server::can_delete_domain($d)) {
-			print "<div class='leftlink'><a href='virtual-server/delete_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_delete'}</a></div>\n";
-			}
+		print "</div>\n";
 		}
 
 	# Feature and plugin links
 	@links = &virtual_server::feature_links($d);
-	@flinks = grep { !$_->{'plugin'} && !$_->{'other'} } @links;
-	@plinks = grep { $_->{'plugin'} } @links;
-	@olinks = grep { $_->{'other'} } @links;
-	foreach $lt (\@flinks, \@plinks, \@olinks) {
-		@notlt = grep { !$donelink{$_->{'mod'}} } @$lt;
-		if (@notlt) {
-			if ($lt eq \@flinks || $lt eq \@olinks) {
-				print "<div class='leftlink'><hr></div>\n";
-				}
-			foreach $l (sort { $a->{'desc'} cmp $b->{'desc'} }
-					 @notlt) {
-				print "<div class='leftlink'><a href='$l->{'mod'}/$l->{'page'}' target=right>$l->{'desc'}</a></div>\n";
-				$donelink{$l->{'mod'}}++;
-				}
+	my @cats = &unique(map { $_->{'cat'} } @links);
+	foreach my $c (@cats) {
+		my @incat = grep { $_->{'cat'} eq $c } @links;
+		&print_category_opener("cat_$c", \@cats,
+			$virtual_server::text{'cat_'.$c});
+		print "<div class='itemhidden' id='cat_$c'>\n";
+		foreach my $l (sort { $a->{'desc'} cmp $b->{'desc'} } @incat) {
+			&print_category_link("$l->{'mod'}/$l->{'page'}",
+					     $l->{'desc'}, undef, undef,
+					     "right");
 			}
+		print "</div>\n";
 		}
 
 	# Custom links for this domain
 	@cl = defined(&virtual_server::list_visible_custom_links) ?
 		&virtual_server::list_visible_custom_links($d) : ( );
 	if (@cl) {
-		print "<div class='leftlink'><hr></div>\n";
+		&print_category_opener("cat_custom", \@cats,
+				       $text{'left_customlinks'});
+		print "<div class='itemhidden' id='cat_custom'>\n";
 		foreach $l (@cl) {
-			$target = $l->{'open'} ? "_new" : "right";
-			print "<div class='leftlink'><a href='$l->{'url'}' target=$target>$l->{'desc'}</a></div>\n";
+			&print_category_link("$l->{'url'}",
+					     $l->{'desc'}, undef, undef,
+					     $l->{'open'} ? "_new" : "right");
 			}
+		print "</div>\n";
 		}
 
 	print "<div class='leftlink'><hr></div>\n";

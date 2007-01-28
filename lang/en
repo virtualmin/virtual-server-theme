@@ -39,6 +39,7 @@ left_backup=Backup/Restore
 left_check=Recheck Config
 left_delete=Delete Server
 left_search=Search:
+left_customlinks=Custom Links
 
 right_header0=System Information
 right_host=System hostname
