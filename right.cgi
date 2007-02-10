@@ -151,7 +151,8 @@ if ($level == 0) {
 			$free = 0;
 			foreach $m (@mounted) {
 				if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
-				    $m->[2] eq "reiserfs" || $m->[2] eq "ufs") {
+				    $m->[2] eq "reiserfs" || $m->[2] eq "ufs" ||
+				    $m->[1] =~ /^\/dev\//) {
 					($t, $f) = &mount::disk_space($m->[2], $m->[0]);
 					$total += $t*1024;
 					$free += $f*1024;

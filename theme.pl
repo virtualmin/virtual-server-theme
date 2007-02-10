@@ -228,7 +228,8 @@ for($i=0; $i+1<@_; $i+=2) {
 		if ($url eq '/') {
 			$url = "/?cat=$module_info{'category'}";
 			}
-		elsif ($url eq '' && $module_name eq 'virtual-server') {
+		elsif ($url eq '' && $module_name eq 'virtual-server' ||
+		       $url eq '/virtual-server/') {
 			# Don't bother with virtualmin menu
 			next;
 			}
