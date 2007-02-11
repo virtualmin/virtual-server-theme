@@ -242,9 +242,12 @@ if ($level == 0) {
 			print "<div class='itemhidden' id='ips'>";
 			print "<table>\n";
 			$defip = &virtual_server::get_default_ip();
-			foreach $r (&virtual_server::list_resellers()) {
-				if ($r->{'acl'}->{'defip'}) {
-					$reselip{$r->{'acl'}->{'defip'}} = $r;
+			if (defined(&virtual_server::list_resellers)) {
+				foreach $r (&virtual_server::list_resellers()) {
+					if ($r->{'acl'}->{'defip'}) {
+						$reselip{
+						  $r->{'acl'}->{'defip'}} = $r;
+						}
 					}
 				}
 			foreach $ip ($defip,
