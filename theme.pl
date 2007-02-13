@@ -207,7 +207,7 @@ for($i=0; $i<@$cols; $i++) {
 		$rv .= "<label for=\"".
 			&quote_escape("${checkname}_${checkvalue}")."\">";
 		}
-	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
+	$rv .= ($cols->[$i] !~ /\S/ ? "<br>" : $cols->[$i]);
 	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "</label>";
 		}

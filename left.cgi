@@ -115,15 +115,34 @@ if ($hasvirt) {
 	$doneform = 1;
 	}
 elsif ($mode eq "mail") {
-	# Left form is form a mail server
+	# Left form is for searching a mail folder
 	&foreign_require("mailbox", "mailbox-lib.pl");
 	@folders = &mailbox::list_folders_sorted();
 	$df = $mailbox::userconfig{'default_folder'};
 	$dfolder = $df ? &mailbox::find_named_folder($df, \@folders) :
 			 $folders[0];
-	print "<form action=mailbox/mail_search.cgi target=right>\n";
+	print "<script>\n";
+	print "function GetMailFolder()\n";
+	print "{\n";
+	print "var url = ''+window.parent.frames[1].location;\n";
+	print "var qm = url.indexOf('?');\n";
+	print "if (qm > 0) {\n";
+	print "    var params = url.substring(qm+1).split('&');\n";
+	print "    for(var i=0; i<params.length; i++) {\n";
+	print "        var nv = params[i].split('=');\n";
+	print "        if (nv[0] == 'id') {\n";
+	print "            if (nv[1] != '1') {\n";
+	print "                document.forms[0].id.value = nv[1];\n";
+	print "                }\n";
+	print "            }\n";
+	print "        }\n";
+	print "    }\n";
+	print "}\n";
+	print "</script>\n";
+	print "<form action=mailbox/mail_search.cgi target=right onSubmit='GetMailFolder()'>\n";
 	print &ui_hidden("simple", 1),"\n";
 	print &ui_hidden("folder", $dfolder->{'index'}),"\n";
+	print &ui_hidden("id", undef),"\n";
 	$doneform = 1;
 	}
 
