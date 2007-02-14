@@ -132,7 +132,7 @@ elsif ($mode eq "mail") {
 	print "        var nv = params[i].split('=');\n";
 	print "        if (nv[0] == 'id') {\n";
 	print "            if (nv[1] != '1') {\n";
-	print "                document.forms[0].id.value = nv[1];\n";
+	print "                document.forms[0].id.value = unescape(nv[1]);\n";
 	print "                }\n";
 	print "            }\n";
 	print "        }\n";
