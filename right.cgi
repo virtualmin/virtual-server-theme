@@ -57,9 +57,27 @@ if ($hasvirt) {
 	if (&virtual_server::need_config_check() &&
 	    &virtual_server::can_check_config()) {
 		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
-		print &ui_form_start("../virtual-server/check.cgi");
+		print &ui_form_start("virtual-server/check.cgi");
 		print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
 		print &ui_submit($virtual_server::text{'index_srefresh'});
+		print &ui_form_end();
+		print "</td></tr></table>\n";
+		}
+	}
+
+# Check if OS according to Webmin is out of date
+if ($level == 0 && &foreign_available("webmin") &&
+    &get_webmin_version() >= 1.326) {
+	&foreign_require("webmin", "webmin-lib.pl");
+	%realos = &webmin::detect_operating_system(undef, 1);
+	if ($realos{'os_version'} ne $gconfig{'os_version'} ||
+	    $realos{'os_type'} ne $gconfig{'os_type'}) {
+		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
+		print &ui_form_start("webmin/fix_os.cgi");
+		print "<b>",&webmin::text('os_incorrect',
+                        $realos{'real_os_type'},
+                        $realos{'real_os_version'}),"</b><p>\n";
+		print &ui_submit($webmin::text{'os_fix'});
 		print &ui_form_end();
 		print "</td></tr></table>\n";
 		}
