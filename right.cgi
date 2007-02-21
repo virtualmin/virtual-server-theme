@@ -135,6 +135,11 @@ if ($level == 0) {
 				print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
 				print "<td>",&text('right_load', @c),"</td> </tr>\n";
 				}
+
+			@procs = &proc::list_processes();
+			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
+			print "<td>",scalar(@procs),"</td> </tr>\n";
+
 			if (defined(&proc::get_memory_info)) {
 				@m = &proc::get_memory_info();
 				if (@m && $m[0]) {
@@ -155,10 +160,6 @@ if ($level == 0) {
 					      "</td> </tr>\n";
 					}
 				}
-
-			#@procs = &proc::list_processes();
-			#print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-			#print "<td>",scalar(@procs),"</td> </tr>\n";
 			}
 
 		# Disk space on local drives

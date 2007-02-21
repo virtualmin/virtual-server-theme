@@ -343,7 +343,7 @@ if ($mode eq "virtualmin") {
 			&print_category_link("virtual-server/migrate_form.cgi",
 					     $text{'left_migrate'});
 			}
-    print "</div>\n";		
+		print "</div>\n";		
 		}
 
  	# Backup/restore forms
