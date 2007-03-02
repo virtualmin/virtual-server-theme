@@ -68,17 +68,22 @@ if ($mode eq "virtualmin" && $hasvirt) {
 		}
 
 	# Work out which domain we are editing
+	$sects = &get_right_frame_sections();
 	if (defined($in{'dom'})) {
 		$d = &virtual_server::get_domain($in{'dom'});
 		}
 	elsif (defined($in{'dname'})) {
 		$d = &virtual_server::get_domain_by("dom", $in{'dname'});
 		}
-	else {
-		$d = &virtual_server::get_domain_by("user", $remote_user,
-						    "parent", "");
-		$d ||= $doms[0];
+	elsif ($sects && $sects->{'dom'}) {
+		$d = &virtual_server::get_domain($sects->{'dom'});
+		$d = undef if (!&virtual_server::can_edit_domain($d));
 		}
+
+	# Fall back to first owned by this user, or first in list
+	$d ||= &virtual_server::get_domain_by("user", $remote_user,
+					      "parent", "");
+	$d ||= $doms[0];
 	}
 else {
 	$d = { 'id' => $in{'dom'} };

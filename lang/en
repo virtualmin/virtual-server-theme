@@ -115,4 +115,5 @@ edright_global=Apply to all users?
 edright_alturl=Show URL
 edright_err=Failed to save system information page configuration
 edright_ealt=Missing or invalid URL
-
+edright_dom=Default virtual server
+edright_first=&lt;First in list&gt;

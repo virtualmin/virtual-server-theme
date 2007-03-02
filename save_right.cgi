@@ -24,6 +24,7 @@ else {
 	$in{'alt'} =~ /^(http|https|\/)/ || &error($text{'edright_ealt'});
 	$sect->{'alt'} = $in{'alt'};
 	}
+$sect->{'dom'} = $in{'dom'};
 if (&virtual_server::master_admin()) {
 	$sect->{'global'} = $in{'global'};
 	}
