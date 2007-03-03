@@ -48,9 +48,11 @@ else {
 
 sub theme_post_save_domain
 {
-print "<script>\n";
-print "top.left.location = top.left.location;\n";
-print "</script>\n";
+if (!$done_theme_post_save_domain++) {
+	print "<script>\n";
+	print "top.left.location = top.left.location;\n";
+	print "</script>\n";
+	}
 }
 
 sub theme_prebody
