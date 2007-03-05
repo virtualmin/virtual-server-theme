@@ -229,9 +229,9 @@ if ($level == 0) {
 			print "</div>\n";
 			}
 
+		@doms = &virtual_server::list_domains();
 		if (!$sects->{'novirtualmin'}) {
 			# Show Virtualmin information
-			@doms = &virtual_server::list_domains();
 			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
 			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
 			print "<div class='itemhidden' id='virtualmin'>";
