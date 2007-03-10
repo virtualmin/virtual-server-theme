@@ -363,9 +363,9 @@ elsif ($level == 2) {
 	print "<td><tt>$d->{'dom'}</tt></td> </tr>\n";
 
 	@subs = ( $d, &virtual_server::get_domain_by("parent", $d->{'id'}) );
-	($sleft, $sreason, $stotal) = &virtual_server::count_domains();
+	($sleft, $sreason, $stotal, $shide) = &virtual_server::count_domains();
 	print "<tr> <td><b>$text{'right_subs'}</b></td>\n";
-	if ($sleft < 0) {
+	if ($sleft < 0 || $shide) {
 		print "<td>",scalar(@subs),"</td> </tr>\n";
 		}
 	else {
@@ -375,9 +375,9 @@ elsif ($level == 2) {
 
 	# Users and aliases info
 	@users = &virtual_server::list_domain_users($d, 0, 1, 1, 1);
-	($uleft, $ureason, $utotal) = &virtual_server::count_feature("mailboxes");
+	($uleft, $ureason, $utotal, $uhide) = &virtual_server::count_feature("mailboxes");
 	print "<tr> <td><b>$text{'right_fusers'}</b></td>\n";
-	if ($uleft < 0) {
+	if ($uleft < 0 || $uhide) {
 		print "<td>",scalar(@users),"</td> </tr>\n";
 		}
 	else {
@@ -386,9 +386,9 @@ elsif ($level == 2) {
 		}
 
 	@aliases = &virtual_server::list_domain_aliases($d, 1);
-	($aleft, $areason, $atotal) = &virtual_server::count_feature("aliases");
+	($aleft, $areason, $atotal, $ahide) = &virtual_server::count_feature("aliases");
 	print "<tr> <td><b>$text{'right_faliases'}</b></td>\n";
-	if ($aleft < 0) {
+	if ($aleft < 0 || $ahide) {
 		print "<td>",scalar(@aliases),"</td> </tr>\n";
 		}
 	else {
@@ -398,9 +398,9 @@ elsif ($level == 2) {
 
 	# Databases
 	@dbs = &virtual_server::domain_databases($d);
-	($dleft, $dreason, $dtotal) = &virtual_server::count_feature("dbs");
+	($dleft, $dreason, $dtotal, $dhide) = &virtual_server::count_feature("dbs");
 	print "<tr> <td><b>$text{'right_fdbs'}</b></td>\n";
-	if ($dleft < 0) {
+	if ($dleft < 0 || $dhide) {
 		print "<td>",scalar(@dbs),"</td> </tr>\n";
 		}
 	else {
@@ -561,10 +561,11 @@ my $i = 0;
 foreach my $f ("doms", "dns", "web", "ssl", "mail",
 	       "dbs", "users", "aliases") {
 	local $cur = int($fcount{$f});
-	local ($extra, $reason, $max) = &virtual_server::count_feature($f);
+	local ($extra, $reason, $max, $hide) =
+		&virtual_server::count_feature($f);
 	print "<tr>\n" if ($i%2 == 0);
 	print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
-	if ($extra < 0) {
+	if ($extra < 0 || $hide) {
 		print "<td width=25%>",$cur,"</td>\n";
 		}
 	else {

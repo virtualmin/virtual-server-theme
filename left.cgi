@@ -5,6 +5,7 @@ do './web-lib.pl';
 do './ui-lib.pl';
 &init_config();
 &ReadParse();
+&load_theme_library();
 %text = &load_language($current_theme);
 @admincats = ( "tmpl", "create", "backup" );
 
@@ -303,10 +304,10 @@ if ($mode eq "virtualmin") {
 	   &print_category_opener("create", \@admincats,
 				   $text{'left_create'});
 		print "<div class='itemhidden' id='create'>";
-		($dleft, $dreason, $dmax) = &virtual_server::count_domains(
-						"realdoms");
-		($aleft, $areason, $amax) = &virtual_server::count_domains(
-						"aliasdoms");
+		($dleft, $dreason, $dmax, $dhide) =
+			&virtual_server::count_domains("realdoms");
+		($aleft, $areason, $amax, $ahide) =
+			&virtual_server::count_domains("aliasdoms");
 		if ($dleft == 0) {
 			# Cannot add
 			print "<div class='leftlink'>",&virtual_server::text('index_noadd'.$dreason, $dmax),"</div>\n";
