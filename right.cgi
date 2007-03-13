@@ -269,6 +269,11 @@ if ($level == 0) {
 						}
 					}
 				}
+			if (defined(&virtual_server::list_shared_ips)) {
+				foreach $ip (&virtual_server::list_shared_ips()) {
+					$sharedip{$ip}++;
+					}
+				}
 			foreach $ip ($defip,
 				     (sort { $a cmp $b } keys %reselip),
 				     (sort { $a cmp $b } keys %ipcount)) {
@@ -280,6 +285,8 @@ if ($level == 0) {
 					     $reselip{$ip} ?
 					      &text('right_reselip',
 						    $reselip{$ip}->{'name'}) :
+					     $sharedip{$ip} ?
+					      $text{'right_sharedip'} :
 					      $text{'right_ip'},"</td>\n";
 				if ($ipcount{$ip} == 1) {
 					print "<td><tt>".$ipdom{$ip}->{'dom'}."</tt></td>\n";

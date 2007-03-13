@@ -92,6 +92,7 @@ right_restart=Restart $1
 right_defip=(Default IP)
 right_ip=(Private IP)
 right_reselip=(Reseller $1)
+right_sharedip=(Shared IP)
 right_ips=$1 virtual servers
 right_time=Time on server
 right_edit=Configure this page
