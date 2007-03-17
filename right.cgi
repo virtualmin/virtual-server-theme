@@ -192,6 +192,34 @@ if ($level == 0) {
 		print "</div></p>\n";
 		}
 
+	# Check for package updates
+	if (!$sects->{'noupdates'} && &foreign_available("security-updates")) {
+		&foreign_require("security-updates", "security-updates-lib.pl");
+		@poss = &security_updates::list_possible_updates();
+		if (@poss) {
+			# Show updates section
+			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><b> $text{'right_updatesheader'}</b></a><p>";
+			print "<div class='itemshown' id='updates'>";	
+			print &ui_form_start("../security-updates/update.cgi");
+			print &text(
+				@poss > 1 ? 'right_upcount' : 'right_upcount1',
+				scalar(@poss),
+				'../security-updates/'),"<p>\n";
+			print &ui_columns_start([ $text{'right_upname'},
+						  $text{'right_updesc'},
+						  $text{'right_upver'} ]);
+			foreach $p (@poss) {
+				print &ui_columns_row([
+				 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
+				print &ui_hidden("u", $p->{'name'});
+				}
+			print &ui_columns_end();
+			print &ui_form_end([ [ undef, $text{'right_upok'} ] ]);
+			print "</div>\n";
+			}
+		}
+
 	if ($hasvirt) {
 		# Show Virtualmin feature statuses
 		if (!$sects->{'nostatus'} &&

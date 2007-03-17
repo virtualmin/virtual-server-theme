@@ -316,7 +316,7 @@ if (!$hasvirt) {
 	return ( 'system' );
 	}
 elsif ($level == 0) {
-	return ( 'system', 'status', 'virtualmin', 'quotas', 'ips', 'sysinfo' );
+	return ( 'system', 'updates', 'status', 'virtualmin', 'quotas', 'ips', 'sysinfo' );
 	}
 elsif ($level == 1) {
 	return ( 'virtualmin' );

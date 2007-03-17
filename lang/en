@@ -4,7 +4,7 @@ left_users=Manage Users
 left_aliases=Manage Aliases
 left_edit=Edit Virtual Server
 left_view=Virtual Server Details
-left_virtualmin=Virtualmin Menu
+left_virtualmin=Update Multiple Servers
 left_databases=Manage Databases
 left_admins=Manage Extra Admins
 left_scripts=Install Scripts
@@ -98,6 +98,13 @@ right_time=Time on server
 right_edit=Configure this page
 right_bwheader=Bandwidth
 right_return=system information
+right_updatesheader=Package Updates
+right_upcount=$1 updates to Virtualmin packages are available. Use the <a href='$2'>Virtualmin Package Updates</a> module to install them selectively.
+right_upcount1=One updated Virtualmin package is available. Use the <a href='$2'>Virtualmin Package Updates</a> module to install them selectively.
+right_upname=Package
+right_updesc=Description
+right_upver=Version
+right_upok=Install All Updates Now
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
