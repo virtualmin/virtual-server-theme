@@ -100,7 +100,7 @@ right_bwheader=Bandwidth
 right_return=system information
 right_updatesheader=Package Updates
 right_upcount=$1 updates to Virtualmin packages are available. Use the <a href='$2'>Virtualmin Package Updates</a> module to install them selectively.
-right_upcount1=One updated Virtualmin package is available. Use the <a href='$2'>Virtualmin Package Updates</a> module to install them selectively.
+right_upcount1=One updated Virtualmin package is available. Use the <a href='$2'>Virtualmin Package Updates</a> module to see all managed packages.
 right_upname=Package
 right_updesc=Description
 right_upver=Version

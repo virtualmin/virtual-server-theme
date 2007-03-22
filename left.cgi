@@ -427,7 +427,10 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 		@inmodules = grep { $_->{'category'} eq $creal } @modules;
 		foreach $minfo (@inmodules) {
 			&print_category_link("$minfo->{'dir'}/",
-					     $minfo->{'desc'});
+					     $minfo->{'desc'},
+					     undef,
+					     undef,
+					     $minfo->{'noframe'} ? "_top" : "");
 			}
 		print "</div>\n";
 		}
