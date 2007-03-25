@@ -117,3 +117,8 @@ tr.maintitle { border-style: solid;
 
 .itemhidden {display:none}
 .itemshown {display:inline}
+.barchart {
+  padding: 1px;
+  border: 1px solid #b3b6b0;
+}
+
