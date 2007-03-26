@@ -10,6 +10,11 @@ table {
 				border-width: 0px;
 				empty-cells: hide;
 }
+table.sortable {
+  border-collapse: collapse;
+  border: 2px solid #b3b6b0;
+  width:98%;
+}
 a:link { color: #333399;
   text-decoration: none;
 }
