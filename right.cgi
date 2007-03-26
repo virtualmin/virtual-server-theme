@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 # Show server or domain information
 
 do './web-lib.pl';
@@ -11,7 +11,7 @@ do 'ui-lib.pl';
 # 1 = reseller, 0 = master
 ($hasvirt, $level) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
-$bar_width = 300;
+$bar_width = 100;
 foreach $o (split(/\0/, $in{'open'})) {
 	push(@open, $o);
 	$open{$o} = 1;
@@ -46,8 +46,6 @@ if ($sects->{'alt'}) {
 	&popup_footer();
 	exit;
 	}
-
-print "<center>\n";
 
 if ($hasvirt) {
 	# Check licence
@@ -87,7 +85,7 @@ if ($level == 0) {
 	# Show Virtualmin master admin info
 	if (!$sects->{'nosystem'}) {
 		# Show general system information
-		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
 		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
 		print "<div class='itemshown' id='system'>";
 
@@ -198,7 +196,7 @@ if ($level == 0) {
 		@poss = &security_updates::list_possible_updates();
 		if (@poss) {
 			# Show updates section
-			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><b> $text{'right_updatesheader'}</b></a><p>";
 			print "<div class='itemshown' id='updates'>";	
 			print &ui_form_start("../security-updates/update.cgi");
@@ -224,7 +222,7 @@ if ($level == 0) {
 		# Show Virtualmin feature statuses
 		if (!$sects->{'nostatus'} &&
 		    &virtual_server::can_stop_servers()) {
-			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/openbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
 			print "<div class='itemshown' id='status'>";	
 			@ss = &virtual_server::get_startstop_links();
@@ -260,7 +258,7 @@ if ($level == 0) {
 		@doms = &virtual_server::list_domains();
 		if (!$sects->{'novirtualmin'}) {
 			# Show Virtualmin information
-			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closed.gif' alt='[+]'></a>";
 			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
 			print "<div class='itemhidden' id='virtualmin'>";
 			&show_domains_info(\@doms);
@@ -269,7 +267,7 @@ if ($level == 0) {
 
 		if (&virtual_server::has_home_quotas() &&
 		    !$sects->{'noquotas'}) {
-			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closed.gif' alt='[+]'></a>";
 		        print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
 			print "<div class='itemhidden' id='quotas'>";
 			&show_quotas_info(\@doms);
@@ -284,7 +282,7 @@ if ($level == 0) {
 			$ipdom{$d->{'ip'}} ||= $d;
 			}
 		if (!$sects->{'noips'} && keys %ipdom > 1) {
-			print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closedbg.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closed.gif' alt='[+]'></a>";
 		        print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipsheader'}</b></a><p>";
 			print "<div class='itemhidden' id='ips'>";
 			print "<table>\n";
@@ -331,7 +329,7 @@ if ($level == 0) {
 		# Show system information section
 		if (!$sects->{'nosysinfo'} &&
 		    &virtual_server::can_view_sysinfo()) {
-			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closedbg.gif' alt='[&ndash;]'></a>";
+			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closed.gif' alt='[&ndash;]'></a>";
 			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
 			print "<div class='itemhidden' id='sysinfo'>";	
 			print "<table>\n";
@@ -540,16 +538,16 @@ sub bar_chart
 {
 local ($total, $used, $blue) = @_;
 local $rv;
-$rv .= sprintf "<img src=images/red.gif width=%s height=10>",
-	int($bar_width*$used/$total)+1;
+$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12>",
+  int($bar_width*$used/$total)+1;
 if ($blue) {
-	$rv .= sprintf "<img src=images/blue.gif width=%s height=10>",
-		$bar_width - int($bar_width*$used/$total)-1;
-	}
+  $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12></div>",
+    $bar_width - int($bar_width*$used/$total)-1;
+  }
 else {
-	$rv .= sprintf "<img src=images/white.gif width=%s height=10>",
-		$bar_width - int($bar_width*$used/$total)-1;
-	}
+  $rv .= sprintf "<img src=images/white.gif width=%s%% height=12></div>",
+    $bar_width - int($bar_width*$used/$total)-1;
+  }
 return $rv;
 }
 
@@ -562,11 +560,11 @@ local $rv;
 local $w1 = int($bar_width*$used1/$total)+1;
 local $w2 = int($bar_width*$used2/$total);
 local $w3 = int($bar_width*$used3/$total);
-$rv .= sprintf "<img src=images/red.gif width=%s height=10>", $w1;
-$rv .= sprintf "<img src=images/purple.gif width=%s height=10>", $w2;
-$rv .= sprintf "<img src=images/blue.gif width=%s height=10>", $w3;
-$rv .= sprintf "<img src=images/grey.gif width=%s height=10>",
-	$bar_width - $w1 - $w2 - $w3;
+$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12>", $w1;
+$rv .= sprintf "<img src=images/purple.gif width=%s%% height=12>", $w2;
+$rv .= sprintf "<img src=images/blue.gif width=%s%% height=12>", $w3;
+$rv .= sprintf "<img src=images/grey.gif width=%s%% height=12></div>",
+  $bar_width - $w1 - $w2 - $w3;
 return $rv;
 }
 
@@ -639,7 +637,7 @@ foreach my $d (@doms) {
 if (@quota) {
 	# Show disk usage by various domains
 	@quota = sort { $b->[1] <=> $a->[1] } @quota;
-	print "<table>\n";
+	print "<table width=70%>\n";
 	if (@quota > 10) {
 		@quota = @quota[0..9];
 		print "<tr> <td colspan=2>$text{'right_quota10'}</td> </tr>\n";
@@ -650,7 +648,7 @@ if (@quota) {
 			"edit_domain.cgi" : "view_domain.cgi";
 		print "<td width=30%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$q->[0]->{'dom'}</a></td>\n";
-		print "<td>",&bar_chart_three(
+		print "<td width=50%>",&bar_chart_three(
 				$maxquota,		# Highest quota
 				$q->[1],		# Domain's disk usage
 				$q->[3],		# DB usage
@@ -681,7 +679,7 @@ print "<br><font style='font-size:16px'>";
 local $others = join("&", map { "open=$_" } grep { $_ ne $name } @open);
 $others = "&$others" if ($others);
 if ($open{$name}) {
-	print "<img src=images/openbg.gif border=0>\n";
+	print "<img src=images/open.gif border=0>\n";
 	print "<a href='right.cgi?$others'>$text</a>";
 	}
 else {

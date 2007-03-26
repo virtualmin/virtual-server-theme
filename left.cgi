@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 # Show the left-side menu of Virtualmin domains, plus modules
 
 do './web-lib.pl';
@@ -25,7 +25,7 @@ print <<EOF;
 <head>
 $tconfig{'headhtml'}
 <link rel="stylesheet" type="text/css" href="left.css" />
-<script type='text/javascript' src='toggleview.js'></script>
+<script type='text/javascript' src='/unauthenticated/toggleview.js'></script>
 <!--[if gte IE 5.5000]>
   <script type='text/javascript' src='pngfix.js'></script>
 <![endif]-->
@@ -91,6 +91,7 @@ else {
 	}
 $did = $d ? $d->{'id'} : undef;
 
+print "<div class='menubody'>\n";
 # Show virtualmin / folders / webmin mode selector
 if ($hasvirt || $hasmail) {
 	print "<div class='mode'>";
@@ -112,7 +113,6 @@ if ($hasvirt || $hasmail) {
 			}
 		}
 	print "</div>";
-	print "<br>\n";
 	}
 
 if ($hasvirt) {
@@ -262,7 +262,7 @@ if ($mode eq "virtualmin" && @doms) {
 		print "</div>\n";
 		}
 
-	print "<div class='leftlink'><hr></div>\n";
+	print "<hr>\n";
 	nodomain:
 	}
 elsif ($mode eq "virtualmin") {
@@ -386,7 +386,7 @@ if ($mode eq "mail") {
 	if (!%mconfig) {
 		%mconfig = &foreign_config("mailbox");
 		}
-	print "<div class='leftlink'><hr></div>\n";
+	print "<hr>\n";
 
 	# Folder list link
 	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
@@ -434,7 +434,7 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 			}
 		print "</div>\n";
 		}
-	print "<div class='leftlink'><hr></div>\n";
+	print "<hr>\n";
 	}
 
 # Show change password link for resellers
@@ -479,6 +479,7 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 
 print "</form>\n" if ($doneform);
 print <<EOF;
+</div>
 </body>
 EOF
 
@@ -496,7 +497,7 @@ $label = $c eq "others" ? "Others" : $label;
 
 # Show link to close or open catgory
 print "<div class='linkwithicon'>";
-print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='images/closedbg.gif' alt='[+]'></a>\n";
+print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='images/closed.gif' alt='[+]'></a>\n";
 print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font color=#000000>$label</font></a></div></div>\n";
 }
 

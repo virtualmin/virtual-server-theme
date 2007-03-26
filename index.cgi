@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 do './web-lib.pl';
 &init_config();
@@ -35,14 +35,14 @@ if ($gconfig{'showlogin'}) {
 
 # Show frameset
 &PrintHeader();
-$cols = &get_product_name() eq 'usermin' ? 180 : 230;
+$cols = &get_product_name() eq 'usermin' ? 180 : 240;
 print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
 <head> <title>$title</title> </head>
 
-<frameset cols="$cols,*">
+<frameset cols="$cols,*" border="0">
 	<frame name="left" src="left.cgi$cat" scrolling="auto">
 	<frame name="right" src="$goto" noresize>
 <noframes>
