@@ -86,48 +86,12 @@ tt { font-size: 8pt;
 	background-color: #e8e8ea;
 }
 
-tr.mainbody { border-style: solid;
-	border-color: #ddddff;
-	border-bottom-width: 1px;
-	border-top-width: 0px;
-	border-left-width: 1px;
-	border-right-width: 1px;
-}
-
-tr.mainhigh { border-style: solid;
-	border-color: #ddddff;
-	border-bottom-width: 1px;
-	border-top-width: 0px;
-	border-left-width: 1px;
-	border-right-width: 1px;
-	background-color: #ffffbb;
-}
-
-tr.mainsel { border-style: solid;
-	border-color: #ddddff;
-	border-bottom-width: 1px;
-	border-top-width: 0px;
-	border-left-width: 1px;
-	border-right-width: 1px;
+tr.mainsel {
 	background-color: #ddffbb;
 }
 
-tr.mainhighsel { border-style: solid;
-	border-color: #ddddff;
-	border-bottom-width: 1px;
-	border-top-width: 0px;
-	border-left-width: 1px;
-	border-right-width: 1px;
+tr.mainhighsel { 
 	background-color: #bbffcc;
-}
-
-tr.maintitle { border-style: solid;
-	border-color: #adade4;
-	border-bottom-width: 0px;
-	border-top-width: 1px;
-	border-left-width: 1px;
-	border-right-width: 1px;
-	background-image: url("/images/title-bar-selected.png");
 }
 
 .itemhidden {display:none}

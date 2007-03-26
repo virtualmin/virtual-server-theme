@@ -19,7 +19,8 @@
 	border: none;
 	position: relative;
   padding-top: 2px;
-	left: 20px;
+  margin-right: 2px;
+	margin-left: 20px;
 }
 .aftericon {
 	display: inline;

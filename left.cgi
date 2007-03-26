@@ -91,7 +91,6 @@ else {
 	}
 $did = $d ? $d->{'id'} : undef;
 
-print "<div class='menubody'>\n";
 # Show virtualmin / folders / webmin mode selector
 if ($hasvirt || $hasmail) {
 	print "<div class='mode'>";
@@ -115,6 +114,7 @@ if ($hasvirt || $hasmail) {
 	print "</div>";
 	}
 
+print "<div class='menubody'>\n";
 if ($hasvirt) {
 	# Left form is for changing domain
 	print "<form action=left.cgi>\n";
