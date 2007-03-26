@@ -1,18 +1,15 @@
 head {
        background-color: #ffffff;
-       color: #000000;
+       color: #333333;
      }
-
 body { 
        background-color: #ffffff;
-       color: #000000;
+       color: #333333;
      }
-
 table {
 				border-width: 0px;
 				empty-cells: hide;
 }
-
 a:link { color: #333399;
   text-decoration: none;
 }
@@ -22,31 +19,26 @@ a:hover, a:visited:hover { color: #6666EE;
 a:visited { color: #333399;
   text-decoration: none;
 }
-
 body, p, td, br, center { font-size: 10pt;
         font-family: sans-serif;
       }
-
-title { color: #000000;
+title { color: #333333;
      font-family: sans-serif;
    }
-
-h1 { color: #000000;
-			font-size: 150%;
+h1 { color: #333333;
+     font-size: 150%;
      font-family: sans-serif;
    }
-
-h2 { color: #111199;
+h2 { color: #333333;
      font-size: 130%;
      font-family: sans-serif;
    }
-
-h3 { color: #111199;
+h3 { color: #333333;
      font-size: 125%;
      font-family: sans-serif;
    }
    
-h4 { color: #111199;
+h4 { color: #333333;
      font-size: 120%;
      font-family: sans-serif;
    }
@@ -135,3 +127,12 @@ tr.maintitle { border-style: solid;
 
 .itemhidden {display:none}
 .itemshown {display:inline}
+.itemshown table {
+  width: 70%;
+  margin-left:3%;
+}
+.barchart {
+  padding: 1px;
+  border: 1px solid #b3b6b0;
+}
+
