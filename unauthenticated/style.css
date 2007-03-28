@@ -90,6 +90,10 @@ tr.mainsel {
 	background-color: #ddffbb;
 }
 
+tr.mainhigh {
+	background-color: #ffffbb;
+}
+
 tr.mainhighsel { 
 	background-color: #bbffcc;
 }
