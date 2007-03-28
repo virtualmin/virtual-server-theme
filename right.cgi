@@ -267,9 +267,9 @@ if ($level == 0) {
 
 		if (&virtual_server::has_home_quotas() &&
 		    !$sects->{'noquotas'}) {
-			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closed.gif' alt='[+]'></a>";
+			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/open.gif' alt='[+]'></a>";
 		        print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
-			print "<div class='itemhidden' id='quotas'>";
+			print "<div class='itemshown' id='quotas'>";
 			&show_quotas_info(\@doms);
 			print "</div><p>\n";
 			}
@@ -560,11 +560,13 @@ local $rv;
 local $w1 = int($bar_width*$used1/$total)+1;
 local $w2 = int($bar_width*$used2/$total);
 local $w3 = int($bar_width*$used3/$total);
-$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12>", $w1;
+$rv .= "<div class='barchart'>";
+$rv .= sprintf "<img src=images/red.gif width=%s%% height=12>", $w1;
 $rv .= sprintf "<img src=images/purple.gif width=%s%% height=12>", $w2;
 $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12>", $w3;
-$rv .= sprintf "<img src=images/grey.gif width=%s%% height=12></div>",
-  $bar_width - $w1 - $w2 - $w3;
+$rv .= sprintf "<img src=images/grey.gif width=%s%% height=12>",
+	$bar_width - $w1 - $w2 - $w3 - 1;
+$rv .= "</div>";
 return $rv;
 }
 
