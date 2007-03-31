@@ -1,6 +1,36 @@
+# Virtualmin Framed heme
+# Icons copyright David Vignoni, all other theme elements copyright 2005-2007
+# Virtualmin, Inc.
 
-# Swell-Nuvola theme
-# Icons copyright David Vignoni, all other theme elements copyright Joe Cooper.
+# theme_ui_post_header([subtext])
+# Returns HTML to appear directly after a standard header() call
+sub theme_ui_post_header
+{
+local ($text) = @_;
+local $rv;
+$rv .= "<div class='ui_post_header'>$text</div>\n" if (defined($text));
+$rv .= "<div class='section'>\n";
+return $rv;
+}
+
+# theme_ui_pre_footer()
+# Returns HTML to appear directly before a standard footer() call
+sub theme_ui_pre_footer
+{
+local $rv;
+$rv .= "</div>\n";
+return $rv;
+}
+
+# ui_print_footer(args...)
+# Print HTML for a footer with the pre-footer line. Args are the same as those
+# passed to footer()
+sub theme_ui_print_footer
+{
+local @args = @_;
+print &ui_pre_footer();
+#&footer(@args);
+}
 
 sub theme_icons_table
 {

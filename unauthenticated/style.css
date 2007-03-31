@@ -53,9 +53,6 @@ th { font-size: small; }
 pre { font-size: 8pt; 
     }
 
-tt { font-size: 8pt; 
-    }
-
 #main { border-style: solid;
 	border-color: #ccccff;
 	border-width: 1px;
@@ -97,9 +94,14 @@ tr.mainhigh {
 tr.mainhighsel { 
 	background-color: #bbffcc;
 }
-
-.itemhidden {display:none}
-.itemshown {display:inline}
+.itemhidden {
+    visibility:hidden;
+    position:absolute;
+    top:-2000px;
+    left:-2000px;
+}
+.itemshown {
+}
 .itemshown table {
   width: 70%;
   margin-left:3%;
@@ -108,4 +110,8 @@ tr.mainhighsel {
   padding: 1px;
   border: 1px solid #b3b6b0;
 }
-
+.ui_post_header{
+ font-size: 120%;
+ text-align: center;
+ padding: 4px;
+}

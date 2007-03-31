@@ -529,7 +529,6 @@ elsif ($level == 3) {
 		}
 	}
 
-print "</center>\n";
 &popup_footer();
 
 # bar_chart(total, used, blue-rest)
