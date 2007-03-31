@@ -194,6 +194,7 @@ if ($mode eq "virtualmin" && @doms) {
 	# Get actions and menus from Virtualmin
 	$canconfig = &virtual_server::can_config_domain($d);
 	@buts = &virtual_server::get_domain_actions($d);
+	push(@buts, &virtual_server::feature_links($d));
 
 	# Always show edit domain link
 	if ($canconfig) {
@@ -220,29 +221,19 @@ if ($mode eq "virtualmin" && @doms) {
 		&print_category_opener("cat_$c", \@cats,
 			$virtual_server::text{'cat_'.$c});
 		print "<div class='itemhidden' id='cat_$c'>\n";
-		foreach my $b (@incat) {
-			$url =
-			 "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-			 join("&", map { $_->[0]."=".&urlize($_->[1]) }
-				       @{$b->{'hidden'}});
-			&print_category_link($url, $b->{'title'},
+		foreach my $b (sort { ($a->{'title'} || $a->{'desc'}) cmp
+				      ($b->{'title'} || $b->{'desc'})} @incat) {
+			if ($b->{'mod'}) {
+				$url = "$b->{'mod'}/$b->{'page'}";
+				}
+			else {
+				$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
+				 join("&", map { $_->[0]."=".&urlize($_->[1]) }
+					       @{$b->{'hidden'}});
+				}
+			$title = $b->{'title'} || $b->{'desc'};
+			&print_category_link($url, $title,
 				     undef, undef, $b->{'target'});
-			}
-		print "</div>\n";
-		}
-
-	# Feature and plugin links
-	@links = &virtual_server::feature_links($d);
-	my @cats = &unique(map { $_->{'cat'} } @links);
-	foreach my $c (@cats) {
-		my @incat = grep { $_->{'cat'} eq $c } @links;
-		&print_category_opener("cat_$c", \@cats,
-			$virtual_server::text{'cat_'.$c});
-		print "<div class='itemhidden' id='cat_$c'>\n";
-		foreach my $l (sort { $a->{'desc'} cmp $b->{'desc'} } @incat) {
-			&print_category_link("$l->{'mod'}/$l->{'page'}",
-					     $l->{'desc'}, undef, undef,
-					     "right");
 			}
 		print "</div>\n";
 		}
