@@ -183,13 +183,24 @@ if ($mode eq "virtualmin" && @doms) {
 	foreach $a (@admincats) {
 		print &ui_hidden($a, 1),"\n" if ($in{$a});
 		}
+	print "</div>\n";
 	if (!$d) {
 		if ($in{'dname'}) {
 			print "\n";
 			}
+		}
+
+	# Show generic creation link
+	if ($virtual_server::module_info{'version'} >= 3.381 &&
+	    (&virtual_server::can_create_master_servers() ||
+	     &virtual_server::can_create_sub_servers())) {
+		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1&gparent=$d->{'id'}' target=right>$text{'left_generic'}</a></div>\n";
+		$shown_generic_create = 1;
+		}
+
+	if (!$d) {
 		goto nodomain;
 		}
-	print "</div>\n";
 
 	# Get actions and menus from Virtualmin
 	$canconfig = &virtual_server::can_config_domain($d);
@@ -213,7 +224,8 @@ if ($mode eq "virtualmin" && @doms) {
 		print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
 		}
 
-	# Show others by category (except those for creation)
+	# Show others by category (except those for creation, which appear
+	# at the bottom)
 	my @cats = &unique(map { $_->{'cat'} } @buts);
 	foreach my $c (@cats) {
 		next if ($c eq 'objects' || $c eq 'create');
@@ -266,6 +278,14 @@ elsif ($mode eq "virtualmin") {
 		print $text{'left_nodoms'};
 		}
 	print "</div>\n";
+
+	# Show generic creation link
+	if ($virtual_server::module_info{'version'} >= 3.381 &&
+	    (&virtual_server::can_create_master_servers() ||
+	     &virtual_server::can_create_sub_servers())) {
+		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1' target=right>$text{'left_generic'}</a></div>\n";
+		$shown_generic_create = 1;
+		}
 	}
 
 if ($mode eq "virtualmin") {
@@ -290,55 +310,88 @@ if ($mode eq "virtualmin") {
 		}
 
 	# Creation/migration forms
+	@createlinks = ( );
 	if (&virtual_server::can_create_master_servers() ||
 	    &virtual_server::can_create_sub_servers()) {
-	   &print_category_opener("create", \@admincats,
-				   $text{'left_create'});
-		print "<div class='itemhidden' id='create'>";
 		($dleft, $dreason, $dmax, $dhide) =
 			&virtual_server::count_domains("realdoms");
 		($aleft, $areason, $amax, $ahide) =
 			&virtual_server::count_domains("aliasdoms");
-		if ($dleft == 0) {
+		if ($shown_generic_create) {
+			# Skip top-level and sub-server links, as we've already
+			# shown them.
+			}
+		elsif ($dleft == 0) {
 			# Cannot add
-			print "<div class='leftlink'>",&virtual_server::text('index_noadd'.$dreason, $dmax),"</div>\n";
+			push(@createlinks,
+			  "<div class='leftlink'>".
+			  &virtual_server::text('index_noadd'.$dreason, $dmax).
+			  "</div>\n");
 			}
 		elsif (!&virtual_server::can_create_master_servers() &&
 		       &virtual_server::can_create_sub_servers()) {
 			# Can just add sub-server
-			&print_category_link("virtual-server/domain_form.cgi", $text{'left_addsub'});
+			push(@createlinks,
+			     &category_link("virtual-server/domain_form.cgi",
+					    $text{'left_addsub'}));
 			}
 		elsif (&virtual_server::can_create_master_servers()) {
 			# Can add master or sub-server
-			&print_category_link("virtual-server/domain_form.cgi",
-					     $text{'left_add'});
-			&print_category_link("virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1", $text{'left_addsub'});
+			push(@createlinks,
+			     &category_link("virtual-server/domain_form.cgi",
+					    $text{'left_add'}));
+			push(@createlinks,
+			     &category_link("virtual-server/domain_form.cgi?".
+					    "parentuser1=$d->{'user'}&add1=1",
+					    $text{'left_addsub'}));
 			}
 		if (&virtual_server::can_create_sub_servers() &&
-		    !$d->{'alias'} && !$d->{'subdom'} && $dleft) {
+		    !$d->{'alias'} && !$d->{'subdom'} && $dleft &&
+		    !$shown_generic_create) {
 			# Can add sub-domain
-			&print_category_link("virtual-server/domain_form.cgi?parentuser1=$d->{'user'}&add1=1&subdom=$d->{'id'}", $text{'left_addsubdom'});
+			push(@createlinks,
+			     &category_link("virtual-server/domain_form.cgi?".
+					    "parentuser1=$d->{'user'}&add1=1&".
+					    "subdom=$d->{'id'}",
+					    $text{'left_addsubdom'}));
 			}
 		if (&virtual_server::can_create_sub_servers() &&
-		    !$d->{'alias'} && $aleft) {
+		    !$d->{'alias'} && $aleft &&
+		    !$shown_generic_create) {
 			# Can add alias domain
-			&print_category_link("virtual-server/domain_form.cgi?to=$d->{'id'}", $text{'left_addalias'});
+			push(@createlinks,
+			     &category_link("virtual-server/domain_form.cgi?".
+					    "to=$d->{'id'}",
+					    $text{'left_addalias'}));
 			}
+
 		if ((&virtual_server::can_create_sub_servers() ||
 		     &virtual_server::can_create_master_servers()) && $dleft &&
 		    $virtual_server::virtualmin_pro) {
 			# Can create servers from batch file
-			&print_category_link("virtual-server/mass_create_form.cgi", $text{'left_cmass'});
+			push(@createlinks,
+			   &category_link("virtual-server/mass_create_form.cgi",
+					   $text{'left_cmass'}));
 			}
 
 		# Migration/import
 		if (&virtual_server::can_import_servers()) {
-			&print_category_link("virtual-server/import_form.cgi",
-					     $text{'left_import'});
+			push(@createlinks,
+			     &category_link("virtual-server/import_form.cgi",
+					    $text{'left_import'}));
 			}
 		if (&virtual_server::can_migrate_servers()) {
-			&print_category_link("virtual-server/migrate_form.cgi",
-					     $text{'left_migrate'});
+			push(@createlinks,
+			     &category_link("virtual-server/migrate_form.cgi",
+					    $text{'left_migrate'}));
+			}
+		}
+	if (@createlinks) {
+	        &print_category_opener("create", \@admincats,
+				       $text{'left_create'});
+		print "<div class='itemhidden' id='create'>";
+		foreach $cl (@createlinks) {
+			print $cl;
 			}
 		print "</div>\n";		
 		}
@@ -495,8 +548,12 @@ print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\"
 
 sub print_category_link
 {
-local ($link, $label, $image, $noimage, $target) = @_;
-$target ||= "right";
-print "<div class='linkindented'><a target=$target href=$link>$label</a></div>\n";
+print &category_link(@_);
 }
 
+sub category_link
+{
+local ($link, $label, $image, $noimage, $target) = @_;
+$target ||= "right";
+return "<div class='linkindented'><a target=$target href=$link>$label</a></div>\n";
+}
