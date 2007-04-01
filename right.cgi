@@ -23,8 +23,14 @@ if ($hasvirt) {
 	# Show link for editing what appears
 	$sects = &get_right_frame_sections();
 	if (!$sects->{'global'} || &virtual_server::master_admin()) {
-		print "<div align=right><a href='edit_right.cgi'>",
-		      "$text{'right_edit'}</a></div>\n";
+		print "<div align=right>";
+		@links = ( "<a href='edit_right.cgi'>$text{'right_edit'}</a>" );
+		if (&virtual_server::master_admin()) {
+			push(@links, "<a href='recollect.cgi'>".
+				     "$text{'right_recollect'}</a>");
+			}
+		print &ui_links_row(\@links);
+		print "</div>\n";
 		$shown_config_link = 1;
 		}
 	}
@@ -81,8 +87,12 @@ if ($level == 0 && &foreign_available("webmin") &&
 		}
 	}
 
-if ($level == 0) {
+if ($level == 0) {		# Master admin
 	# Show Virtualmin master admin info
+	if ($hasvirt) {
+		$info = &virtual_server::get_collected_info();
+		}
+
 	if (!$sects->{'nosystem'}) {
 		# Show general system information
 		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
@@ -126,64 +136,50 @@ if ($level == 0) {
 		print "<td>$tm</td> </tr>\n";
 
 		# Load and memory info
-		if (&foreign_check("proc")) {
-			&foreign_require("proc", "proc-lib.pl");
-			if (defined(&proc::get_cpu_info)) {
-				@c = &proc::get_cpu_info();
-				print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
-				print "<td>",&text('right_load', @c),"</td> </tr>\n";
+		if ($info->{'load'}) {
+			@c = @{$info->{'load'}};
+			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
+			print "<td>",&text('right_load', @c),"</td> </tr>\n";
+			}
+
+		if ($info->{'procs'}) {
+			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
+			print "<td>$info->{'procs'}</td> </tr>\n";
+			}
+
+		if ($info->{'mem'}) {
+			@m = @{$info->{'mem'}};
+			if (@m && $m[0]) {
+				print "<tr> <td><b>$text{'right_real'}</b></td>\n";
+				print "<td>",&nice_size($m[0]*1024)." total, ".
+					    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
+				print "<tr> <td></td>\n";
+				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
+				      "</td> </tr>\n";
 				}
 
-			@procs = &proc::list_processes();
-			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-			print "<td>",scalar(@procs),"</td> </tr>\n";
-
-			if (defined(&proc::get_memory_info)) {
-				@m = &proc::get_memory_info();
-				if (@m && $m[0]) {
-					print "<tr> <td><b>$text{'right_real'}</b></td>\n";
-					print "<td>",&nice_size($m[0]*1024)." total, ".
-						    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
-					print "<tr> <td></td>\n";
-					print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
-					      "</td> </tr>\n";
-					}
-
-				if (@m && $m[2]) {
-					print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
-					print "<td>",&nice_size($m[2]*1024)." total, ".
-						    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
-					print "<tr> <td></td>\n";
-					print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
-					      "</td> </tr>\n";
-					}
+			if (@m && $m[2]) {
+				print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
+				print "<td>",&nice_size($m[2]*1024)." total, ".
+					    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
+				print "<tr> <td></td>\n";
+				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
+				      "</td> </tr>\n";
 				}
 			}
 
 		# Disk space on local drives
-		if (&foreign_check("mount")) {
-			&foreign_require("mount", "mount-lib.pl");
-			@mounted = &mount::list_mounted();
-			$total = 0;
-			$free = 0;
-			foreach $m (@mounted) {
-				if ($m->[2] eq "ext2" || $m->[2] eq "ext3" ||
-				    $m->[2] eq "reiserfs" || $m->[2] eq "ufs" ||
-				    $m->[1] =~ /^\/dev\//) {
-					($t, $f) = &mount::disk_space($m->[2], $m->[0]);
-					$total += $t*1024;
-					$free += $f*1024;
-					}
-				}
-			if ($total) {
-				print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
-				print "<td>",&text('right_used',
-					   &nice_size($total),
-					   &nice_size($total-$free)),"</td> </tr>\n";
-				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($total, $total-$free, 1),
-				      "</td> </tr>\n";
-				}
+		if ($info->{'disk_total'}) {
+			print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
+			print "<td>",&text('right_used',
+			   &nice_size($info->{'disk_total'}),
+			   &nice_size($info->{'disk_total'}-
+				      $info->{'disk_free'})),"</td> </tr>\n";
+			print "<tr> <td></td>\n";
+			print "<td>",&bar_chart($info->{'disk_total'},
+						$info->{'disk_total'}-
+						 $info->{'disk_free'}, 1),
+			      "</td> </tr>\n";
 			}
 
 		print "</table>\n";
@@ -191,171 +187,151 @@ if ($level == 0) {
 		}
 
 	# Check for package updates
-	if (!$sects->{'noupdates'} && &foreign_available("security-updates")) {
-		&foreign_require("security-updates", "security-updates-lib.pl");
-		@poss = &security_updates::list_possible_updates();
-		if (@poss) {
-			# Show updates section
-			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-			print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><b> $text{'right_updatesheader'}</b></a><p>";
-			print "<div class='itemshown' id='updates'>";	
-			print &ui_form_start("../security-updates/update.cgi");
-			print &text(
-				@poss > 1 ? 'right_upcount' : 'right_upcount1',
-				scalar(@poss),
-				'../security-updates/'),"<p>\n";
-			print &ui_columns_start([ $text{'right_upname'},
-						  $text{'right_updesc'},
-						  $text{'right_upver'} ]);
-			foreach $p (@poss) {
-				print &ui_columns_row([
-				 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
-				print &ui_hidden("u", $p->{'name'});
-				}
-			print &ui_columns_end();
-			print &ui_form_end([ [ undef, $text{'right_upok'} ] ]);
-			print "</div>\n";
+	if (!$sects->{'noupdates'} && $info->{'poss'} &&
+	    (@poss = @{$info->{'poss'}})) {
+		# Show updates section
+		print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
+		print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><b> $text{'right_updatesheader'}</b></a><p>";
+		print "<div class='itemshown' id='updates'>";	
+		print &ui_form_start("../security-updates/update.cgi");
+		print &text(
+			@poss > 1 ? 'right_upcount' : 'right_upcount1',
+			scalar(@poss),
+			'../security-updates/'),"<p>\n";
+		print &ui_columns_start([ $text{'right_upname'},
+					  $text{'right_updesc'},
+					  $text{'right_upver'} ]);
+		foreach $p (@poss) {
+			print &ui_columns_row([
+			 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
+			print &ui_hidden("u", $p->{'name'});
 			}
+		print &ui_columns_end();
+		print &ui_form_end([ [ undef, $text{'right_upok'} ] ]);
+		print "</div>\n";
 		}
 
-	if ($hasvirt) {
+	if ($hasvirt && !$sects->{'nostatus'} && $info->{'startstop'} &&
+	    &virtual_server::can_stop_servers()) {
 		# Show Virtualmin feature statuses
-		if (!$sects->{'nostatus'} &&
-		    &virtual_server::can_stop_servers()) {
-			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-			print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
-			print "<div class='itemshown' id='status'>";	
-			@ss = &virtual_server::get_startstop_links();
-			print "<table>\n";
-			foreach $status (@ss) {
-				print &ui_form_start("virtual-server/".
-				   ($status->{'status'} ? "stop_feature.cgi" :
-							 "start_feature.cgi"));
-				print &ui_hidden("feature", $status->{'feature'});
+		print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
+		print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
+		print "<div class='itemshown' id='status'>";	
+		@ss = @{$info->{'startstop'}};
+		print "<table>\n";
+		foreach $status (@ss) {
+			print &ui_form_start("virtual-server/".
+			   ($status->{'status'} ? "stop_feature.cgi" :
+						 "start_feature.cgi"));
+			print &ui_hidden("feature", $status->{'feature'});
+			print &ui_hidden("redirect", "/right.cgi");
+			print "<tr>\n";
+			print "<td><b>",$status->{'name'},"</b></td>\n";
+			print "<td>",(!$status->{'status'} ?
+			    "<font color=#ff0000>$text{'right_down'}</font>" :
+			    "<font color=#00aa00>$text{'right_up'}</font>"),
+			    "</td>\n";
+			print "<td>",&ui_submit($status->{'desc'}),"</td>\n";
+			print &ui_form_end();
+
+			if ($status->{'status'}) {
+				# Show restart button too
+				print &ui_form_start(
+					"virtual-server/restart_feature.cgi");
+				print &ui_hidden("feature",
+						 $status->{'feature'});
 				print &ui_hidden("redirect", "/right.cgi");
-				print "<tr>\n";
-				print "<td><b>",$status->{'name'},"</b></td>\n";
-				print "<td>",(!$status->{'status'} ?
-				 "<font color=#ff0000>$text{'right_down'}</font>" :
-				 "<font color=#00aa00>$text{'right_up'}</font>"),"</td>\n";
-				print "<td>",&ui_submit($status->{'desc'}),"</td>\n";
+				print "<td>",&ui_submit($status->{'restartdesc'} || &text('right_restart', $status->{'name'})),"</td>\n";
 				print &ui_form_end();
-
-				if ($status->{'status'}) {
-					# Show restart button too
-					print &ui_form_start("virtual-server/restart_feature.cgi");
-					print &ui_hidden("feature", $status->{'feature'});
-					print &ui_hidden("redirect", "/right.cgi");
-					print "<td>",&ui_submit($status->{'restartdesc'} || &text('right_restart', $status->{'name'})),"</td>\n";
-					print &ui_form_end();
-					}
-				print "</tr>\n";
 				}
-			print "</table><p>\n";
-			print "</div>\n";
+			print "</tr>\n";
 			}
+		print "</table><p>\n";
+		print "</div>\n";
+		}
 
-		@doms = &virtual_server::list_domains();
-		if (!$sects->{'novirtualmin'}) {
-			# Show Virtualmin information
-			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closed.gif' alt='[+]'></a>";
-			print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
-			print "<div class='itemhidden' id='virtualmin'>";
-			&show_domains_info(\@doms);
-			print "</div>\n";
+	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
+		# Show Virtualmin information
+		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closed.gif' alt='[+]'></a>";
+		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
+		print "<div class='itemhidden' id='virtualmin'>";
+		print "<table width=70%>\n";
+		my $i = 0;
+		foreach my $f (@{$info->{'ftypes'}}) {
+			local $cur = int($info->{'fcount'}->{$f});
+			local $extra = $info->{'fextra'}->{$f};
+			local $max = $info->{'fmax'}->{$f};
+			local $hide = $info->{'fhide'}->{$f};
+			print "<tr>\n" if ($i%2 == 0);
+			print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
+			if ($extra < 0 || $hide) {
+				print "<td width=25%>",$cur,"</td>\n";
+				}
+			else {
+				print "<td width=25%>",&text('right_out', $cur, $max),"</td>\n";
+				}
+			print "</tr>\n" if ($i%2 == 1);
+			$i++;
 			}
+		print "</table>\n";
+		print "</div>\n";
+		}
 
-		if (&virtual_server::has_home_quotas() &&
-		    !$sects->{'noquotas'}) {
-			print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/open.gif' alt='[+]'></a>";
-		        print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
-			print "<div class='itemshown' id='quotas'>";
-			&show_quotas_info(\@doms);
-			print "</div><p>\n";
-			}
+	if ($hasvirt && !$sects->{'noquotas'} && $info->{'quota'}) {
+		print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closed.gif' alt='[+]'></a>";
+		print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
+		print "<div class='itemhidden' id='quotas'>";
+		&show_quotas_info($info->{'quota'}, $info->{'maxquota'});
+		print "</div><p>\n";
+		}
 
+	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
 		# Show virtual IPs used
-		local (%ipcount, %ipdom);
-		foreach my $d (@doms) {
-			next if ($d->{'alias'});
-			$ipcount{$d->{'ip'}}++;
-			$ipdom{$d->{'ip'}} ||= $d;
+		print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closed.gif' alt='[+]'></a>";
+		print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipsheader'}</b></a><p>";
+		print "<div class='itemhidden' id='ips'>";
+		print "<table>\n";
+		foreach my $ipi (@{$info->{'ips'}}) {
+			print "<tr>\n";
+			print "<td width=30%>$ipi->[0]</td>\n";
+			print "<td>",$ipi->[1] eq 'def' ? $text{'right_defip'} :
+				     $ipi->[1] eq 'reseller' ?
+					&text('right_reselip', $ipi->[2]) :
+				     $ipi->[1] eq 'shared' ?
+					$text{'right_sharedip'} :
+					$text{'right_ip'},"</td>\n";
+			if ($ipi->[3] == 1) {
+				print "<td><tt>$ipi->[4]</tt></td>\n";
+				}
+			else {
+				print "<td>",&text('right_ips', $ipi->[3]),	
+				      "</td>\n";
+				}
+			print "</tr>\n";
 			}
-		if (!$sects->{'noips'} && keys %ipdom > 1) {
-			print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closed.gif' alt='[+]'></a>";
-		        print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipsheader'}</b></a><p>";
-			print "<div class='itemhidden' id='ips'>";
-			print "<table>\n";
-			$defip = &virtual_server::get_default_ip();
-			if (defined(&virtual_server::list_resellers)) {
-				foreach $r (&virtual_server::list_resellers()) {
-					if ($r->{'acl'}->{'defip'}) {
-						$reselip{
-						  $r->{'acl'}->{'defip'}} = $r;
-						}
-					}
-				}
-			if (defined(&virtual_server::list_shared_ips)) {
-				foreach $ip (&virtual_server::list_shared_ips()) {
-					$sharedip{$ip}++;
-					}
-				}
-			foreach $ip ($defip,
-				     (sort { $a cmp $b } keys %reselip),
-				     (sort { $a cmp $b } keys %ipcount)) {
-				next if ($doneip{$ip}++);
-				print "<tr>\n";
-				print "<td width=30%>$ip</td>\n";
-				print "<td>",$ip eq $defip ?
-					      $text{'right_defip'} :
-					     $reselip{$ip} ?
-					      &text('right_reselip',
-						    $reselip{$ip}->{'name'}) :
-					     $sharedip{$ip} ?
-					      $text{'right_sharedip'} :
-					      $text{'right_ip'},"</td>\n";
-				if ($ipcount{$ip} == 1) {
-					print "<td><tt>".$ipdom{$ip}->{'dom'}."</tt></td>\n";
-					}
-				else {
-					print "<td>",&text('right_ips', $ipcount{$ip}),"</td>\n";
-					}
-				print "</tr>\n";
-				}
-			print "</table>\n";
-			print "</div><p>\n";
-			}
+		print "</table>\n";
+		print "</div><p>\n";
+		}
 
-		# Show system information section
-		if (!$sects->{'nosysinfo'} &&
-		    &virtual_server::can_view_sysinfo()) {
-			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closed.gif' alt='[&ndash;]'></a>";
-			print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
-			print "<div class='itemhidden' id='sysinfo'>";	
-			print "<table>\n";
-			foreach my $f ("virtualmin",
-					@virtual_server::features) {
-				if ($virtual_server::config{$f} ||
-				    $f eq "virtualmin") {
-					local $ifunc =
-						"virtual_server::sysinfo_$f";
-					if (defined(&$ifunc)) {
-						push(@info, &$ifunc());
-						}
-					}
-				}
-			for($i=0; $i<@info; $i++) {
-				print "<tr>\n" if ($i%2 == 0);
-				print "<td><b>$info[$i]->[0]</b></td>\n";
-				print "<td>$info[$i]->[1]</td>\n";
-				print "</tr>\n" if ($i%2 == 1);
-				}
-			print "</table>\n";
-			print "</div><p>\n";
+	# Show system information section
+	if ($hasvirt && !$sects->{'nosysinfo'} && $info->{'progs'} &&
+	    &virtual_server::can_view_sysinfo()) {
+		print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closed.gif' alt='[&ndash;]'></a>";
+		print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
+		print "<div class='itemhidden' id='sysinfo'>";	
+		print "<table>\n";
+		@info = @{$info->{'progs'}};
+		for($i=0; $i<@info; $i++) {
+			print "<tr>\n" if ($i%2 == 0);
+			print "<td><b>$info[$i]->[0]</b></td>\n";
+			print "<td>$info[$i]->[1]</td>\n";
+			print "</tr>\n" if ($i%2 == 1);
 			}
+		print "</table>\n";
+		print "</div><p>\n";
 		}
 	}
-elsif ($level == 1) {
+elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains
 	if (!$sects->{'novirtualmin'}) {
 		print "<h3>$text{'right_header2'}</h3>\n";
@@ -364,7 +340,7 @@ elsif ($level == 1) {
 		&show_domains_info(\@doms);
 		}
 	}
-elsif ($level == 2) {
+elsif ($level == 2) {		# Domain owner
 	# Show a server owner info about one domain
 	print "<h3>$text{'right_header3'}</h3>\n";
 	$ex = &virtual_server::extra_admin();
@@ -386,7 +362,8 @@ elsif ($level == 2) {
 
 	print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
 	if ($hasvirt) {
-		print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
+		print "<td>",$virtual_server::module_info{'version'},
+		      "</td> </tr>\n";
 		}
 	else {
 		print "<td>",$text{'right_not'},"</td> </tr>\n";
@@ -408,7 +385,8 @@ elsif ($level == 2) {
 
 	# Users and aliases info
 	@users = &virtual_server::list_domain_users($d, 0, 1, 1, 1);
-	($uleft, $ureason, $utotal, $uhide) = &virtual_server::count_feature("mailboxes");
+	($uleft, $ureason, $utotal, $uhide) =
+		&virtual_server::count_feature("mailboxes");
 	print "<tr> <td><b>$text{'right_fusers'}</b></td>\n";
 	if ($uleft < 0 || $uhide) {
 		print "<td>",scalar(@users),"</td> </tr>\n";
@@ -419,7 +397,8 @@ elsif ($level == 2) {
 		}
 
 	@aliases = &virtual_server::list_domain_aliases($d, 1);
-	($aleft, $areason, $atotal, $ahide) = &virtual_server::count_feature("aliases");
+	($aleft, $areason, $atotal, $ahide) =
+		&virtual_server::count_feature("aliases");
 	print "<tr> <td><b>$text{'right_faliases'}</b></td>\n";
 	if ($aleft < 0 || $ahide) {
 		print "<td>",scalar(@aliases),"</td> </tr>\n";
@@ -431,7 +410,8 @@ elsif ($level == 2) {
 
 	# Databases
 	@dbs = &virtual_server::domain_databases($d);
-	($dleft, $dreason, $dtotal, $dhide) = &virtual_server::count_feature("dbs");
+	($dleft, $dreason, $dtotal, $dhide) =
+		&virtual_server::count_feature("dbs");
 	print "<tr> <td><b>$text{'right_fdbs'}</b></td>\n";
 	if ($dleft < 0 || $dhide) {
 		print "<td>",scalar(@dbs),"</td> </tr>\n";
@@ -480,7 +460,7 @@ elsif ($level == 2) {
 
 	print "</table>\n";
 	}
-elsif ($level == 3) {
+elsif ($level == 3) {		# Usermin
 	# Show user's information
 	print "<h3>$text{'right_header5'}</h3>\n";
 	print "<table width=70%>\n";
@@ -570,6 +550,7 @@ return $rv;
 }
 
 # show_domains_info(&domains)
+# Given a list of domains, show summaries of feature usage
 sub show_domains_info
 {
 # Count features for specified domains
@@ -611,30 +592,11 @@ foreach my $f ("doms", "dns", "web", "ssl", "mail",
 print "</table>\n";
 }
 
-# show_quotas_info(&domains)
+# show_quotas_info(&quotas, maxquota)
 sub show_quotas_info
 {
-local @doms = @{$_[0]};
-local @quota;
-local $homesize = &virtual_server::quota_bsize("home");
-local $mailsize = &virtual_server::quota_bsize("mail");
-local $maxquota = 0;
-
-# Work out quotas
-foreach my $d (@doms) {
-	# If this is a parent domain, sum up quotas
-	if (!$d->{'parent'} && &virtual_server::has_home_quotas()) {
-		local ($home, $mail, $dbusage) =
-			&virtual_server::get_domain_quota($d, 1);
-		local $usage = $home*$homesize +
-			       $mail*$mailsize;
-		$maxquota = $usage+$dbusage if ($usage+$dbusage > $maxquota);
-		local $limit = $d->{'quota'}*$homesize;
-		$maxquota = $limit if ($limit > $maxquota);
-		push(@quota, [ $d, $usage, $limit, $dbusage ]);
-		}
-	}
-
+local ($quota, $maxquota) = @_;
+local @quota = @$quota;
 if (@quota) {
 	# Show disk usage by various domains
 	@quota = sort { $b->[1] <=> $a->[1] } @quota;
@@ -667,9 +629,6 @@ if (@quota) {
 		}
 	print "</table>\n";
 	}
-
-# Show bandwidth usage by domains
-# XXX
 }
 
 # collapsed_header(text, name)
@@ -689,5 +648,14 @@ else {
 	}
 print "</font><br>\n";
 return $open{$name};
+}
+
+# show_toggleview(name, id, status, header)
+# Prints HTML for an open/close toggler
+sub show_toggleview
+{
+local ($name, $id, $status, $header) = @_;
+print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
+print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
 }
 

@@ -106,6 +106,7 @@ right_upname=Package
 right_updesc=Description
 right_upver=Version
 right_upok=Install All Updates Now
+right_recollect=Refresh system information
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
