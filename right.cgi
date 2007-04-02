@@ -95,9 +95,8 @@ if ($level == 0) {		# Master admin
 
 	if (!$sects->{'nosystem'}) {
 		# Show general system information
-		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-		print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
-		print "<div class='itemshown' id='system'>";
+		&show_toggleview("system", "toggler1", 1,
+				 $text{'right_systemheader'});
 
 		print "<table width=70%>\n";
 
@@ -190,9 +189,8 @@ if ($level == 0) {		# Master admin
 	if (!$sects->{'noupdates'} && $info->{'poss'} &&
 	    (@poss = @{$info->{'poss'}})) {
 		# Show updates section
-		print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-		print "<a href=\"javascript:toggleview('updates','toggler7')\" id='toggler7'><b> $text{'right_updatesheader'}</b></a><p>";
-		print "<div class='itemshown' id='updates'>";	
+		&show_toggleview("updates", "toggler7", 1,
+				 $text{'right_updatesheader'});
 		print &ui_form_start("../security-updates/update.cgi");
 		print &text(
 			@poss > 1 ? 'right_upcount' : 'right_upcount1',
@@ -214,9 +212,8 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt && !$sects->{'nostatus'} && $info->{'startstop'} &&
 	    &virtual_server::can_stop_servers()) {
 		# Show Virtualmin feature statuses
-		print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-		print "<a href=\"javascript:toggleview('status','toggler2')\" id='toggler2'><b> $text{'right_statusheader'}</b></a><p>";
-		print "<div class='itemshown' id='status'>";	
+		&show_toggleview("status", "toggler2", 1,
+				 $text{'right_statusheader'});
 		@ss = @{$info->{'startstop'}};
 		print "<table>\n";
 		foreach $status (@ss) {
@@ -252,9 +249,8 @@ if ($level == 0) {		# Master admin
 
 	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
 		# Show Virtualmin information
-		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\" id='toggler3'><img border='0' src='images/closed.gif' alt='[+]'></a>";
-		print "<a href=\"javascript:toggleview('virtualmin','toggler3')\"><b> $text{'right_virtheader'}</b></a><p>";
-		print "<div class='itemhidden' id='virtualmin'>";
+		&show_toggleview("virtualmin", "toggler3", 0,
+				 $text{'right_virtheader'});
 		print "<table width=70%>\n";
 		my $i = 0;
 		foreach my $f (@{$info->{'ftypes'}}) {
@@ -278,18 +274,17 @@ if ($level == 0) {		# Master admin
 		}
 
 	if ($hasvirt && !$sects->{'noquotas'} && $info->{'quota'}) {
-		print "<a href=\"javascript:toggleview('quotas','toggler4')\" id='toggler4'><img border='0' src='images/closed.gif' alt='[+]'></a>";
-		print "<a href=\"javascript:toggleview('quotas','toggler4')\"><b> $text{'right_quotasheader'}</b></a><p>";
-		print "<div class='itemhidden' id='quotas'>";
+		# Show quota graphs
+		&show_toggleview("quotas", "toggler4", 0,
+				 $text{'right_quotasheader'});
 		&show_quotas_info($info->{'quota'}, $info->{'maxquota'});
 		print "</div><p>\n";
 		}
 
 	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
 		# Show virtual IPs used
-		print "<a href=\"javascript:toggleview('ips','toggler5')\" id='toggler5'><img border='0' src='images/closed.gif' alt='[+]'></a>";
-		print "<a href=\"javascript:toggleview('ips','toggler5')\"><b> $text{'right_ipsheader'}</b></a><p>";
-		print "<div class='itemhidden' id='ips'>";
+		&show_toggleview("ips", "toggler5", 0,
+				 $text{'right_ipsheader'});
 		print "<table>\n";
 		foreach my $ipi (@{$info->{'ips'}}) {
 			print "<tr>\n";
@@ -316,9 +311,8 @@ if ($level == 0) {		# Master admin
 	# Show system information section
 	if ($hasvirt && !$sects->{'nosysinfo'} && $info->{'progs'} &&
 	    &virtual_server::can_view_sysinfo()) {
-		print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><img border='0' src='images/closed.gif' alt='[&ndash;]'></a>";
-		print "<a href=\"javascript:toggleview('sysinfo','toggler6')\" id='toggler6'><b> $text{'right_sysinfoheader'}</b></a><p>";
-		print "<div class='itemhidden' id='sysinfo'>";	
+		&show_toggleview("sysinfo", "toggler6", 0,
+				 $text{'right_sysinfoheader'});
 		print "<table>\n";
 		@info = @{$info->{'progs'}};
 		for($i=0; $i<@info; $i++) {
@@ -655,7 +649,10 @@ return $open{$name};
 sub show_toggleview
 {
 local ($name, $id, $status, $header) = @_;
-print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><img border='0' src='images/open.gif' alt='[&ndash;]'></a>";
-print "<a href=\"javascript:toggleview('system','toggler1')\" id='toggler1'><b> $text{'right_systemheader'}</b></a><p>";
+local $img = $status ? "open" : "closed";
+local $cls = $status ? "itemshown" : "itemhidden";
+print "<a href=\"javascript:toggleview('$name','$id')\" id='$id'><img border='0' src='images/$img.gif' alt='[&ndash;]'></a>";
+print "<a href=\"javascript:toggleview('$name','$id')\" id='$id'><b> $header</b></a><p>";
+print "<div class='$cls' id='$name'>";
 }
 
