@@ -42,9 +42,10 @@ if ($hasvirt) {
 	}
 $hasmail = &foreign_available("mailbox");
 
-if ($vconfig{'theme_image'}) {
+$image = $vconfig{'theme_image'} || $gconfig{'virtualmin_theme_image'};
+if ($image) {
 	# Show the hosting provider logo
-	$link = $vconfig{'theme_link'};
+	$link = $vconfig{'theme_link'} || $gconfig{'virtualmin_theme_link'};
 	print "<a href='$link' target=_new>" if ($link);
 	print "<img src='$vconfig{'theme_image'}' border=0>";
 	print "</a><br>\n" if ($link);
