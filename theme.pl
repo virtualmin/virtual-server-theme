@@ -29,7 +29,7 @@ sub theme_ui_print_footer
 {
 local @args = @_;
 print &ui_pre_footer();
-#&footer(@args);
+&footer(@args);
 }
 
 sub theme_icons_table
@@ -254,6 +254,7 @@ return $rv;
 sub theme_footer
 {
 local $i;
+local $count = 0;
 for($i=0; $i+1<@_; $i+=2) {
 	local $url = $_[$i];
 	if ($url ne '/' || !$tconfig{'noindex'}) {
@@ -265,6 +266,12 @@ for($i=0; $i+1<@_; $i+=2) {
 			# Don't bother with virtualmin menu
 			next;
 			}
+		elsif ($url =~ /(view|edit)_domain.cgi/ &&
+		       $module_name eq 'virtual-server' ||
+		       $url =~ /^\/virtual-server\/(view|edit)_domain.cgi/) {
+			# Don't bother with link to domain details
+			next;
+			}
 		elsif ($url eq '' && $module_name) {
 			$url = "/$module_name/$module_info{'index_link'}";
 			}
@@ -272,7 +279,7 @@ for($i=0; $i+1<@_; $i+=2) {
 			$url = "/$module_name/$url";
 			}
 		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
-		if ($i == 0) {
+		if ($count++ == 0) {
 			print "<a href=\"$url\"><img alt=\"<-\" align=middle border=0 src=$gconfig{'webprefix'}/images/left.gif></a>\n";
 			}
 		else {
