@@ -115,6 +115,8 @@ config_section=Configuration category:
 config_change=Change
 config_return=system information
 config_next=Save and Next
+config_nnext=Next
+config_nprev=Prev
 
 edright_title=System Information Configuration
 edright_header=Virtualmin system information page settings
