@@ -37,9 +37,18 @@ EOF
 $hasvirt = &foreign_available("virtual-server");
 if ($hasvirt) {
 	%minfo = &get_module_info("virtual-server");
+	%vconfig = &foreign_config("virtual-server");
 	$hasvirt = 0 if ($minfo{'version'} < 2.99);
 	}
 $hasmail = &foreign_available("mailbox");
+
+if ($vconfig{'theme_image'}) {
+	# Show the hosting provider logo
+	$link = $vconfig{'theme_link'};
+	print "<a href='$link' target=_new>" if ($link);
+	print "<img src='$vconfig{'theme_image'}' border=0>";
+	print "</a><br>\n" if ($link);
+	}
 
 # Find editable domains
 $mode = $in{'mode'} ? $in{'mode'} :

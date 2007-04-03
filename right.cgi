@@ -141,11 +141,13 @@ if ($level == 0) {		# Master admin
 			print "<td>",&text('right_load', @c),"</td> </tr>\n";
 			}
 
+		# Running processes
 		if ($info->{'procs'}) {
 			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
 			print "<td>$info->{'procs'}</td> </tr>\n";
 			}
 
+		# Memory used
 		if ($info->{'mem'}) {
 			@m = @{$info->{'mem'}};
 			if (@m && $m[0]) {
