@@ -264,15 +264,22 @@ if ($mode eq "virtualmin" && @doms) {
 	@cl = defined(&virtual_server::list_visible_custom_links) ?
 		&virtual_server::list_visible_custom_links($d) : ( );
 	if (@cl) {
-		&print_category_opener("cat_custom", \@cats,
-				       $text{'left_customlinks'});
-		print "<div class='itemhidden' id='cat_custom'>\n";
-		foreach $l (@cl) {
-			&print_category_link("$l->{'url'}",
+		# Work out categories, and show links under them
+		@linkcats = &unique(map { $_->{'cat'} } @cl);
+		foreach my $lc (@linkcats) {
+			@catcl = grep { $_->{'cat'} eq $lc } @cl;
+			$catclid = "cat_custom_".$lc;
+			&print_category_opener($catclid, \@cats,
+					       $catcl[0]->{'catname'} ||
+						$text{'left_customlinks'});
+			print "<div class='itemhidden' id='$catclid'>\n";
+			foreach $l (@catcl) {
+				&print_category_link($l->{'url'},
 					     $l->{'desc'}, undef, undef,
 					     $l->{'open'} ? "_new" : "right");
+				}
+			print "</div>\n";
 			}
-		print "</div>\n";
 		}
 
 	print "<hr>\n";
