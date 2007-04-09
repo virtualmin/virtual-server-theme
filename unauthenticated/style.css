@@ -9,7 +9,7 @@ table { border-width: 0px;
 }
 table.formsection, table.sortable, table.ui_table {
   border-collapse: collapse;
-  border: 2px solid #ccccff;
+  border: 2px solid #aaaacc;
   width:98%;
   margin: 4px;
 }
@@ -52,22 +52,6 @@ pre { font-size: 8pt; }
 	background-color: #e8e8ea;
   margin: 4px;
 }
-#menubarun { border-style: solid;
-	border-color: #c9c9c9;
-	border-bottom-width: 0px;
-	border-top-width: 1px;
-	border-left-width: 1px;
-	border-right-width: 1px;
-	background-image: url("images/title-bar.png");
-}
-#menubar { border-style: solid;
-	border-color: #adade4;
-	border-bottom-width: 0px;
-	border-top-width: 1px;
-	border-left-width: 1px;
-	border-right-width: 1px;
-	background-image: url("images/title-bar-selected.png");
-}
 tr.mainsel { background-color: #ddffbb; }
 tr.mainhigh { background-color: #ffffbb; }
 tr.mainhighsel { background-color: #bbffcc; }
@@ -76,7 +60,6 @@ tr.mainhighsel { background-color: #bbffcc; }
   top:-2000px;
   left:-2000px;
 }
-.itemshown { }
 .itemshown table { width: 70%;
   margin-left:3%;
 }
@@ -86,4 +69,10 @@ tr.mainhighsel { background-color: #bbffcc; }
 .ui_post_header{ font-size: 120%;
  text-align: center;
  padding: 4px;
+}
+hr { border: 0;
+  width: 90%;
+  height: 2px;
+  color: #EFF0F1;
+  background-color: #EFF0F1;
 }
