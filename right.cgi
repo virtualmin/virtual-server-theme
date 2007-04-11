@@ -275,7 +275,8 @@ if ($level == 0) {		# Master admin
 		print "</div>\n";
 		}
 
-	if ($hasvirt && !$sects->{'noquotas'} && $info->{'quota'}) {
+	if ($hasvirt && !$sects->{'noquotas'} && $info->{'quota'} &&
+	    @{$info->{'quota'}}) {
 		# Show quota graphs
 		&show_toggleview("quotas", "toggler4", 0,
 				 $text{'right_quotasheader'});
@@ -540,7 +541,7 @@ $rv .= sprintf "<img src=images/red.gif width=%s%% height=12>", $w1;
 $rv .= sprintf "<img src=images/purple.gif width=%s%% height=12>", $w2;
 $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12>", $w3;
 $rv .= sprintf "<img src=images/grey.gif width=%s%% height=12>",
-	$bar_width - $w1 - $w2 - $w3 - 1;
+	$bar_width - $w1 - $w2 - $w3;
 $rv .= "</div>";
 return $rv;
 }
