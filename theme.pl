@@ -387,3 +387,14 @@ else {
 return ($hasvirt, $level);
 }
 
+# Don't show virtualmin menu
+sub theme_redirect
+{
+local ($orig, $url) = @_;
+if ($module_name eq "virtual-server" && $orig eq "" &&
+    $url =~ /^((http|https):\/\/([^\/]+))\//) {
+	$url = "$1/right.cgi";
+	}
+print "Location: $url\n\n";
+}
+
