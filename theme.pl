@@ -10,6 +10,7 @@ local ($text) = @_;
 local $rv;
 $rv .= "<div class='ui_post_header'>$text</div>\n" if (defined($text));
 $rv .= "<div class='section'>\n";
+$rv .= "<p>" if (!defined($text));
 return $rv;
 }
 
