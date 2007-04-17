@@ -68,6 +68,7 @@ if ($mode eq "virtualmin" && $hasvirt) {
 	elsif ($virtual_server::config{'domains_sort'} eq 'user') {
 		# By username, with indents
 		@doms = sort { lc($a->{'user'}) cmp lc($b->{'user'}) ||
+			       $a->{'parent'} <=> $b->{'parent'} ||
 			       $a->{'created'} <=> $b->{'created'} } @doms;
 		foreach my $d (@doms) {
 			local $show = $d->{'dom'};
