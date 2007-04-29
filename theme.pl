@@ -156,7 +156,7 @@ $rv .= "<tr $cb onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.clas
 local $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i].">".
-	       ($cols->[$i] eq "" ? "<br>" : $cols->[$i])."</td>\n";
+	       ($cols->[$i] !~ /\S/ ? "<br>" : $cols->[$i])."</td>\n";
 	}
 $rv .= "</tr>\n";
 return $rv;
@@ -211,7 +211,7 @@ for($i=0; $i<@$cols; $i++) {
 		$rv .= "<label for=\"".
 			&quote_escape("${checkname}_${checkvalue}")."\">";
 		}
-	$rv .= ($cols->[$i] eq "" ? "<br>" : $cols->[$i]);
+	$rv .= ($cols->[$i] !~ /\S/ ? "<br>" : $cols->[$i]);
 	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
 		$rv .= "</label>";
 		}
