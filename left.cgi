@@ -23,7 +23,7 @@ print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-$tconfig{'headhtml'}
+<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css' />
 <link rel="stylesheet" type="text/css" href="left.css" />
 <script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>
 <!--[if gte IE 5.5000]>

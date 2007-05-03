@@ -17,7 +17,7 @@ foreach $o (split(/\0/, $in{'open'})) {
 	$open{$o} = 1;
 	}
 
-&popup_header();
+&popup_header(undef, &capture_function_output(\&theme_prehead));
 
 if ($hasvirt) {
 	# Show link for editing what appears
