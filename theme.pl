@@ -281,7 +281,7 @@ for($i=0; $i+1<@_; $i+=2) {
 			}
 		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
 		if ($count++ == 0) {
-			print "<a href=\"$url\"><img alt=\"<-\" align=middle border=0 src=$gconfig{'webprefix'}/images/left.gif></a>\n";
+			print "<a href=\"$url\"><img alt=\"<-\" align=middle border=0 src=\"$gconfig{'webprefix'}/images/left.gif\"></a>\n";
 			}
 		else {
 			print "&nbsp;|\n";
