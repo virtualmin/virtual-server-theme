@@ -25,7 +25,7 @@ print <<EOF;
 <head>
 $tconfig{'headhtml'}
 <link rel="stylesheet" type="text/css" href="left.css" />
-<script type='text/javascript' src='/unauthenticated/toggleview.js'></script>
+<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>
 <!--[if gte IE 5.5000]>
   <script type='text/javascript' src='pngfix.js'></script>
 <![endif]-->
