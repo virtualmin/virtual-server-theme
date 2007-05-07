@@ -193,11 +193,11 @@ if ($level == 0) {		# Master admin
 		# Show updates section
 		&show_toggleview("updates", "toggler7", 1,
 				 $text{'right_updatesheader'});
-		print &ui_form_start("../security-updates/update.cgi");
+		print &ui_form_start("security-updates/update.cgi");
 		print &text(
 			@poss > 1 ? 'right_upcount' : 'right_upcount1',
 			scalar(@poss),
-			'../security-updates/'),"<p>\n";
+			'security-updates/'),"<p>\n";
 		print &ui_columns_start([ $text{'right_upname'},
 					  $text{'right_updesc'},
 					  $text{'right_upver'} ]);
