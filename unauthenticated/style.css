@@ -13,6 +13,7 @@ table.formsection, table.sortable, table.ui_table {
   width:98%;
   margin: 4px;
 }
+table.loginform {width:40%}
 a:link { color: #333399;
   text-decoration: none;
 }
