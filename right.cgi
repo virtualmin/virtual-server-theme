@@ -98,7 +98,7 @@ if ($level == 0) {		# Master admin
 		&show_toggleview("system", "toggler1", 1,
 				 $text{'right_systemheader'});
 
-		print "<table width=70%>\n";
+		print "<table>\n";
 
 		# Host and login info
 		print "<tr> <td><b>$text{'right_host'}</b></td>\n";
@@ -253,7 +253,7 @@ if ($level == 0) {		# Master admin
 		# Show Virtualmin information
 		&show_toggleview("virtualmin", "toggler3", 0,
 				 $text{'right_virtheader'});
-		print "<table width=70%>\n";
+		print "<table>\n";
 		my $i = 0;
 		foreach my $f (@{$info->{'ftypes'}}) {
 			local $cur = int($info->{'fcount'}->{$f});
@@ -349,7 +349,7 @@ elsif ($level == 2) {		# Domain owner
 			"user", $remote_user, "parent", "");
 		}
 
-	print "<table width=70%>\n";
+	print "<table>\n";
 
 	print "<tr> <td><b>$text{'right_login'}</b></td>\n";
 	print "<td>",$remote_user,"</td> </tr>\n";
@@ -460,7 +460,7 @@ elsif ($level == 2) {		# Domain owner
 elsif ($level == 3) {		# Usermin
 	# Show user's information
 	print "<h3>$text{'right_header5'}</h3>\n";
-	print "<table width=70%>\n";
+	print "<table>\n";
 
 	# Host and login info
 	print "<tr> <td><b>$text{'right_host'}</b></td>\n";
@@ -514,14 +514,14 @@ sub bar_chart
 {
 local ($total, $used, $blue) = @_;
 local $rv;
-$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12>",
+$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12px>",
   int($bar_width*$used/$total)+1;
 if ($blue) {
-  $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12></div>",
+  $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12px></div>",
     $bar_width - int($bar_width*$used/$total)-1;
   }
 else {
-  $rv .= sprintf "<img src=images/white.gif width=%s%% height=12></div>",
+  $rv .= sprintf "<img src=images/white.gif width=%s%% height=12px></div>",
     $bar_width - int($bar_width*$used/$total)-1;
   }
 return $rv;
@@ -536,12 +536,12 @@ local $rv;
 local $w1 = int($bar_width*$used1/$total)+1;
 local $w2 = int($bar_width*$used2/$total);
 local $w3 = int($bar_width*$used3/$total);
+local $w4 = int($bar_width - $w1 - $w2 - $w3);
 $rv .= "<div class='barchart'>";
-$rv .= sprintf "<img src=images/red.gif width=%s%% height=12>", $w1;
-$rv .= sprintf "<img src=images/purple.gif width=%s%% height=12>", $w2;
-$rv .= sprintf "<img src=images/blue.gif width=%s%% height=12>", $w3;
-$rv .= sprintf "<img src=images/grey.gif width=%s%% height=12>",
-	$bar_width - $w1 - $w2 - $w3;
+if ($w1) {$rv .= sprintf "<img src=images/red.gif width=%s%% height=12px>", $w1;}
+if ($w2) {$rv .= sprintf "<img src=images/purple.gif width=%s%% height=12px>", $w2;}
+if ($w3) {$rv .= sprintf "<img src=images/blue.gif width=%s%% height=12px>", $w3;}
+if ($w4) {$rv .= sprintf "<img src=images/grey.gif width=%s%% height=12px>", $w4;}
 $rv .= "</div>";
 return $rv;
 }
@@ -568,7 +568,7 @@ foreach my $d (@doms) {
 	}
 
 # Show counts for features, including maxes
-print "<table width=70%>\n";
+print "<table>\n";
 my $i = 0;
 foreach my $f ("doms", "dns", "web", "ssl", "mail",
 	       "dbs", "users", "aliases") {
@@ -597,7 +597,7 @@ local @quota = @$quota;
 if (@quota) {
 	# Show disk usage by various domains
 	@quota = sort { $b->[1] <=> $a->[1] } @quota;
-	print "<table width=70%>\n";
+	print "<table>\n";
 	if (@quota > 10) {
 		@quota = @quota[0..9];
 		print "<tr> <td colspan=2>$text{'right_quota10'}</td> </tr>\n";
