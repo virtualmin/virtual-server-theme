@@ -18,9 +18,9 @@ mkdir("$user_config_directory/$m", 0700);
 &read_file("$config_directory/$m/canconfig", \%canconfig);
 
 $mdir = &module_root_directory($m);
-if (-r "$mdir/config_info.pl") {
+if (-r "$mdir/uconfig_info.pl") {
 	# Module has a custom config editor
-	&foreign_require($m, "config_info.pl");
+	&foreign_require($m, "uconfig_info.pl");
 	local $fn = "${m}::config_form";
 	if (defined(&$fn)) {
 		local $pkg = $m;
@@ -37,5 +37,13 @@ if (!$func) {
 	}
 &write_file("$user_config_directory/$m/config", \%config);
 &unlock_file("$user_config_directory/$m/config");
+
+# Call any post-config save function
+local $pfn = "${m}::config_post_save";
+if (defined(&$pfn)) {
+	&foreign_call($m, "config_post_save", \%config, \%oldconfig,
+					      \%canconfig);
+	}
+
 &redirect("/$m/");
 
