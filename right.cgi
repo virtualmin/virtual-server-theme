@@ -183,6 +183,14 @@ if ($level == 0) {		# Master admin
 			      "</td> </tr>\n";
 			}
 
+		if (!$sects->{'noupdates'} && !@{$info->{'poss'}} &&
+		    &foreign_check("security-updates")) {
+			# Re-assure the user that everything is up to date
+			print "<tr> <td><b>$text{'right_updesc'}</b></td>\n";
+			print "<td>",&text('right_upall', "security-updates/"),
+			      "</td> </tr>\n";
+			}
+
 		print "</table>\n";
 		print "</div></p>\n";
 		}

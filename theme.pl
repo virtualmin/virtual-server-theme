@@ -118,6 +118,11 @@ print "</script>\n";
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/sorttable.js'></script>\n";
 }
 
+sub theme_popup_prehead
+{
+return &theme_prehead();
+}
+
 # theme_ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
 # Returns HTML for a multi-column table, with the given headings
 sub theme_ui_columns_start
