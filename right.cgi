@@ -152,8 +152,10 @@ if ($level == 0) {		# Master admin
 			@m = @{$info->{'mem'}};
 			if (@m && $m[0]) {
 				print "<tr> <td><b>$text{'right_real'}</b></td>\n";
-				print "<td>",&nice_size($m[0]*1024)." total, ".
-					    &nice_size(($m[0]-$m[1])*1024)." used</td> </tr>\n";
+				print "<td>",&text('right_used',
+					&nice_size($m[0]*1024),
+					&nice_size(($m[0]-$m[1])*1024)),
+				      "</td> </tr>\n";
 				print "<tr> <td></td>\n";
 				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
 				      "</td> </tr>\n";
@@ -161,8 +163,10 @@ if ($level == 0) {		# Master admin
 
 			if (@m && $m[2]) {
 				print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
-				print "<td>",&nice_size($m[2]*1024)." total, ".
-					    &nice_size(($m[2]-$m[3])*1024)." used</td> </tr>\n";
+				print "<td>",&text('right_used',
+					&nice_size($m[2]*1024),
+					&nice_size(($m[2]-$m[3])*1024)),
+				      "</td> </tr>\n";
 				print "<tr> <td></td>\n";
 				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
 				      "</td> </tr>\n";
