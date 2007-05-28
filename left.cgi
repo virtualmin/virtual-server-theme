@@ -45,7 +45,7 @@ if ($image) {
 	# Show the hosting provider logo
 	$link = $vconfig{'theme_link'} || $gconfig{'virtualmin_theme_link'};
 	print "<a href='$link' target=_new>" if ($link);
-	print "<img src='$vconfig{'theme_image'}' border=0>";
+	print "<img src='$image' border=0>";
 	print "</a><br>\n" if ($link);
 	}
 
