@@ -33,14 +33,29 @@ foreach $i (@info_order) {
 		}
 	}
 if (@sections > 1 && &get_webmin_version() >= 1.225) {
-	# We have some .. show a menu to select
+	# Work out template section to edit
 	$in{'section'} ||= $sections[0]->[0];
+	$idx = &indexof($in{'section'}, map { $_->[0] } @sections);
+	if ($in{'nprev'}) {
+		$idx--;
+		$idx = @sections-1 if ($idx < 0);
+		}
+	elsif ($in{'nnext'}) {
+		$idx++;
+		$idx = 0 if ($idx >= @sections);
+		}
+	$in{'section'} = $sections[$idx]->[0];
+
+	# We have some sections .. show a menu to select
 	print &ui_form_start("uconfig.cgi");
 	print &ui_hidden("module", $m),"\n";
 	print $text{'config_section'},"\n";
 	print &ui_select("section", $in{'section'}, \@sections,
 			 1, 0, 0, 0, "onChange='form.submit()'");
 	print &ui_submit($text{'config_change'});
+	print "&nbsp;&nbsp;\n";
+	print &ui_submit($text{'config_nprev'}, "nprev");
+	print &ui_submit($text{'config_nnext'}, "nnext");
 	print &ui_form_end();
 	($s) = grep { $_->[0] eq $in{'section'} } @sections;
 	$sname = " ($s->[1])";

@@ -46,7 +46,7 @@ if (@sections > 1) {
 		}
 	$in{'section'} = $sections[$idx]->[0];
 
-	# We have some .. show a menu to select
+	# We have some sections .. show a menu to select
 	print &ui_form_start("config.cgi");
 	print &ui_hidden("module", $m),"\n";
 	print $text{'config_section'},"\n";
