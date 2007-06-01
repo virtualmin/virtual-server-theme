@@ -53,7 +53,8 @@ if ($gconfig{'showlogin'}) {
 
 # Show frameset
 &PrintHeader();
-$cols = &get_product_name() eq 'usermin' ? 180 : 230;
+$cols = &get_product_name() eq 'usermin' ? 180 :
+	&foreign_available("server-manager") ? 250 : 230;
 print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
