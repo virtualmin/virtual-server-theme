@@ -39,6 +39,7 @@ if ($hasvirt) {
 	$hasvirt = 0 if ($minfo{'version'} < 2.99);
 	}
 $hasmail = &foreign_available("mailbox");
+$hasvm2 = &foreign_available("server-manager");
 
 $image = $vconfig{'theme_image'} || $gconfig{'virtualmin_theme_image'};
 if ($image) {
@@ -49,11 +50,13 @@ if ($image) {
 	print "</a><br>\n" if ($link);
 	}
 
-# Find editable domains
+# Work out current mode
 $mode = $in{'mode'} ? $in{'mode'} :
 	$hasvirt ? "virtualmin" :
+	$hasvm2 ? "sm" :
 	$hasmail ? "mail" :
 		   &get_product_name();
+
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
@@ -100,19 +103,32 @@ else {
 	}
 $did = $d ? $d->{'id'} : undef;
 
+if ($mode eq "vm2" && $hasvm2) {
+	# Get and sort managed servers
+	&foreign_require("server-manager", "server-manager-lib.pl");
+	@servers = &server_manager::list_managed_servers();
+	@servers = sort { $a->{'host'} cmp $b->{'host'} } @servers;
+	($server) = grep { $_->{'id'} eq $in{'sid'} } @servers;
+	$server ||= $servers[0];
+	}
+$sid = $server ? $server->{'id'} : undef;
+
 # Show virtualmin / folders / webmin mode selector
-if ($hasvirt || $hasmail) {
+@has = ($hasvirt ? ( "virtualmin" ) : ( ),
+	$hasmail ? ( "mail" ) : ( ),
+	$hasvm2 ? ( "vm2" ) : ( ),
+	&get_product_name());
+if (@has > 1) {
 	print "<div class='mode'>";
-	foreach $m ($hasvirt ? ( "virtualmin" ) : ( ),
-		    $hasmail ? ( "mail" ) : ( ),
-		    &get_product_name()) {
+	foreach $m (@has) {
 		if ($m ne $mode) {
 			print "<a href='left.cgi?mode=$m&dom=$did'>";
 			}
 		else {
 			print "<b>";
 			}
-		print "<img src=images/$m-small.gif border=0> ".ucfirst($m);
+		print "<img src=images/$m-small.gif border=0> ".
+		      $text{'has_'.$m};
 		if ($m ne $mode) {
 			print "</a>\n";
 			}
@@ -124,8 +140,8 @@ if ($hasvirt || $hasmail) {
 	}
 
 print "<div class='menubody'>\n";
-if ($hasvirt) {
-	# Left form is for changing domain
+if ($hasvirt || $hasvm2) {
+	# Left form is for changing domain / server
 	print "<form action=left.cgi>\n";
 	$doneform = 1;
 	}
@@ -176,6 +192,7 @@ if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each
 	print "<div class='domainmenu'>\n";
+	print &ui_hidden("mode", $mode);
 	if ($virtual_server::config{'display_max'} &&
 	    @doms > $virtual_server::config{'display_max'}) {
 		# Show text field for domain name
@@ -188,7 +205,7 @@ if ($mode eq "virtualmin" && @doms) {
 			[ map { [ $_->{'id'}, &virtual_server::shorten_domain_name($_) ] } @doms ],
 			1, 0, 0, 0, "onChange='form.submit()'");
 		}
-	print "<input type=image src=images/ok.gif></td> </tr>\n";
+	print "<input type=image src=images/ok.gif>\n";
 	foreach $a (@admincats) {
 		print &ui_hidden($a, 1),"\n" if ($in{$a});
 		}
@@ -302,6 +319,16 @@ elsif ($mode eq "virtualmin") {
 		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1' target=right>$text{'left_generic'}</a></div>\n";
 		$shown_generic_create = 1;
 		}
+	}
+elsif ($mode eq "vm2") {
+	# Show managed servers
+	print "<div class='domainmenu'>\n";
+	print &ui_hidden("mode", $mode);
+	print &ui_select("sid", $sid,
+		[ map { [ $_->{'id'}, &shorten_hostname($_) ] } @servers ],
+		1, 0, 0, 0, "onChange='form.submit()'");
+	print "<input type=image src=images/ok.gif>\n";
+	print "</div>\n";
 	}
 
 if ($mode eq "virtualmin") {
@@ -477,12 +504,120 @@ if ($mode eq "mail") {
 		}
 	}
 
+if ($mode eq "vm2" && $server) {
+	$status = $server->{'status'};
+	$t = $server->{'manager'};
+
+	# Show status of current server
+	$statusmsg = &server_manager::describe_status($server, 1, 0);
+	print "<div class='leftlink'>",&text('left_vm2status', $statusmsg),
+	      "</div>\n";
+
+	# Show actions for current server
+	print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
+	print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&refresh=1' target=right>$text{'left_vm2refresh'}</a></div>\n";
+
+	if ($status eq 'virt' || $status eq 'novirt') {
+		# Show Webmin link
+		$wurl = &server_manager::webmin_link($server);
+		print "<div class='leftlink'><a href='$wurl' target=_new>$text{'left_vm2webmin'}</a></div>\n";
+		}
+
+	if ($status eq 'down' || $status eq 'nossh' || $status eq 'nohost') {
+		# Server is down, so we can only startup
+		$sfunc = "server_manager::type_".$t."_no_startup";
+		$nostart = defined(&$sfunc) && &$sfunc($server) ||
+			   $status eq 'nohost';
+		if (!$nostart) {
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&startup=1' target=right>$text{'left_vm2startup'}</a></div>\n";
+			}
+		}
+	else {
+		# Show shell link
+		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&shell=1' target=right>$text{'left_vm2shell'}</a></div>\n";
+
+		# Show shutdown and reboot links
+		$sfunc = "server_manager::type_".$t."_no_shutdown";
+		$noshut = defined(&$sfunc) && &$sfunc($server);
+		$rfunc = "server_manager::type_".$t."_no_reboot";
+		$noreboot = defined(&$rfunc) && &$rfunc($server);
+		if (!$noreboot) {
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&reboot=1' target=right>$text{'left_vm2reboot'}</a></div>\n";
+			}
+		if (!$noshut) {
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&shutdown=1' target=right>$text{'left_vm2shutdown'}</a></div>\n";
+			}
+		}
+
+	# Show delete / re-register links
+	if ($server->{'manager'} ne 'real' && $server->{'manager'} ne 'this') {
+		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&delete=1' target=right>$text{'left_vm2delete'}</a></div>\n";
+		}
+	if ($server->{'manager'} ne 'this' && 0) {
+		# Not really useful
+		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&dereg=1' target=right>$text{'left_vm2dereg'}</a></div>\n";
+		}
+	}
+
+if ($mode eq "vm2") {
+	# Show add / create links
+	@createlinks = @addlinks = ( );
+	foreach $t (@server_manager::server_management_types) {
+		$lfunc = "server_manager::type_".$t."_create_links";
+		if (defined(&$lfunc)) {
+			foreach $l (&$lfunc()) {
+				$l->{'type'} = $t;
+				if ($l->{'create'}) {
+					push(@createlinks, $l);
+					}
+				else {
+					push(@addlinks, $l);
+					}
+				}
+			}
+		}
+	foreach $ml ([ "create", \@createlinks ],
+		    [ "add", \@addlinks ]) {
+		($m, $l) = @$ml;
+		if (@$l) {
+			&print_category_opener($m, undef,
+					       $text{'left_vm2'.$m});
+			print "<div class='itemhidden' id='$m'>\n";
+			foreach $c (@$l) {
+				&print_category_link(
+				    "server-manager/${m}_form.cgi?".
+				    "type=$c->{'type'}", $c->{'desc'});
+				}
+			print "</div>\n";
+			}
+		}
+
+
+	# Show global settings
+	@vservers = grep { $_->{'status'} eq 'virt' } @servers;
+	($glinks, $gtitles, $gicons) = &server_manager::get_global_links(
+						scalar(@vservers));
+	if (@$glinks) {
+		&print_category_opener('global', undef,
+				       $text{'left_vm2global'});
+		print "<div class='itemhidden' id='global'>\n";
+		for($i=0; $i<@$glinks; $i++) {
+			&print_category_link(
+			    "server-manager/$glinks->[$i]", $gtitles->[$i]);
+			}
+		print "</div>\n";
+		}
+
+	# Show list of all servers
+	print "<div class='linkwithicon'><img src=images/vm2-small.gif><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
+	}
+
 if ($mode eq "webmin" || $mode eq "usermin") {
 	# Show all modules under categories
 	foreach $c (@cats) {
 		# Show category opener, plus modules under it
 		&print_category_opener($c, \@cats, $cats{$c});
-  	print "<div class='itemhidden' id='$c'>";
+		print "<div class='itemhidden' id='$c'>";
 		$creal = $c eq "others" ? "" : $c;
 		@inmodules = grep { $_->{'category'} eq $creal } @modules;
 		foreach $minfo (@inmodules) {
@@ -573,3 +708,23 @@ local ($link, $label, $image, $noimage, $target) = @_;
 $target ||= "right";
 return "<div class='linkindented'><a target=$target href=$link>$label</a></div>\n";
 }
+
+sub shorten_hostname
+{
+local ($server) = @_;
+local $show = $server->{'host'};
+local $rv;
+local $name_max = 20;
+if (length($show) > $name_max) {
+	# Show first and last max/2 chars, with ... between
+	local $s = int($name_max / 2);
+	$rv = substr($show, 0, $s)."...".substr($show, -$s);
+	}
+else {
+	$rv = $show;
+	}
+$rv =~ s/ /&nbsp;/g;
+return $rv;
+
+}
+

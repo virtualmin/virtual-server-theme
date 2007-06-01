@@ -86,6 +86,15 @@ if (!$done_theme_post_save_domain++) {
 	}
 }
 
+sub theme_post_save_server
+{
+if (!$done_theme_post_save_server++) {
+	print "<script>\n";
+	print "top.left.location = top.left.location;\n";
+	print "</script>\n";
+	}
+}
+
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
@@ -273,10 +282,21 @@ for($i=0; $i+1<@_; $i+=2) {
 			# Don't bother with virtualmin menu
 			next;
 			}
+		elsif ($url eq '' && $module_name eq 'server-manager' ||
+		       $url eq '/server-manager/') {
+			# Don't bother with vm2 menu
+			next;
+			}
 		elsif ($url =~ /(view|edit)_domain.cgi/ &&
 		       $module_name eq 'virtual-server' ||
 		       $url =~ /^\/virtual-server\/(view|edit)_domain.cgi/) {
 			# Don't bother with link to domain details
+			next;
+			}
+		elsif ($url =~ /edit_serv.cgi/ &&
+		       $module_name eq 'server-manager' ||
+		       $url =~ /^\/virtual-server\/edit_serv.cgi/) {
+			# Don't bother with link to system details
 			next;
 			}
 		elsif ($url eq '' && $module_name) {
