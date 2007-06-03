@@ -515,6 +515,25 @@ if ($mode eq "vm2" && $server) {
 
 	# Show actions for current server
 	print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
+	local @acts;
+	if ($server->{'status'} eq 'virt') {
+		push(@acts, "<a href='server-manager/edit_serv.cgi?".
+			    "id=$server->{'id'}&basic=0&coll=1' target=right>".
+			    "$text{'left_vm2coll'}</a>");
+		push(@acts, "<a href='server-manager/edit_serv.cgi?".
+			    "id=$server->{'id'}&basic=0&doms=1' target=right>".
+			    "$text{'left_vm2doms'}</a>");
+		}
+	$ifunc = "server_manager::type_".$t."_list_interfaces";
+	if (defined(&$ifunc)) {
+		push(@acts, "<a href='server-manager/edit_serv.cgi?".
+			   "id=$server->{'id'}&basic=0&ifaces=1' target=right>".
+			   "$text{'left_vm2ifaces'}</a>");
+		}
+	if (@acts) {
+		print "<div class='leftlink'>&nbsp;&nbsp;",
+		      &ui_links_row(\@acts),"</div>\n";
+		}
 	print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&refresh=1' target=right>$text{'left_vm2refresh'}</a></div>\n";
 
 	if ($status eq 'virt' || $status eq 'novirt') {
@@ -579,7 +598,10 @@ if ($mode eq "vm2") {
 	foreach $ml ([ "create", \@createlinks ],
 		    [ "add", \@addlinks ]) {
 		($m, $l) = @$ml;
-		if (@$l) {
+		if (@$l == 1) {
+			print "<div class='leftlink'><a href='server-manager/${m}_form.cgi?type=$c->{'type'}' target=right>$c->{'desc'}</a></div>\n";
+			}
+		elsif (@$l) {
 			&print_category_opener($m, undef,
 					       $text{'left_vm2'.$m});
 			print "<div class='itemhidden' id='$m'>\n";
