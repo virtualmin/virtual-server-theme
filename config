@@ -13,3 +13,4 @@ applet_dark_bg=8888aa
 applet_light_bg=ffffff
 noindex=1
 inframe=1
+framed=1
