@@ -216,7 +216,7 @@ if ($level == 0) {		# Master admin
 		foreach $p (@poss) {
 			print &ui_columns_row([
 			 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
-			print &ui_hidden("u", $p->{'name'});
+			print &ui_hidden("u", $p->{'update'} || $p->{'name'});
 			}
 		print &ui_columns_end();
 		print &ui_form_end([ [ undef, $text{'right_upok'} ] ]);
