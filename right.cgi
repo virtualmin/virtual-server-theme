@@ -213,10 +213,13 @@ if ($level == 0) {		# Master admin
 		print &ui_columns_start([ $text{'right_upname'},
 					  $text{'right_updesc'},
 					  $text{'right_upver'} ]);
+		%sinfo = &get_module_info("security-updates");
 		foreach $p (@poss) {
 			print &ui_columns_row([
 			 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
-			print &ui_hidden("u", $p->{'update'} || $p->{'name'});
+			print &ui_hidden("u",
+			  $sinfo->{'version'} >= 1.7 ?
+			     $p->{'update'}."/".$p->{'system'} : $p->{'name'});
 			}
 		print &ui_columns_end();
 		print &ui_form_end([ [ undef, $text{'right_upok'} ] ]);
