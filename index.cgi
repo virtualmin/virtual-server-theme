@@ -55,16 +55,24 @@ if ($gconfig{'showlogin'}) {
 &PrintHeader();
 $cols = &get_product_name() eq 'usermin' ? 180 :
 	&foreign_available("server-manager") &&
-	&foreign_available("virtual-server") ? 250 : 230;
+	&foreign_available("virtual-server") ? 260 : 230;
+$frame1 = "<frame name=left src='$left' scrolling=auto>";
+$frame2 = "<frame name=right src='$goto' noresize>";
+$fscols = "$cols,*";
+if ($current_lang_info->{'rtl'} || $current_lang eq "ar") {
+	($frame1, $frame2) = ($frame2, $frame1);
+	$fscols = "*,$cols";
+	}
+
 print <<EOF;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
 <head> <title>$title</title> </head>
 
-<frameset cols="$cols,*" border="0">
-	<frame name="left" src="$left" scrolling="auto">
-	<frame name="right" src="$goto" noresize>
+<frameset cols='$fscols' border=0>
+	$frame1
+	$frame2
 <noframes>
 <body>
 
