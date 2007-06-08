@@ -77,6 +77,7 @@ else {
 	}
 }
 
+# Called by Virtualmin after a domain is updated, to refresh the left menu
 sub theme_post_save_domain
 {
 if (!$done_theme_post_save_domain++) {
@@ -86,6 +87,7 @@ if (!$done_theme_post_save_domain++) {
 	}
 }
 
+# Called by VM2 after a server is updated, to refresh the left menu
 sub theme_post_save_server
 {
 if (!$done_theme_post_save_server++) {
@@ -93,6 +95,31 @@ if (!$done_theme_post_save_server++) {
 	print "top.left.location = top.left.location;\n";
 	print "</script>\n";
 	}
+}
+
+# theme_select_server(&server)
+# Called by VM2 when a page for a server is displayed, to select it on the
+# left menu.
+sub theme_select_server
+{
+local ($server) = @_;
+print <<EOF;
+<script>
+if (window.parent && window.parent.frames[0]) {
+	var leftdoc = window.parent.frames[0].document;
+	var leftform = leftdoc.forms[0];
+	if (leftform) {
+		var serversel = leftform['sid'];
+		if (serversel && serversel.value != '$server->{'id'}') {
+			// Need to change value
+			serversel.value = '$server->{'id'}';
+			window.parent.frames[0].location =
+				'/left.cgi?mode=vm2&sid=$server->{'id'}';
+			}
+		}
+	}
+</script>
+EOF
 }
 
 sub theme_prebody
