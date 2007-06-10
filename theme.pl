@@ -2,6 +2,8 @@
 # Icons copyright David Vignoni, all other theme elements copyright 2005-2007
 # Virtualmin, Inc.
 
+$main::vm2_no_create_links = 1;
+
 # theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call
 sub theme_ui_post_header
