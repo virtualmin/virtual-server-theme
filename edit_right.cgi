@@ -11,7 +11,7 @@ $sects = &get_right_frame_sections();
 !$sects->{'global'} || &virtual_server::master_admin() ||
 	&error($text{'edright_ecannot'});
 
-&ui_print_header(undef, $text{'edright_title'}, "");
+&ui_print_header(undef, $text{'edright_title'}, "", undef, 0, 1, 1);
 
 print &ui_form_start("save_right.cgi", "post");
 print &ui_table_start($text{'edright_header'}, undef ,2);
