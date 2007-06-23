@@ -3,6 +3,7 @@
 # Virtualmin, Inc.
 
 $main::vm2_no_create_links = 1;
+$main::vm2_no_edit_buttons = 1;
 
 # theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call

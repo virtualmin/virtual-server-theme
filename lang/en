@@ -58,6 +58,9 @@ left_vm2dereg=De-Register System
 left_vm2refresh=Refresh Status
 left_vm2global=VM2 Settings
 left_vm2status=Status: $1
+left_vm2ivirt=Install Virtualmin
+left_vm2iwebmin=Install Webmin
+left_vm2recheck=Recheck Virtualmin Config
 
 right_header0=System Information
 right_host=System hostname

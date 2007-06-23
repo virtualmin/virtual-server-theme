@@ -552,6 +552,19 @@ if ($mode eq "vm2" && $server) {
 			}
 		}
 	else {
+		if ($status eq 'novirt' || $status eq 'nowebmin') {
+			# Install Virtualmin link
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&installvirt=1' target=right>$text{'left_vm2ivirt'}</a></div>\n";
+			}
+		if ($status eq 'nowebmin') {
+			# Install Webmin link
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&installwebmin=1' target=right>$text{'left_vm2iwebmin'}</a></div>\n";
+			}
+		if ($status eq 'virt' && $server->{'virtualmin_error'}) {
+			# Recheck config link
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&recheck=1' target=right>$text{'left_vm2recheck'}</a></div>\n";
+			}
+
 		# Show shell link
 		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&shell=1' target=right>$text{'left_vm2shell'}</a></div>\n";
 
