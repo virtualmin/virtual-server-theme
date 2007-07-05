@@ -396,41 +396,41 @@ elsif ($level == 2) {		# Domain owner
 		}
 
 	# Users and aliases info
-	@users = &virtual_server::list_domain_users($d, 0, 1, 1, 1);
+	$users = &virtual_server::count_domain_feature("mailboxes", @subs);
 	($uleft, $ureason, $utotal, $uhide) =
 		&virtual_server::count_feature("mailboxes");
 	print "<tr> <td><b>$text{'right_fusers'}</b></td>\n";
 	if ($uleft < 0 || $uhide) {
-		print "<td>",scalar(@users),"</td> </tr>\n";
+		print "<td>$users</td> </tr>\n";
 		}
 	else {
 		print "<td>",&text('right_of',
-				   scalar(@users), $utotal),"</td> </tr>\n";
+				   $users, $utotal),"</td> </tr>\n";
 		}
 
-	@aliases = &virtual_server::list_domain_aliases($d, 1);
+	$aliases = &virtual_server::count_domain_feature("aliases", @subs);
 	($aleft, $areason, $atotal, $ahide) =
 		&virtual_server::count_feature("aliases");
 	print "<tr> <td><b>$text{'right_faliases'}</b></td>\n";
 	if ($aleft < 0 || $ahide) {
-		print "<td>",scalar(@aliases),"</td> </tr>\n";
+		print "<td>$aliases</td> </tr>\n";
 		}
 	else {
 		print "<td>",&text('right_of',
-				   scalar(@aliases), $atotal),"</td> </tr>\n";
+				   $aliases, $atotal),"</td> </tr>\n";
 		}
 
 	# Databases
-	@dbs = &virtual_server::domain_databases($d);
+	$dbs = &virtual_server::count_domain_feature("dbs", @subs);
 	($dleft, $dreason, $dtotal, $dhide) =
 		&virtual_server::count_feature("dbs");
 	print "<tr> <td><b>$text{'right_fdbs'}</b></td>\n";
 	if ($dleft < 0 || $dhide) {
-		print "<td>",scalar(@dbs),"</td> </tr>\n";
+		print "<td>$dbs</td> </tr>\n";
 		}
 	else {
 		print "<td>",&text('right_of',
-				   scalar(@dbs), $dtotal),"</td> </tr>\n";
+				   $dbs, $dtotal),"</td> </tr>\n";
 		}
 
 	if (!$sects->{'noquotas'} &&

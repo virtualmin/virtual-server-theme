@@ -589,6 +589,12 @@ if ($mode eq "vm2" && $server) {
 		# Not really useful
 		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&dereg=1' target=right>$text{'left_vm2dereg'}</a></div>\n";
 		}
+
+	# Show image creation link
+	$nfunc = "server_manager::type_".$server->{'manager'}."_no_image";
+	if (!defined(&$nfunc) || !&$nfunc($server)) {
+		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&image=1' target=right>$text{'left_vm2image'}</a></div>\n";
+		}
 	}
 
 if ($mode eq "vm2") {
