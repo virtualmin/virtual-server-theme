@@ -513,7 +513,7 @@ if ($mode eq "vm2" && $server) {
 	print "<div class='leftlink'>",&text('left_vm2status', $statusmsg),
 	      "</div>\n";
 
-	# Show actions for current server
+	# Show links to edit server
 	print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
 	local @acts;
 	if ($server->{'status'} eq 'virt') {
@@ -534,66 +534,19 @@ if ($mode eq "vm2" && $server) {
 		print "<div class='leftlink'>&nbsp;&nbsp;",
 		      &ui_links_row(\@acts),"</div>\n";
 		}
-	print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&refresh=1' target=right>$text{'left_vm2refresh'}</a></div>\n";
 
-	if ($status eq 'virt' || $status eq 'novirt') {
-		# Show Webmin link
-		$wurl = &server_manager::webmin_link($server);
-		print "<div class='leftlink'><a href='$wurl' target=_new>$text{'left_vm2webmin'}</a></div>\n";
-		}
-
-	if ($status eq 'down' || $status eq 'nossh' || $status eq 'nohost') {
-		# Server is down, so we can only startup
-		$sfunc = "server_manager::type_".$t."_no_startup";
-		$nostart = defined(&$sfunc) && &$sfunc($server) ||
-			   $status eq 'nohost';
-		if (!$nostart) {
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&startup=1' target=right>$text{'left_vm2startup'}</a></div>\n";
+	# Show actions provided by VM2
+	foreach my $b (&server_manager::get_server_actions($server)) {
+		next if (!$b);
+		local $msg = $text{'left_vm2'.$b->[0]} || $b->[1];
+		if ($b->[3]) {
+			# Custom URL
+			local $target = $b->[2] ? "_new" : "right";
+			print "<div class='leftlink'><a href='$b->[3]' target=$target>$msg</a></div>\n";
 			}
-		}
-	else {
-		if ($status eq 'novirt' || $status eq 'nowebmin') {
-			# Install Virtualmin link
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&installvirt=1' target=right>$text{'left_vm2ivirt'}</a></div>\n";
+		else {
+			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&$b->[0]=1' target=right>$msg</a></div>\n";
 			}
-		if ($status eq 'nowebmin') {
-			# Install Webmin link
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&installwebmin=1' target=right>$text{'left_vm2iwebmin'}</a></div>\n";
-			}
-		if ($status eq 'virt' && $server->{'virtualmin_error'}) {
-			# Recheck config link
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&recheck=1' target=right>$text{'left_vm2recheck'}</a></div>\n";
-			}
-
-		# Show shell link
-		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&shell=1' target=right>$text{'left_vm2shell'}</a></div>\n";
-
-		# Show shutdown and reboot links
-		$sfunc = "server_manager::type_".$t."_no_shutdown";
-		$noshut = defined(&$sfunc) && &$sfunc($server);
-		$rfunc = "server_manager::type_".$t."_no_reboot";
-		$noreboot = defined(&$rfunc) && &$rfunc($server);
-		if (!$noreboot) {
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&reboot=1' target=right>$text{'left_vm2reboot'}</a></div>\n";
-			}
-		if (!$noshut) {
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&shutdown=1' target=right>$text{'left_vm2shutdown'}</a></div>\n";
-			}
-		}
-
-	# Show delete / re-register links
-	if ($server->{'manager'} ne 'real' && $server->{'manager'} ne 'this') {
-		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&delete=1' target=right>$text{'left_vm2delete'}</a></div>\n";
-		}
-	if ($server->{'manager'} ne 'this' && 0) {
-		# Not really useful
-		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&dereg=1' target=right>$text{'left_vm2dereg'}</a></div>\n";
-		}
-
-	# Show image creation link
-	$nfunc = "server_manager::type_".$server->{'manager'}."_no_image";
-	if (!defined(&$nfunc) || !&$nfunc($server)) {
-		print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&image=1' target=right>$text{'left_vm2image'}</a></div>\n";
 		}
 	}
 
