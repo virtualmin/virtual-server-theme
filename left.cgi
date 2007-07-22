@@ -462,6 +462,7 @@ if ($mode eq "mail") {
 	foreach $f (@folders) {
 		$fid = &mailbox::folder_name($f);
 		$star = $f->{'type'} == 6 &&
+			$mailbox::special_folder_id &&
 			$f->{'id'} == $mailbox::special_folder_id ?
 			  "<img src=mailbox/images/special.gif border=0>" : "";
 		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$star$f->{'name'}</a></div>\n";
