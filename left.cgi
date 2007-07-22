@@ -461,7 +461,10 @@ if ($mode eq "mail") {
 	# Show mail folders
 	foreach $f (@folders) {
 		$fid = &mailbox::folder_name($f);
-		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$f->{'name'}</a></div>\n";
+		$star = $f->{'type'} == 6 &&
+			$f->{'id'} == $mailbox::special_folder_id ?
+			  "<img src=mailbox/images/special.gif border=0>" : "";
+		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$star$f->{'name'}</a></div>\n";
 		}
 
 	# Show search box
