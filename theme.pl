@@ -8,7 +8,6 @@ $main::vm2_no_edit_buttons = 1;
 $main::mailbox_no_addressbook_button = 1;
 $main::mailbox_no_folder_button = 1;
 
-# theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call
 sub theme_ui_post_header
 {
@@ -172,6 +171,7 @@ sub theme_ui_columns_start
 local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
+$theme_ui_columns_row_toggle = 0;
 $rv .= "<table".($noborder ? "" : " class='ui_table'").
     (defined($width) ? " width=$width%" : "").
     ($href ? "" : " class='sortable'").">\n";
