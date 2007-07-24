@@ -8,6 +8,7 @@ $main::vm2_no_edit_buttons = 1;
 $main::mailbox_no_addressbook_button = 1;
 $main::mailbox_no_folder_button = 1;
 
+# theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call
 sub theme_ui_post_header
 {
