@@ -14,6 +14,8 @@ table.formsection, table.sortable, table.ui_table, table.loginform {
   margin: 4px;
 }
 table.loginform {width:40%}
+tr.row0 {background-color:#e8e8ea;}
+tr.row1 {background-color:#f8f8fa;}
 a:link { color: #333399;
   text-decoration: none;
 }
