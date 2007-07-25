@@ -495,16 +495,23 @@ if ($mode eq "mail") {
 		print "<div class='aftericon'><a target=right href='uconfig.cgi?mailbox'>$text{'left_prefs'}</a></div></div>\n";
 		}
 
+	# Mail filter link
+	if (&foreign_available("filter")) {
+		&foreign_require("filter", "filter-lib.pl");
+		print "<div class='linkwithicon'><img src=images/filter.gif>\n";
+		print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
+
+		if (defined(&filter::can_simple_autoreply) &&
+		    &filter::can_simple_autoreply()) {
+			print "<div class='linkwithicon'><img src=images/autoreply.gif>\n";
+			print "<div class='aftericon'><a target=right href='filter/edit_auto.cgi'>$text{'left_autoreply'}</a></div></div>\n";
+			}
+		}
+
 	# Change password link
 	if (&foreign_available("changepass")) {
 		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
-		}
-
-	# Mail filter link
-	if (&foreign_available("filter")) {
-		print "<div class='linkwithicon'><img src=images/filter.gif>\n";
-		print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
 		}
 	}
 
