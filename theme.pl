@@ -198,7 +198,7 @@ sub theme_ui_columns_row
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
 local ($cols, $tdtags) = @_;
 local $rv;
-$rv .= "<tr class='ui_columns row$theme_ui_columns_row_toggle' onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody'\">\n";
+$rv .= "<tr class='ui_columns row$theme_ui_columns_row_toggle' onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody row$theme_ui_columns_row_toggle'\">\n";
 local $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i].">".
