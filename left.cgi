@@ -500,8 +500,12 @@ if ($mode eq "mail") {
 		&foreign_require("filter", "filter-lib.pl");
 		if (!defined(&filter::no_user_procmailrc) ||
 		    !&filter::no_user_procmailrc()) {
-			print "<div class='linkwithicon'><img src=images/filter.gif>\n";
-			print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
+			# Forwarding link, unless it isn't available
+			if (defined(&filter::can_simple_forward) &&
+			    &filter::can_simple_forward()) {
+				print "<div class='linkwithicon'><img src=images/forward.gif>\n";
+				print "<div class='aftericon'><a target=right href='filter/edit_forward.cgi'>$text{'left_forward'}</a></div></div>\n";
+				}
 
 			# Autoreply link, unless it isn't available
 			if (defined(&filter::can_simple_autoreply) &&
@@ -509,6 +513,10 @@ if ($mode eq "mail") {
 				print "<div class='linkwithicon'><img src=images/autoreply.gif>\n";
 				print "<div class='aftericon'><a target=right href='filter/edit_auto.cgi'>$text{'left_autoreply'}</a></div></div>\n";
 				}
+
+			# Filter mail link
+			print "<div class='linkwithicon'><img src=images/filter.gif>\n";
+			print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
 			}
 		}
 
