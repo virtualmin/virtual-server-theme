@@ -622,6 +622,9 @@ if ($mode eq "vm2") {
 			&print_category_link(
 			    "server-manager/$glinks->[$i]", $gtitles->[$i]);
 			}
+		&print_category_link(
+			"config.cgi?server-manager",
+			$text{'header_config'});
 		print "</div>\n";
 		}
 
