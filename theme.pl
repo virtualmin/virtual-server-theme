@@ -360,7 +360,7 @@ if (!$_[$i]) {
 
 $right_frame_sections_file = "$config_directory/$current_theme/sections";
 @right_frame_sections = ( 'system', 'status', 'virtualmin', 'quotas', 'ips',
-			  'sysinfo' );
+			  'sysinfo', 'vm2servers' );
 
 # get_right_frame_sections()
 # Returns a hash containg details of visible right-frame sections
@@ -411,12 +411,17 @@ else {
 # Returns a list of possible sections for the current user
 sub list_right_frame_sections
 {
-local ($hasvirt, $level) = &get_virtualmin_user_level();
-if (!$hasvirt) {
-	return ( 'system' );
-	}
-elsif ($level == 0) {
-	return ( 'system', 'updates', 'status', 'virtualmin', 'quotas', 'ips', 'sysinfo' );
+local ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
+if ($level == 0) {
+	local @rv = ( 'system' );
+	if ($hasvirt) {
+		push(@rv, 'updates', 'status', 'virtualmin', 'quotas',
+			  'ips', 'sysinfo');
+		}
+	if ($hasvm2) {
+		push(@rv, 'vm2servers');
+		}
+	return @rv;
 	}
 elsif ($level == 1) {
 	return ( 'virtualmin' );
@@ -430,11 +435,16 @@ else {
 }
 
 # get_virtualmin_user_level()
-# Returns two numbers - the first being a flag if virtualmin is installed,
-# the second a user type (3=usermin, 2=domain, 1=reseller, 0=master)
+# Returns three numbers - the first being a flag if virtualmin is installed,
+# the second a user type (3=usermin, 2=domain, 1=reseller, 0=master), the
+# third a flag for VM2
 sub get_virtualmin_user_level
 {
-local ($hasvirt, $level);
+local ($hasvirt, $hasvm2, $level);
+if (&foreign_available("server-manager")) {
+	&foreign_require("server-manager", "server-manager-lib.pl");
+	$hasvm2 = 1;
+	}
 if (&foreign_available("virtual-server")) {
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
 	$hasvirt = 1;
@@ -447,7 +457,7 @@ elsif (&get_product_name() eq "usermin") {
 else {
 	$level = 0;
 	}
-return ($hasvirt, $level);
+return ($hasvirt, $level, $hasvm2);
 }
 
 # Don't show virtualmin menu

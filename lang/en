@@ -132,6 +132,11 @@ right_upok=Install All Updates Now
 right_recollect=Refresh system information
 right_pkgupdesc=Package updates
 right_upall=All <a href='$1'>Virtualmin packages</a> are up to date
+right_vm2=VM2 version
+right_vm2serversheader=VM2 Managed Systems
+right_vm2statuses=System Counts By Status
+right_vm2types=System Counts By Type
+
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
 

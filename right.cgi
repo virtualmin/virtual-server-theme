@@ -9,23 +9,28 @@ do 'ui-lib.pl';
 
 # Work out system capabilities. Level 3 = usermin, 2 = domain owner,
 # 1 = reseller, 0 = master
-($hasvirt, $level) = &get_virtualmin_user_level();
+($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
 $bar_width = 100;
 foreach $o (split(/\0/, $in{'open'})) {
 	push(@open, $o);
-	$open{$o} = 1;
 	}
+if (!defined($in{'open'})) {
+	@open = ( 'system', 'status', 'updates' );
+	}
+%open = map { $_, 1 } @open;
 
 &popup_header(undef, &capture_function_output(\&theme_prehead));
 
-if ($hasvirt) {
+if ($hasvirt || $hasvm2) {
 	# Show link for editing what appears
 	$sects = &get_right_frame_sections();
-	if (!$sects->{'global'} || &virtual_server::master_admin()) {
+	if (!$sects->{'global'} ||
+	    $hasvirt && &virtual_server::master_admin() ||
+	    $hasvm2) {
 		print "<div align=right>";
 		@links = ( "<a href='edit_right.cgi'>$text{'right_edit'}</a>" );
-		if (&virtual_server::master_admin()) {
+		if ($hasvirt && &virtual_server::master_admin()) {
 			push(@links, "<a href='recollect.cgi'>".
 				     "$text{'right_recollect'}</a>");
 			}
@@ -54,7 +59,7 @@ if ($sects->{'alt'}) {
 	}
 
 if ($hasvirt) {
-	# Check licence
+	# Check Virtualmin licence
 	print &virtual_server::licence_warning_message();
 
 	# See if module config needs to be checked
@@ -67,6 +72,11 @@ if ($hasvirt) {
 		print &ui_form_end();
 		print "</td></tr></table>\n";
 		}
+	}
+
+if ($hasvm2) {
+	# Check VM2 licence
+	print &server_manager::licence_error_message();
 	}
 
 # Check if OS according to Webmin is out of date
@@ -95,7 +105,7 @@ if ($level == 0) {		# Master admin
 
 	if (!$sects->{'nosystem'}) {
 		# Show general system information
-		&show_toggleview("system", "toggler1", 1,
+		&show_toggleview("system", "toggler1", $open{'system'},
 				 $text{'right_systemheader'});
 
 		print "<table>\n";
@@ -112,21 +122,24 @@ if ($level == 0) {		# Master admin
 			print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
 			}
 
+		# Webmin/Usermin version
 		if (&get_product_name() eq 'webmin') {
 			print "<tr> <td><b>$text{'right_webmin'}</b></td>\n";
 			print "<td>",&get_webmin_version(),"</td> </tr>\n";
-
-			print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
-			if ($hasvirt) {
-				print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
-				}
-			else {
-				print "<td>",$text{'right_not'},"</td> </tr>\n";
-				}
 			}
 		else {
 			print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
 			print "<td>",&get_webmin_version(),"</td> </tr>\n";
+			}
+
+		# Virtualmin / VM2 version
+		if ($hasvirt) {
+			print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
+			print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
+			}
+		if ($hasvm2) {
+			print "<tr> <td><b>$text{'right_vm2'}</b></td>\n";
+			print "<td>",$server_manager::module_info{'version'},"</td> </tr>\n";
 			}
 
 		# System time
@@ -203,7 +216,7 @@ if ($level == 0) {		# Master admin
 	if (!$sects->{'noupdates'} && $info->{'poss'} &&
 	    (@poss = @{$info->{'poss'}})) {
 		# Show updates section
-		&show_toggleview("updates", "toggler7", 1,
+		&show_toggleview("updates", "toggler7", $open{'updates'},
 				 $text{'right_updatesheader'});
 		print &ui_form_start("security-updates/update.cgi");
 		print &text(
@@ -229,7 +242,7 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt && !$sects->{'nostatus'} && $info->{'startstop'} &&
 	    &virtual_server::can_stop_servers()) {
 		# Show Virtualmin feature statuses
-		&show_toggleview("status", "toggler2", 1,
+		&show_toggleview("status", "toggler2", $open{'status'},
 				 $text{'right_statusheader'});
 		@ss = @{$info->{'startstop'}};
 		print "<table>\n";
@@ -266,7 +279,7 @@ if ($level == 0) {		# Master admin
 
 	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
 		# Show Virtualmin information
-		&show_toggleview("virtualmin", "toggler3", 0,
+		&show_toggleview("virtualmin", "toggler3", $open{'virtualmin'},
 				 $text{'right_virtheader'});
 		print "<table>\n";
 		my $i = 0;
@@ -293,7 +306,7 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt && !$sects->{'noquotas'} && $info->{'quota'} &&
 	    @{$info->{'quota'}}) {
 		# Show quota graphs
-		&show_toggleview("quotas", "toggler4", 0,
+		&show_toggleview("quotas", "toggler4", $open{'quotas'},
 				 $text{'right_quotasheader'});
 		&show_quotas_info($info->{'quota'}, $info->{'maxquota'});
 		print "</div><p>\n";
@@ -301,7 +314,7 @@ if ($level == 0) {		# Master admin
 
 	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
 		# Show virtual IPs used
-		&show_toggleview("ips", "toggler5", 0,
+		&show_toggleview("ips", "toggler5", $open{'ips'},
 				 $text{'right_ipsheader'});
 		print "<table>\n";
 		foreach my $ipi (@{$info->{'ips'}}) {
@@ -326,10 +339,10 @@ if ($level == 0) {		# Master admin
 		print "</div><p>\n";
 		}
 
-	# Show system information section
+	# Show system programs information section
 	if ($hasvirt && !$sects->{'nosysinfo'} && $info->{'progs'} &&
 	    &virtual_server::can_view_sysinfo()) {
-		&show_toggleview("sysinfo", "toggler6", 0,
+		&show_toggleview("sysinfo", "toggler6", $open{'sysinfo'},
 				 $text{'right_sysinfoheader'});
 		print "<table>\n";
 		@info = @{$info->{'progs'}};
@@ -340,6 +353,42 @@ if ($level == 0) {		# Master admin
 			print "</tr>\n" if ($i%2 == 1);
 			}
 		print "</table>\n";
+		print "</div><p>\n";
+		}
+
+	# Show VM2 server summary by status and by type
+	if ($hasvm2) {
+		&show_toggleview("vm2servers", "toggler8", $open{'vm2servers'},
+				 $text{'right_vm2serversheader'});
+		@servers = &server_manager::list_managed_servers();
+		%statuscount = ( );
+		%managercount = ( );
+		foreach $s (@servers) {
+			$statuscount{$s->{'status'}}++;
+			$managercount{$s->{'manager'}}++;
+			}
+
+		# Status grid
+		@tds = ( "width=40% align=left", "width=10% align=left",
+			 "width=40% align=left", "width=10% align=left" );
+		print "<table><tr><td><b>$text{'right_vm2statuses'}</td></tr></table>\n";
+		@grid = ( );
+		foreach $st (reverse(@server_manager::server_statuses)) {
+			local $fk = { 'status' => $st->[0] };
+			push(@grid, &server_manager::describe_status($fk, 1));
+			push(@grid, int($statuscount{$st->[0]}));
+			}
+		print &ui_grid_table(\@grid, 4, 75, \@tds);
+
+		# Types grid
+		print "<table><tr><td><b>$text{'right_vm2types'}</td></tr></table>\n";
+		@grid = ( );
+		foreach $mg (@server_manager::server_management_types) {
+			$tfunc = "server_manager::type_".$mg."_desc";
+			push(@grid, &$tfunc());
+			push(@grid, int($managercount{$mg}));
+			}
+		print &ui_grid_table(\@grid, 4, 75, \@tds);
 		print "</div><p>\n";
 		}
 	}

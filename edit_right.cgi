@@ -4,9 +4,9 @@
 do './web-lib.pl';
 &init_config();
 do 'ui-lib.pl';
-&foreign_require("virtual-server", "virtual-server-lib.pl");
 %text = &load_language($current_theme);
 &load_theme_library();
+($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 $sects = &get_right_frame_sections();
 !$sects->{'global'} || &virtual_server::master_admin() ||
 	&error($text{'edright_ecannot'});
@@ -26,16 +26,18 @@ print &ui_table_row($text{'edright_alt'},
 		    $text{'edright_alturl'}));
 
 # Default domain
-print &ui_table_row($text{'edright_dom'},
-    &ui_select("dom", $sects->{'dom'},
-	       [ [ "", $text{'edright_first'} ],
-		 map { [ $_->{'id'}, $_->{'dom'} ] }
-		     grep { &virtual_server::can_edit_domain($_) }
-			  sort { $a->{'dom'} cmp $b->{'dom'} }
-			       &virtual_server::list_domains() ]));
+if ($hasvirt) {
+	print &ui_table_row($text{'edright_dom'},
+	    &ui_select("dom", $sects->{'dom'},
+		       [ [ "", $text{'edright_first'} ],
+			 map { [ $_->{'id'}, $_->{'dom'} ] }
+			     grep { &virtual_server::can_edit_domain($_) }
+				  sort { $a->{'dom'} cmp $b->{'dom'} }
+				       &virtual_server::list_domains() ]));
+	}
 
 # Allow changing
-if (&virtual_server::master_admin()) {
+if ($hasvirt && &virtual_server::master_admin()) {
 	print &ui_table_row($text{'edright_global'},
 		&ui_yesno_radio("global", int($sects->{'global'})));
 	}

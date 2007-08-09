@@ -5,10 +5,10 @@ do './web-lib.pl';
 &init_config();
 do 'ui-lib.pl';
 &ReadParse();
-&foreign_require("virtual-server", "virtual-server-lib.pl");
 %text = &load_language($current_theme);
 &error_setup($text{'edright_err'});
 &load_theme_library();
+($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 $sects = &get_right_frame_sections();
 !$sects->{'global'} || &virtual_server::master_admin() ||
 	&error($text{'edright_ecannot'});
@@ -24,8 +24,10 @@ else {
 	$in{'alt'} =~ /^(http|https|\/)/ || &error($text{'edright_ealt'});
 	$sect->{'alt'} = $in{'alt'};
 	}
-$sect->{'dom'} = $in{'dom'};
-if (&virtual_server::master_admin()) {
+if ($hasvirt) {
+	$sect->{'dom'} = $in{'dom'};
+	}
+if ($hasvirt && &virtual_server::master_admin()) {
 	$sect->{'global'} = $in{'global'};
 	}
 
