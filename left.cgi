@@ -671,10 +671,10 @@ if ($hasvirt &&
 # Show info link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 if ($mode eq "vm2") {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers'>$text{'left_home'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates'>$text{'left_home'}</a></div></div>\n";
 	}
 else {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status&open=updates'>$text{'left_home'}</a></div></div>\n";
 	}
 
 # Show logout link

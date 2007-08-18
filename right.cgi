@@ -231,7 +231,7 @@ if ($level == 0) {		# Master admin
 			print &ui_columns_row([
 			 $p->{'name'}, $p->{'desc'}, $p->{'version'} ]);
 			print &ui_hidden("u",
-			  $sinfo->{'version'} >= 1.7 ?
+			  $sinfo{'version'} >= 1.7 ?
 			     $p->{'update'}."/".$p->{'system'} : $p->{'name'});
 			}
 		print &ui_columns_end();
