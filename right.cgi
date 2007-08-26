@@ -99,8 +99,18 @@ if ($level == 0 && &foreign_available("webmin") &&
 
 if ($level == 0) {		# Master admin
 	# Show Virtualmin master admin info
+	$hasposs = &foreign_check("security-updates");
 	if ($hasvirt) {
 		$info = &virtual_server::get_collected_info();
+		@poss = $info ? @{$info->{'poss'}} : ( );
+		}
+	else {
+		# Get possible updates directly from security-updates module
+		if ($hasposs) {
+			&foreign_require("security-updates",
+					 "security-updates-lib.pl");
+			@poss = &security_updates::list_possible_updates();
+			}
 		}
 
 	if (!$sects->{'nosystem'}) {
@@ -200,8 +210,7 @@ if ($level == 0) {		# Master admin
 			      "</td> </tr>\n";
 			}
 
-		if (!$sects->{'noupdates'} && !@{$info->{'poss'}} &&
-		    &foreign_check("security-updates")) {
+		if (!$sects->{'noupdates'} && $hasposs && !@poss) {
 			# Re-assure the user that everything is up to date
 			print "<tr> <td><b>$text{'right_pkgupdesc'}</b></td>\n";
 			print "<td>",&text('right_upall', "security-updates/"),
@@ -213,8 +222,7 @@ if ($level == 0) {		# Master admin
 		}
 
 	# Check for package updates
-	if (!$sects->{'noupdates'} && $info->{'poss'} &&
-	    (@poss = @{$info->{'poss'}})) {
+	if (!$sects->{'noupdates'} && $hasposs && @poss) {
 		# Show updates section
 		&show_toggleview("updates", "toggler7", $open{'updates'},
 				 $text{'right_updatesheader'});
