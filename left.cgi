@@ -53,7 +53,7 @@ if ($image) {
 # Work out current mode
 $mode = $in{'mode'} ? $in{'mode'} :
 	$hasvirt ? "virtualmin" :
-	$hasvm2 ? "sm" :
+	$hasvm2 ? "vm2" :
 	$hasmail ? "mail" :
 		   &get_product_name();
 
