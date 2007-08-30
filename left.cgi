@@ -594,7 +594,7 @@ if ($mode eq "vm2") {
 		    [ "add", \@addlinks ]) {
 		($m, $l) = @$ml;
 		if (@$l == 1) {
-			print "<div class='leftlink'><a href='server-manager/${m}_form.cgi?type=$c->{'type'}' target=right>$c->{'desc'}</a></div>\n";
+			print "<div class='leftlink'><a href='server-manager/${m}_form.cgi?type=$l->[0]->{'type'}' target=right>$l->[0]->{'desc'}</a></div>\n";
 			}
 		elsif (@$l) {
 			&print_category_opener($m, undef,
