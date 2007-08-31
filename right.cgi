@@ -399,6 +399,37 @@ if ($level == 0) {		# Master admin
 		print &ui_grid_table(\@grid, 4, 75, \@tds);
 		print "</div><p>\n";
 		}
+
+	# Show licenses
+	@lics = ( );
+	if ($hasvirt && 
+	    &read_env_file($virtual_server::virtualmin_license_file,
+			   \%vserial)) {
+		push(@lics, [ $text{'right_vserial'},
+			      $vserial{'SerialNumber'} ]);
+		push(@lics, [ $text{'right_vkey'},
+			      $vserial{'LicenseKey'} ]);
+		}
+	if ($hasvm2 &&
+	    &read_env_file($server_manager::licence_file, \%sserial)) {
+		push(@lics, [ $text{'right_sserial'},
+			      $sserial{'SerialNumber'} ]);
+		push(@lics, [ $text{'right_skey'},
+			      $sserial{'LicenseKey'} ]);
+		}
+	if (@lics) {
+		local $tb = undef;
+		local $cb = undef;
+		&show_toggleview("licence", "toggler9", $open{'licence'},
+				 $text{'right_licenceheader'});
+		print &ui_table_start(undef, undef, 4,
+			[ "width=25%", "width=25%", "width=25%", "width=25%" ]);
+		foreach my $l (@lics) {
+			print &ui_table_row(@$l);
+			}
+		print &ui_table_end();
+		print "</div><p>\n";
+		}
 	}
 elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains

@@ -136,6 +136,11 @@ right_vm2=VM2 version
 right_vm2serversheader=VM2 Managed Systems
 right_vm2statuses=System Counts By Status
 right_vm2types=System Counts By Type
+right_vserial=Virtualmin serial number
+right_vkey=Virtualmin license key
+right_sserial=VM2 serial number
+right_skey=VM2 licence key
+right_licenceheader=Virtualmin Licenses
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
