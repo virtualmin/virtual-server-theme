@@ -408,9 +408,12 @@ if ($mode eq "virtualmin") {
 					    $text{'left_addalias'}));
 			}
 
+		$nobatch = defined(&virtual_server::can_create_batch) &&
+			   !&virtual_server::can_create_batch();
 		if ((&virtual_server::can_create_sub_servers() ||
 		     &virtual_server::can_create_master_servers()) && $dleft &&
-		    $virtual_server::virtualmin_pro) {
+		    $virtual_server::virtualmin_pro &&
+		    !$nobatch) {
 			# Can create servers from batch file
 			push(@createlinks,
 			   &category_link("virtual-server/mass_create_form.cgi",
