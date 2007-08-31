@@ -435,7 +435,7 @@ elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains
 	if (!$sects->{'novirtualmin'}) {
 		print "<h3>$text{'right_header2'}</h3>\n";
-		@doms = grep { $_->{'reseller'} eq $base_remote_user }
+		@doms = grep { &virtual_server::can_edit_domain($_) }
 			     &virtual_server::list_domains();
 		&show_domains_info(\@doms);
 		}
