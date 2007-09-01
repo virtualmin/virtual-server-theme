@@ -263,9 +263,8 @@ if ($level == 0) {		# Master admin
 			print "<tr>\n";
 			print "<td><b>",$status->{'name'},"</b></td>\n";
 			print "<td>",(!$status->{'status'} ?
-			    "<font color=#ff0000>$text{'right_down'}</font>" :
-			    "<font color=#00aa00>$text{'right_up'}</font>"),
-			    "</td>\n";
+				"<img src='/images/down.gif' alt='Stopped' title='Stopped' />" :
+				"<img src='/images/up.gif' alt='Running' title='Running' />"),"</td>\n";
 			print "<td>",&ui_submit($status->{'desc'}),"</td>\n";
 			print &ui_form_end();
 
