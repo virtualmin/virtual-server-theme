@@ -413,14 +413,16 @@ if ($level == 0) {		# Master admin
 	@lics = ( );
 	if ($hasvirt && 
 	    &read_env_file($virtual_server::virtualmin_license_file,
-			   \%vserial)) {
+			   \%vserial) &&
+	    $vserial{'SerialNumber'} ne 'GPL') {
 		push(@lics, [ $text{'right_vserial'},
 			      $vserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_vkey'},
 			      $vserial{'LicenseKey'} ]);
 		}
 	if ($hasvm2 &&
-	    &read_env_file($server_manager::licence_file, \%sserial)) {
+	    &read_env_file($server_manager::licence_file, \%sserial) &&
+	    $sserial{'SerialNumber'} ne 'GPL') {
 		push(@lics, [ $text{'right_sserial'},
 			      $sserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_skey'},
