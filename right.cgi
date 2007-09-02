@@ -161,13 +161,17 @@ if ($level == 0) {		# Master admin
 		if ($info->{'load'}) {
 			@c = @{$info->{'load'}};
 			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
-			print "<td>",&text('right_load', @c),"</td> </tr>\n";
+			print "<td>",&text('right_load', @c),"</td>\n";
+			print &history_link("load");
+			print "</tr>\n";
 			}
 
 		# Running processes
 		if ($info->{'procs'}) {
 			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-			print "<td>$info->{'procs'}</td> </tr>\n";
+			print "<td>$info->{'procs'}</td>\n";
+			print &history_link("procs");
+			print "</tr>\n";
 			}
 
 		# Memory used
@@ -181,7 +185,9 @@ if ($level == 0) {		# Master admin
 				      "</td> </tr>\n";
 				print "<tr> <td></td>\n";
 				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
-				      "</td> </tr>\n";
+				      "</td>\n";
+				print &history_link("memused");
+				print "</tr>\n";
 				}
 
 			if (@m && $m[2]) {
@@ -192,7 +198,9 @@ if ($level == 0) {		# Master admin
 				      "</td> </tr>\n";
 				print "<tr> <td></td>\n";
 				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
-				      "</td> </tr>\n";
+				      "</td>\n";
+				print &history_link("swapused");
+				print "</tr>\n";
 				}
 			}
 
@@ -207,7 +215,9 @@ if ($level == 0) {		# Master admin
 			print "<td>",&bar_chart($info->{'disk_total'},
 						$info->{'disk_total'}-
 						 $info->{'disk_free'}, 1),
-			      "</td> </tr>\n";
+			      "</td>\n";
+			print &history_link("diskused");
+			print "</tr>\n";
 			}
 
 		if (!$sects->{'noupdates'} && $hasposs && !@poss) {
@@ -759,5 +769,19 @@ local $cls = $status ? "itemshown" : "itemhidden";
 print "<a href=\"javascript:toggleview('$name','$id')\" id='$id'><img border='0' src='images/$img.gif' alt='[&ndash;]'></a>";
 print "<a href=\"javascript:toggleview('$name','$id')\" id='$id'><b> $header</b></a><p>";
 print "<div class='$cls' id='$name'>";
+}
+
+# history_link(stat)
+# If history is being kept and the user can view it, output a graph link
+sub history_link
+{
+local ($stat) = @_;
+if ($hasvirt &&
+    defined(&virtual_server::can_show_history) &&
+    &virtual_server::can_show_history()) {
+	return "<td><a href='virtual-server/history.cgi?stat=$stat'>".
+	       "<img src=images/graph.gif border=0></a></td>\n";
+	}
+return undef;
 }
 
