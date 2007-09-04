@@ -145,7 +145,7 @@ if ($level == 0) {		# Master admin
 		# Virtualmin / VM2 version
 		if ($hasvirt) {
 			print "<tr> <td><b>$text{'right_virtualmin'}</b></td>\n";
-			print "<td>",$virtual_server::module_info{'version'},"</td> </tr>\n";
+			print "<td>",$virtual_server::module_info{'version'},' (',($virtual_server::module_info{'virtualmin'} eq 'gpl' ? 'GPL' : 'Pro'),")</td> </tr>\n";
 			}
 		if ($hasvm2) {
 			print "<tr> <td><b>$text{'right_vm2'}</b></td>\n";
@@ -307,11 +307,16 @@ if ($level == 0) {		# Master admin
 			local $hide = $info->{'fhide'}->{$f};
 			print "<tr>\n" if ($i%2 == 0);
 			print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
+			local $hlink = $f eq "doms" || $f eq "users" ||
+			       $f eq "aliases" ? &history_link($f, 1) : "";
 			if ($extra < 0 || $hide) {
-				print "<td width=25%>",$cur,"</td>\n";
+				print "<td width=25%>",$cur," ",$hlink,
+				      "</td>\n";
 				}
 			else {
-				print "<td width=25%>",&text('right_out', $cur, $max),"</td>\n";
+				print "<td width=25%>",
+					&text('right_out', $cur, $max)," ",
+					$hlink,"</td>\n";
 				}
 			print "</tr>\n" if ($i%2 == 1);
 			$i++;
@@ -691,11 +696,14 @@ foreach my $f ("doms", "dns", "web", "ssl", "mail",
 		&virtual_server::count_feature($f);
 	print "<tr>\n" if ($i%2 == 0);
 	print "<td width=25%>",$text{'right_f'.$f},"</td>\n";
+	local $hlink = $f eq "doms" || $f eq "users" || $f eq "aliases" ?
+		&history_link($f, 1) : "";
 	if ($extra < 0 || $hide) {
-		print "<td width=25%>",$cur,"</td>\n";
+		print "<td width=25%>",$cur," ",$hlink,"</td>\n";
 		}
 	else {
-		print "<td width=25%>",&text('right_out', $cur, $max),"</td>\n";
+		print "<td width=25%>",&text('right_out', $cur, $max),
+				       " ",$hlink,"</td>\n";
 		}
 	print "</tr>\n" if ($i%2 == 1);
 	$i++;
@@ -714,8 +722,14 @@ if (@quota) {
 	print "<table>\n";
 	if (@quota > 10) {
 		@quota = @quota[0..9];
-		print "<tr> <td colspan=2>$text{'right_quota10'}</td> </tr>\n";
+		$qmsg = $text{'right_quota10'};
 		}
+	else {
+		$qmsg = $text{'right_quotaall'};
+		}
+	print "<tr> <td colspan=2>$qmsg ",
+	      &history_link("quotalimit", 1)," ",
+	      &history_link("quotaused", 1),"</td> </tr>\n";
 	foreach my $q (@quota) {
 		print "<tr>\n";
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
@@ -773,16 +787,18 @@ print "<a href=\"javascript:toggleview('$name','$id')\" id='$id'><b> $header</b>
 print "<div class='$cls' id='$name'>";
 }
 
-# history_link(stat)
+# history_link(stat, [notd])
 # If history is being kept and the user can view it, output a graph link
 sub history_link
 {
-local ($stat) = @_;
+local ($stat, $notd) = @_;
 if ($hasvirt &&
     defined(&virtual_server::can_show_history) &&
     &virtual_server::can_show_history()) {
-	return "<td><a href='virtual-server/history.cgi?stat=$stat'>".
-	       "<img src=images/graph.gif border=0></a></td>\n";
+	return ($notd ? "" : "<td>").
+	       "<a href='virtual-server/history.cgi?stat=$stat'>".
+	       "<img src=images/graph.gif border=0></a>".
+	       ($notd ? "" : "</td>")."\n";
 	}
 return undef;
 }
