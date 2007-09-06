@@ -795,9 +795,10 @@ local ($stat, $notd) = @_;
 if ($hasvirt &&
     defined(&virtual_server::can_show_history) &&
     &virtual_server::can_show_history()) {
+	local $msg = $virtual_server::text{'history_stat_'.$stat};
 	return ($notd ? "" : "<td>").
 	       "<a href='virtual-server/history.cgi?stat=$stat'>".
-	       "<img src=images/graph.gif border=0></a>".
+	       "<img src=images/graph.gif border=0 title='$msg'></a>".
 	       ($notd ? "" : "</td>")."\n";
 	}
 return undef;
