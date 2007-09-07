@@ -173,9 +173,11 @@ local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
 $theme_ui_columns_row_toggle = 0;
-$rv .= "<table".($noborder ? "" : " class='ui_table'").
-    (defined($width) ? " width=$width%" : "").
-    ($href ? "" : " class='sortable'").">\n";
+local @classes;
+push(@classes, "ui_table") if (!$noborder);
+push(@classes, "sortable") if (!$href);
+$rv .= "<table".(@classes ? " class='".join(" ", @classes)."'" : "").
+    (defined($width) ? " width=$width%" : "").">\n";
 if ($heading) {
   $rv .= "<thead> <tr $tb><td colspan=".scalar(@$heads).
          "><b>$heading</b></td></tr> </thead> <tbody>\n";
