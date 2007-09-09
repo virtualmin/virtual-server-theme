@@ -362,25 +362,9 @@ if ($mode eq "virtualmin") {
 				}
 			print "</div>\n";
 			}
-
-
-#		&print_category_opener("tmpl", \@admincats,
-#					   $text{'left_tmpl'});
-#		print "<div class='itemhidden' id='tmpl'>\n";
-#		($tlinks, $ttitles) =
-#			&virtual_server::get_template_pages();
-#		for($i=0; $i<@$tlinks; $i++) {
-#			&print_category_link(
-#				"virtual-server/$tlinks->[$i]",
-#				$ttitles->[$i]);
-#			}
-#		&print_category_link(
-#			"config.cgi?virtual-server",
-#			$text{'header_config'});
-#		&print_category_link(
-#			"virtual-server/check.cgi",
-#			$text{'left_check'});
-#		print "</div>\n";
+		if (@tcats > 1) {
+			print "<hr>\n";
+			}
 		}
 
 	# Creation/migration forms
