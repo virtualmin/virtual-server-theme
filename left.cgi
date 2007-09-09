@@ -333,23 +333,54 @@ elsif ($mode eq "vm2") {
 
 if ($mode eq "virtualmin") {
 	if (&virtual_server::can_edit_templates()) {
-		# Show collapsible section for template links
-		&print_category_opener("tmpl", \@admincats,
-					   $text{'left_tmpl'});
-		print "<div class='itemhidden' id='tmpl'>\n";
-		($tlinks, $ttitles) = &virtual_server::get_template_pages();
-		for($i=0; $i<@$tlinks; $i++) {
-			&print_category_link(
-				"virtual-server/$tlinks->[$i]",
-				$ttitles->[$i]);
+		# Show collapsible sections for template links
+		($tlinks, $ttitles, undef, $tcats) =
+			&virtual_server::get_template_pages();
+		if (!$tcats) {
+			$tcats = [ map { "setting" } @$tlinks ];
 			}
-		&print_category_link(
-			"config.cgi?virtual-server",
-			$text{'header_config'});
-		&print_category_link(
-			"virtual-server/check.cgi",
-			$text{'left_check'});
-		print "</div>\n";
+		@$tlinks = map { "virtual-server/$_" } @$tlinks;
+		push(@$tlinks, "config.cgi?virtual-server",
+			       "virtual-server/check.cgi");
+		push(@$ttitles, $text{'header_config'},
+				$text{'left_check'});
+		push(@$tcats, "setting", "setting");
+		@tcats = ( );
+		for(my $i=0; $i<@$tlinks; $i++) {
+			push(@tcats, $tcats->[$i])
+				if (&indexof($tcats->[$i], @tcats) < 0);
+			}
+		foreach $tc (@tcats) {
+			&print_category_opener("tmpl_".$tc, \@admincats,
+					       $text{'left_tmpl_'.$tc});
+			print "<div class='itemhidden' id='tmpl_$tc'>\n";
+			for(my $i=0; $i<@$tlinks; $i++) {
+				if ($tcats->[$i] eq $tc) {
+					&print_category_link(
+						$tlinks->[$i], $ttitles->[$i]);
+					}
+				}
+			print "</div>\n";
+			}
+
+
+#		&print_category_opener("tmpl", \@admincats,
+#					   $text{'left_tmpl'});
+#		print "<div class='itemhidden' id='tmpl'>\n";
+#		($tlinks, $ttitles) =
+#			&virtual_server::get_template_pages();
+#		for($i=0; $i<@$tlinks; $i++) {
+#			&print_category_link(
+#				"virtual-server/$tlinks->[$i]",
+#				$ttitles->[$i]);
+#			}
+#		&print_category_link(
+#			"config.cgi?virtual-server",
+#			$text{'header_config'});
+#		&print_category_link(
+#			"virtual-server/check.cgi",
+#			$text{'left_check'});
+#		print "</div>\n";
 		}
 
 	# Creation/migration forms
@@ -611,7 +642,6 @@ if ($mode eq "vm2") {
 			print "</div>\n";
 			}
 		}
-
 
 	# Show global settings
 	@vservers = grep { $_->{'status'} eq 'virt' } @servers;
