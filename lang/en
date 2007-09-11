@@ -147,6 +147,9 @@ right_vkey=Virtualmin license key
 right_sserial=VM2 serial number
 right_skey=VM2 licence key
 right_licenceheader=Virtualmin Licenses
+right_vmax=Licensed virtual servers
+right_vleft=Virtual servers left
+right_vunlimited=Unlimited
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

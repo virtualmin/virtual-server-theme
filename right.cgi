@@ -424,6 +424,14 @@ if ($level == 0) {		# Master admin
 			      $vserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_vkey'},
 			      $vserial{'LicenseKey'} ]);
+
+		# Add allowed domain counts
+		($dleft, $dreason, $dmax, $dhide) =
+			&virtual_server::count_domains("realdoms");
+		push(@lics, [ $text{'right_vmax'},
+		      $dmax <= 0 ? $text{'right_vunlimited'} : $dmax ]);
+		push(@lics, [ $text{'right_vleft'},
+		      $dleft <= 0 ? $text{'right_vunlimited'} : $dleft ]);
 		}
 	if ($hasvm2 &&
 	    &read_env_file($server_manager::licence_file, \%sserial) &&
