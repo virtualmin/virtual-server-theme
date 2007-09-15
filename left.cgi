@@ -339,7 +339,8 @@ if ($mode eq "virtualmin") {
 		if (!$tcats) {
 			$tcats = [ map { "setting" } @$tlinks ];
 			}
-		@$tlinks = map { "virtual-server/$_" } @$tlinks;
+		@$tlinks = map { $_ =~ /\// ? $_ : "virtual-server/$_" }
+			       @$tlinks;
 		push(@$tlinks, "config.cgi?virtual-server",
 			       "virtual-server/check.cgi");
 		push(@$ttitles, $text{'header_config'},
