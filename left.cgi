@@ -216,12 +216,10 @@ if ($mode eq "virtualmin" && @doms) {
 			}
 		}
 
-	# Show generic creation link
-	if ($virtual_server::module_info{'version'} >= 3.381 &&
-	    (&virtual_server::can_create_master_servers() ||
-	     &virtual_server::can_create_sub_servers())) {
+	# Show domain creation link
+	if (&virtual_server::can_create_master_servers() ||
+	    &virtual_server::can_create_sub_servers()) {
 		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1&gparent=$d->{'id'}' target=right>$text{'left_generic'}</a></div>\n";
-		$shown_generic_create = 1;
 		}
 
 	if (!$d) {
@@ -312,12 +310,10 @@ elsif ($mode eq "virtualmin") {
 		}
 	print "</div>\n";
 
-	# Show generic creation link
-	if ($virtual_server::module_info{'version'} >= 3.381 &&
-	    (&virtual_server::can_create_master_servers() ||
-	     &virtual_server::can_create_sub_servers())) {
+	# Show domain creation link
+	if (&virtual_server::can_create_master_servers() ||
+	    &virtual_server::can_create_sub_servers()) {
 		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1' target=right>$text{'left_generic'}</a></div>\n";
-		$shown_generic_create = 1;
 		}
 	}
 elsif ($mode eq "vm2") {
@@ -376,61 +372,14 @@ if ($mode eq "virtualmin") {
 			&virtual_server::count_domains("realdoms");
 		($aleft, $areason, $amax, $ahide) =
 			&virtual_server::count_domains("aliasdoms");
-		if ($shown_generic_create) {
-			# Skip top-level and sub-server links, as we've already
-			# shown them.
-			}
-		elsif ($dleft == 0) {
-			# Cannot add
-			push(@createlinks,
-			  "<div class='leftlink'>".
-			  &virtual_server::text('index_noadd'.$dreason, $dmax).
-			  "</div>\n");
-			}
-		elsif (!&virtual_server::can_create_master_servers() &&
-		       &virtual_server::can_create_sub_servers()) {
-			# Can just add sub-server
-			push(@createlinks,
-			     &category_link("virtual-server/domain_form.cgi",
-					    $text{'left_addsub'}));
-			}
-		elsif (&virtual_server::can_create_master_servers()) {
-			# Can add master or sub-server
-			push(@createlinks,
-			     &category_link("virtual-server/domain_form.cgi",
-					    $text{'left_add'}));
-			push(@createlinks,
-			     &category_link("virtual-server/domain_form.cgi?".
-					    "parentuser1=$d->{'user'}&add1=1",
-					    $text{'left_addsub'}));
-			}
-		if (&virtual_server::can_create_sub_servers() &&
-		    !$d->{'alias'} && !$d->{'subdom'} && $dleft &&
-		    !$shown_generic_create) {
-			# Can add sub-domain
-			push(@createlinks,
-			     &category_link("virtual-server/domain_form.cgi?".
-					    "parentuser1=$d->{'user'}&add1=1&".
-					    "subdom=$d->{'id'}",
-					    $text{'left_addsubdom'}));
-			}
-		if (&virtual_server::can_create_sub_servers() &&
-		    !$d->{'alias'} && $aleft &&
-		    !$shown_generic_create) {
-			# Can add alias domain
-			push(@createlinks,
-			     &category_link("virtual-server/domain_form.cgi?".
-					    "to=$d->{'id'}",
-					    $text{'left_addalias'}));
-			}
 
+		# Can create servers from batch file
 		$nobatch = defined(&virtual_server::can_create_batch) &&
 			   !&virtual_server::can_create_batch();
 		if ((&virtual_server::can_create_sub_servers() ||
 		     &virtual_server::can_create_master_servers()) && $dleft &&
 		    $virtual_server::virtualmin_pro &&
 		    !$nobatch) {
-			# Can create servers from batch file
 			push(@createlinks,
 			   &category_link("virtual-server/mass_create_form.cgi",
 					   $text{'left_cmass'}));
