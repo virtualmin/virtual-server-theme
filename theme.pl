@@ -128,6 +128,31 @@ if (window.parent && window.parent.frames[0]) {
 EOF
 }
 
+# theme_select_domain(&server)
+# Called by Virtualmin when a page for a server is displayed, to select it on
+# the left menu.
+sub theme_select_domain
+{
+local ($server) = @_;
+print <<EOF;
+<script>
+if (window.parent && window.parent.frames[0]) {
+	var leftdoc = window.parent.frames[0].document;
+	var leftform = leftdoc.forms[0];
+	if (leftform) {
+		var domsel = leftform['dom'];
+		if (domsel && domsel.value != '$d->{'id'}') {
+			// Need to change value
+			domsel.value = '$d->{'id'}';
+			window.parent.frames[0].location =
+				'/left.cgi?mode=virtualmin&dom=$d->{'id'}';
+			}
+		}
+	}
+</script>
+EOF
+}
+
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
