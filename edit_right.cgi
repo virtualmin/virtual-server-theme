@@ -18,8 +18,9 @@ print &ui_table_start($text{'edright_header'}, undef ,2);
 
 # Visible sections
 print &ui_table_row($text{'edright_sects'},
-    join("<br>\n", map { &ui_checkbox($_, 1, $text{'right_'.$_.'header'},
-			!$sects->{'no'.$_}) } &list_right_frame_sections()));
+    join("<br>\n", map { &ui_checkbox($_->{'name'}, 1, $_->{'title'},
+			!$sects->{'no'.$_->{'name'}}) }
+		       &list_right_frame_sections()));
 # Alternate page
 print &ui_table_row($text{'edright_alt'},
     &ui_opt_textbox("alt", $sects->{'alt'}, 40, $text{'edright_altdef'}."<br>",

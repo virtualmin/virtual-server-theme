@@ -454,6 +454,19 @@ if ($level == 0) {		# Master admin
 		print &ui_table_end();
 		print "</div><p>\n";
 		}
+
+	# See if any plugins have defined sections
+	if ($hasvirt) {
+		foreach $s (&list_right_frame_sections()) {
+			next if (!$s->{'plugin'});
+			next if ($sects->{'no'.$s->{'name'}});
+			&show_toggleview($s->{'name'}, "toggler".$s->{'name'},
+					 $s->{'status'},
+					 $s->{'title'});
+			print $s->{'html'};
+			print "</div></p>\n";
+			}
+		}
 	}
 elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains

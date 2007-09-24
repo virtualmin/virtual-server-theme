@@ -387,8 +387,6 @@ if (!$_[$i]) {
 }
 
 $right_frame_sections_file = "$config_directory/$current_theme/sections";
-@right_frame_sections = ( 'system', 'status', 'virtualmin', 'quotas', 'ips',
-			  'sysinfo', 'vm2servers' );
 
 # get_right_frame_sections()
 # Returns a hash containg details of visible right-frame sections
@@ -436,12 +434,13 @@ else {
 }
 
 # list_right_frame_sections()
-# Returns a list of possible sections for the current user
+# Returns a list of possible sections for the current user, as hash refs
 sub list_right_frame_sections
 {
 local ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
+local @rv;
 if ($level == 0) {
-	local @rv = ( 'system' );
+	@rv = ( 'system' );
 	if ($hasvirt) {
 		push(@rv, 'updates', 'status', 'virtualmin', 'quotas',
 			  'ips', 'sysinfo');
@@ -449,17 +448,24 @@ if ($level == 0) {
 	if ($hasvm2) {
 		push(@rv, 'vm2servers');
 		}
-	return @rv;
 	}
 elsif ($level == 1) {
-	return ( 'virtualmin' );
+	push(@rv, 'virtualmin');
 	}
 elsif ($level == 2) {
-	return ( 'system', 'quotas', 'bw' );
+	push(@rv, 'system', 'quotas', 'bw');
 	}
 else {
-	return ( 'system' );
+	push(@rv, 'system');
 	}
+@rv = map { { 'name' => $_, 'title' => $text{'right_'.$_.'header'} } } @rv;
+# Add plugin-defined sections
+if (($level == 0 || $level == 1 || $level == 2) && $hasvirt &&
+    defined(&virtual_server::list_plugin_sections)) {
+	# XXX others need to return hashes too!
+	push(@rv, &virtual_server::list_plugin_sections($level));
+	}
+return @rv;
 }
 
 # get_virtualmin_user_level()

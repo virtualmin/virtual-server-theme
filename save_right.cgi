@@ -15,7 +15,7 @@ $sects = &get_right_frame_sections();
 
 # Validate and store
 foreach $s (&list_right_frame_sections()) {
-	$sect->{'no'.$s} = !$in{$s};
+	$sect->{'no'.$s->{'name'}} = !$in{$s->{'name'}};
 	}
 if ($in{'alt_def'}) {
 	delete($sect->{'alt'});
