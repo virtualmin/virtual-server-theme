@@ -162,9 +162,12 @@ elsif ($mode eq "mail") {
 	print "    for(var i=0; i<params.length; i++) {\n";
 	print "        var nv = params[i].split('=');\n";
 	print "        if (nv[0] == 'id') {\n";
-	print "            if (nv[1] != '1') {\n";
+	print "            if (nv[1] != '1' && url.indexOf('view_mail.cgi') <= 0) {\n";
 	print "                document.forms[0].id.value = unescape(nv[1]);\n";
 	print "                }\n";
+	print "            }\n";
+	print "        else if (nv[0] == 'folder') {\n";
+	print "            document.forms[0].folder.value = nv[1];\n";
 	print "            }\n";
 	print "        }\n";
 	print "    }\n";
