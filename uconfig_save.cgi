@@ -45,5 +45,10 @@ if (defined(&$pfn)) {
 					      \%canconfig);
 	}
 
-&redirect("/$m/");
+if ($in{'save_next'}) {
+	&redirect("uconfig.cgi?module=$in{'module'}&section=$in{'section_next'}");
+	}
+else {
+	&redirect("/$m/");
+	}
 

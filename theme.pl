@@ -462,7 +462,6 @@ else {
 # Add plugin-defined sections
 if (($level == 0 || $level == 1 || $level == 2) && $hasvirt &&
     defined(&virtual_server::list_plugin_sections)) {
-	# XXX others need to return hashes too!
 	push(@rv, &virtual_server::list_plugin_sections($level));
 	}
 return @rv;

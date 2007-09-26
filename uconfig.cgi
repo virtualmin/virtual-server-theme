@@ -64,6 +64,16 @@ if (@sections > 1 && &get_webmin_version() >= 1.225) {
 print &ui_form_start("uconfig_save.cgi", "post");
 print &ui_hidden("module", $m),"\n";
 print &ui_hidden("section", $in{'section'}),"\n";
+if ($s) {
+	# Find next section
+	$idx = &indexof($s, @sections);
+	if ($idx == @sections-1) {
+		print &ui_hidden("section_next", $sections[0]->[0]);
+		}
+	else {
+		print &ui_hidden("section_next", $sections[$idx+1]->[0]);
+		}
+	}
 print &ui_table_start(&text('config_header', $module_info{'desc'}).$sname,
 		      "width=100%", 2);
 &read_file("$m/defaultuconfig", \%config);
@@ -87,7 +97,8 @@ if (!$func) {
 			 undef, $in{'section'});
 	}
 print &ui_table_end();
-print &ui_form_end([ [ "save", $text{'save'} ] ]);
+print &ui_form_end([ [ "save", $text{'save'} ],
+		     $s ? ( [ "save_next", $text{'config_next'} ] ) : ( ) ]);
 
 &ui_print_footer("/$m", $text{'index'});
 
