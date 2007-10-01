@@ -432,6 +432,15 @@ if ($level == 0) {		# Master admin
 		      $dmax <= 0 ? $text{'right_vunlimited'} : $dmax ]);
 		push(@lics, [ $text{'right_vleft'},
 		      $dleft <= 0 ? $text{'right_vunlimited'} : $dleft ]);
+
+		# Add allowed server counts
+		&read_file($virtual_server::licence_status, \%lstatus);
+		if ($lstatus{'used_servers'}) {
+			push(@lics, [ $text{'right_smax'},
+			    $lstatus{'servers'} || $text{'right_vunlimited'} ]);
+			push(@lics, [ $text{'right_sused'},
+			    $lstatus{'used_servers'} ]);
+			}
 		}
 	if ($hasvm2 &&
 	    &read_env_file($server_manager::licence_file, \%sserial) &&
