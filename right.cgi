@@ -424,6 +424,8 @@ if ($level == 0) {		# Master admin
 			      $vserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_vkey'},
 			      $vserial{'LicenseKey'} ]);
+		push(@lbuts, [ "virtual-server/licence.cgi",
+			       $text{'right_vlcheck'} ]);
 
 		# Add allowed domain counts
 		($dleft, $dreason, $dmax, $dhide) =
@@ -449,6 +451,8 @@ if ($level == 0) {		# Master admin
 			      $sserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_skey'},
 			      $sserial{'LicenseKey'} ]);
+		push(@lbuts, [ "server-manager/licence.cgi",
+			       $text{'right_slcheck'} ]);
 		}
 	if (@lics) {
 		local $tb = undef;
@@ -460,6 +464,9 @@ if ($level == 0) {		# Master admin
 		foreach my $l (@lics) {
 			print &ui_table_row(@$l);
 			}
+		print &ui_table_row(undef,
+		    &ui_links_row(
+			[ map { "<a href='$_->[0]'>$_->[1]</a>" } @lbuts ]), 4);
 		print &ui_table_end();
 		print "</div><p>\n";
 		}
