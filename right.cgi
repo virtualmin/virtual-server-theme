@@ -103,6 +103,7 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt) {
 		$info = &virtual_server::get_collected_info();
 		@poss = $info ? @{$info->{'poss'}} : ( );
+		@inst = $info ? @{$info->{'inst'}} : ( );
 		}
 	else {
 		# Get possible updates directly from security-updates module
@@ -110,6 +111,9 @@ if ($level == 0) {		# Master admin
 			&foreign_require("security-updates",
 					 "security-updates-lib.pl");
 			@poss = &security_updates::list_possible_updates();
+			if (defined(&security_updates::list_possible_installs)){
+				@inst = &security_updates::list_possible_installs();
+				}
 			}
 		}
 
@@ -220,11 +224,22 @@ if ($level == 0) {		# Master admin
 			print "</tr>\n";
 			}
 
+		@pkgmsgs = ( );
 		if (!$sects->{'noupdates'} && $hasposs && !@poss) {
 			# Re-assure the user that everything is up to date
-			print "<tr> <td><b>$text{'right_pkgupdesc'}</b></td>\n";
-			print "<td>",&text('right_upall', "security-updates/"),
-			      "</td> </tr>\n";
+			push(@pkgmsgs, &text('right_upall',
+					     "security-updates/"));
+			}
+		if (!$sects->{'noupdates'} && $hasposs && @inst) {
+			# Tell the user about extra packages
+			push(@pkgmsgs, &text('right_upinst', scalar(@inst),
+					     "security-updates/"));
+			}
+		if (@pkgmsgs) {
+			print "<tr> <td valign=top><b>",
+			      "$text{'right_pkgupdesc'}</b></td>\n";
+			print "<td valign=top>",
+			      join("<br>\n", @pkgmsgs),"</td> </tr>\n";
 			}
 
 		print "</table>\n";
