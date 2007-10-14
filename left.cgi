@@ -41,10 +41,18 @@ if ($hasvirt) {
 $hasmail = &foreign_available("mailbox");
 $hasvm2 = &foreign_available("server-manager");
 
-$image = $vconfig{'theme_image'} || $gconfig{'virtualmin_theme_image'};
-if ($image) {
-	# Show the hosting provider logo
+# Show the hosting provider logo
+if ($hasvirt) {
+	&foreign_require("virtual-server", "virtual-server-lib.pl");
+	}
+if (defined(&virtual_server::get_provider_link)) {
+	(undef, $image, $link) = &virtual_server::get_provider_link();
+	}
+else {
+	$image = $vconfig{'theme_image'} || $gconfig{'virtualmin_theme_image'};
 	$link = $vconfig{'theme_link'} || $gconfig{'virtualmin_theme_link'};
+	}
+if ($image) {
 	print "<a href='$link' target=_new>" if ($link);
 	print "<img src='$image' border=0>";
 	print "</a><br>\n" if ($link);
@@ -59,7 +67,6 @@ $mode = $in{'mode'} ? $in{'mode'} :
 
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
-	&foreign_require("virtual-server", "virtual-server-lib.pl");
 	@alldoms = &virtual_server::list_domains();
 	@doms = grep { &virtual_server::can_edit_domain($_) } @alldoms;
 	if ($virtual_server::config{'domains_sort'} eq 'dom') {
