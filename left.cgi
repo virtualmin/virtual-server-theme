@@ -543,9 +543,19 @@ if ($mode eq "vm2" && $server) {
 		if ($b->[3]) {
 			# Custom URL
 			local $target = $b->[2] ? "_new" : "right";
-			print "<div class='leftlink'><a href='$b->[3]' target=$target>$msg</a></div>\n";
+			local $direct;
+			if ($b->[3] =~ /\/link.cgi\//) {
+				# Link via servers module - also show direct
+				$prot = $server->{'ssl'} ? 'https' : 'http';
+				$durl = "$prot://$server->{'host'}:".
+					"$server->{'port'}/";
+				$direct = " | <a href='$durl' target=$target>".
+					  "$text{'left_direct'}</a>";
+				}
+			print "<div class='leftlink'><a href='$b->[3]' target=$target>$msg</a>$direct</div>\n";
 			}
 		else {
+			# Link to VM2 CGI
 			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&$b->[0]=1' target=right>$msg</a></div>\n";
 			}
 		}
