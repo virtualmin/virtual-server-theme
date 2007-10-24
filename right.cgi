@@ -167,6 +167,8 @@ if ($level == 0) {		# Master admin
 			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
 			print "<td>",&text('right_load', @c),"</td>\n";
 			print &history_link("load");
+			print &history_link("load5");
+			print &history_link("load15");
 			print "</tr>\n";
 			}
 
