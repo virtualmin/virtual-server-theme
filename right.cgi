@@ -165,11 +165,10 @@ if ($level == 0) {		# Master admin
 		if ($info->{'load'}) {
 			@c = @{$info->{'load'}};
 			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
-			print "<td>",&text('right_load', @c),"</td>\n";
-			print &history_link("load");
-			print &history_link("load5");
-			print &history_link("load15");
-			print "</tr>\n";
+			print "<td>",&text('right_loadgraph',
+			   $c[0], &history_link("load", 1),
+			   $c[1], &history_link("load5", 1),
+			   $c[2], &history_link("load15", 1)),"</td> </tr>\n";
 			}
 
 		# Running processes
