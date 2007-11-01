@@ -289,8 +289,8 @@ if ($level == 0) {		# Master admin
 			print "<tr>\n";
 			print "<td><b>",$status->{'name'},"</b></td>\n";
 			print "<td>",(!$status->{'status'} ?
-				"<img src='/images/down.gif' alt='Stopped' title='Stopped' />" :
-				"<img src='/images/up.gif' alt='Running' title='Running' />"),"</td>\n";
+				"<img src='images/down.gif' alt='Stopped' title='Stopped' />" :
+				"<img src='images/up.gif' alt='Running' title='Running' />"),"</td>\n";
 			print "<td>",&ui_submit($status->{'desc'}),"</td>\n";
 			print &ui_form_end();
 

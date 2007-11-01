@@ -120,7 +120,8 @@ if (window.parent && window.parent.frames[0]) {
 			// Need to change value
 			serversel.value = '$server->{'id'}';
 			window.parent.frames[0].location =
-				'/left.cgi?mode=vm2&sid=$server->{'id'}';
+				"$gconfig{'webprefix'}/left.cgi?".
+				"mode=vm2&sid=$server->{'id'}";
 			}
 		}
 	}
