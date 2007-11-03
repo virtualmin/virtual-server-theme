@@ -86,7 +86,9 @@ else {
 # Called by Virtualmin after a domain is updated, to refresh the left menu
 sub theme_post_save_domain
 {
-if (!$done_theme_post_save_domain++) {
+local ($d, $action) = @_;
+if ($action eq 'create' || $action eq 'delete' ||
+    !$done_theme_post_save_domain++) {
 	print "<script>\n";
 	print "top.left.location = top.left.location;\n";
 	print "</script>\n";
@@ -96,7 +98,9 @@ if (!$done_theme_post_save_domain++) {
 # Called by VM2 after a server is updated, to refresh the left menu
 sub theme_post_save_server
 {
-if (!$done_theme_post_save_server++) {
+local ($s, $action) = @_;
+if ($action eq 'create' || $action eq 'delete' ||
+    !$done_theme_post_save_server++) {
 	print "<script>\n";
 	print "top.left.location = top.left.location;\n";
 	print "</script>\n";
