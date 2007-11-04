@@ -508,3 +508,18 @@ if ($module_name eq "virtual-server" && $orig eq "" &&
 print "Location: $url\n\n";
 }
 
+sub get_virtualmin_docs
+{
+local ($level) = @_;
+return $level == 0 ? "http://www.virtualmin.com/documentation/id,virtualmin_administrators_guide/" :
+       $level == 1 ? "http://www.virtualmin.com/documentation/id,virtualmin_resellers_guide/" :
+       $level == 2 ? "http://www.virtualmin.com/documentation/id,virtualmin_virtual_server_owners_guide/" :
+		     "http://www.virtualmin.com/documentation/";
+}
+
+sub get_vm2_docs
+{
+local ($level) = @_;
+return "http://www.virtualmin.com/documentation/id,vm2_manual/";
+}
+

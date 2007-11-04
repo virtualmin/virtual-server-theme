@@ -31,8 +31,19 @@ if ($hasvirt || $hasvm2) {
 		print "<div align=right>";
 		@links = ( "<a href='edit_right.cgi'>$text{'right_edit'}</a>" );
 		if ($hasvirt && &virtual_server::master_admin()) {
+			# Refresh collected info
 			push(@links, "<a href='recollect.cgi'>".
 				     "$text{'right_recollect'}</a>");
+			}
+		if ($hasvirt) {
+			# Virtualmin docs
+			$doclink = &get_virtualmin_docs($level);
+			push(@links, "<a href='$doclink' target=_new>$text{'right_virtdocs'}</a>");
+			}
+		if ($hasvm2) {
+			# VM2 docs
+			$doclink = &get_vm2_docs($level);
+			push(@links, "<a href='$doclink' target=_new>$text{'right_vm2docs'}</a>");
 			}
 		print &ui_links_row(\@links);
 		print "</div>\n";
