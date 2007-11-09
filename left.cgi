@@ -188,7 +188,8 @@ elsif ($mode eq "mail") {
 	}
 
 # Show login and Virtualmin access level
-print &text('left_login', $remote_user);
+#print &text('left_login', $remote_user);
+print $remote_user;
 if (@doms) {
 	$level = &virtual_server::master_admin() ? $text{'left_master'} :
 		 &virtual_server::reseller_admin() ? $text{'left_reseller'} :
