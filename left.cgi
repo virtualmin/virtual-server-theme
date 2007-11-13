@@ -147,7 +147,7 @@ if (@has > 1) {
 	}
 
 print "<div class='menubody'>\n";
-if ($mode eq "webmin") {
+if ($mode eq "webmin" || $mode eq "usermin") {
 	# Left form is for searching Webmin
 	print "<form action=webmin_search.cgi target=right>\n";
 	$doneform = 1;
@@ -645,7 +645,7 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	# Show module/help search form
 	if (-r "$root_directory/webmin_search.cgi") {
 		print $text{'left_search'},"&nbsp;";
-		print &ui_textbox("search", undef, 15);
+		print &ui_textbox("search", undef, 10);
 		}
 
 	print "<hr>\n";
