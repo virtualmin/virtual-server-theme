@@ -147,7 +147,12 @@ if (@has > 1) {
 	}
 
 print "<div class='menubody'>\n";
-if ($hasvirt || $hasvm2) {
+if ($mode eq "webmin") {
+	# Left form is for searching Webmin
+	print "<form action=webmin_search.cgi target=right>\n";
+	$doneform = 1;
+	}
+elsif ($hasvirt || $hasvm2) {
 	# Left form is for changing domain / server
 	print "<form action=left.cgi>\n";
 	$doneform = 1;
@@ -636,6 +641,13 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 			}
 		print "</div>\n";
 		}
+
+	# Show module/help search form
+	if (-r "$root_directory/webmin_search.cgi") {
+		print $text{'left_search'},"&nbsp;";
+		print &ui_textbox("search", undef, 15);
+		}
+
 	print "<hr>\n";
 	}
 
