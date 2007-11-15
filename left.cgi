@@ -94,6 +94,11 @@ if ($mode eq "virtualmin" && $hasvirt) {
 		}
 	elsif (defined($in{'dname'})) {
 		$d = &virtual_server::get_domain_by("dom", $in{'dname'});
+		if (!$d) {
+			# Couldn't find domain by name, search by user instead
+			$d = &virtual_server::get_domain_by(
+				"user", $in{'dname'}, "parent", "");
+			}
 		}
 	elsif ($sects && $sects->{'dom'}) {
 		$d = &virtual_server::get_domain($sects->{'dom'});
