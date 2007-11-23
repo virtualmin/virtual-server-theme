@@ -553,14 +553,30 @@ elsif ($level == 2) {		# Domain owner
 	print "<td><tt>$d->{'dom'}</tt></td> </tr>\n";
 
 	@subs = ( $d, &virtual_server::get_domain_by("parent", $d->{'id'}) );
-	($sleft, $sreason, $stotal, $shide) = &virtual_server::count_domains();
+	@reals = grep { !$_->{'alias'} } @subs;
+	($sleft, $sreason, $stotal, $shide) =
+		&virtual_server::count_domains("realdoms");
 	print "<tr> <td><b>$text{'right_subs'}</b></td>\n";
 	if ($sleft < 0 || $shide) {
-		print "<td>",scalar(@subs),"</td> </tr>\n";
+		print "<td>",scalar(@reals),"</td> </tr>\n";
 		}
 	else {
 		print "<td>",&text('right_of',
-				   scalar(@subs), $stotal),"</td> </tr>\n";
+				   scalar(@reals), $stotal),"</td> </tr>\n";
+		}
+
+	@aliases = grep { $_->{'alias'} } @subs;
+	if (@aliases) {
+		($aleft, $areason, $atotal, $ahide) =
+			&virtual_server::count_domains("aliasdoms");
+		print "<tr> <td><b>$text{'right_aliases'}</b></td>\n";
+		if ($aleft < 0 || $ahide) {
+			print "<td>",scalar(@aliases),"</td> </tr>\n";
+			}
+		else {
+			print "<td>",&text('right_of',
+				   scalar(@aliases), $atotal),"</td> </tr>\n";
+			}
 		}
 
 	# Users and aliases info
