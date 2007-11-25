@@ -741,6 +741,7 @@ return "<div class='linkindented'><a target=$target href=$link>$label</a></div>\
 sub shorten_hostname
 {
 local ($server) = @_;
+return $server->{'short_host'} if ($server->{'short_host'});
 local $show = $server->{'host'};
 local $rv;
 local $name_max = 20;
