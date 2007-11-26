@@ -284,6 +284,16 @@ $js .= "return false;";
 return "<a href='#' onClick='$js'>$label</a>";
 }
 
+sub theme_select_rows_link
+{
+local ($field, $form, $text, $rows) = @_;
+$form = int($form);
+local $js = "var sel = { ".join(",", map { "\"".&quote_escape($_)."\":1" } @$rows)." }; ";
+$js .= "for(var i=0; i<document.forms[$form].${field}.length; i++) { var ff = document.forms[$form].${field}[i]; var r = document.getElementById(\"row_\"+ff.id); ff.checked = sel[ff.value]; if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } } ";
+$js .= "return false;";
+return "<a href='#' onClick='$js'>$text</a>";
+}
+
 sub theme_ui_checked_columns_row
 {
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
