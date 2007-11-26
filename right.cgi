@@ -240,12 +240,12 @@ if ($level == 0) {		# Master admin
 		if (!$sects->{'noupdates'} && $hasposs && !@poss) {
 			# Re-assure the user that everything is up to date
 			push(@pkgmsgs, &text('right_upall',
-					     "security-updates/"));
+				     "security-updates/index.cgi?mode=all"));
 			}
 		if (!$sects->{'noupdates'} && $hasposs && @inst) {
 			# Tell the user about extra packages
 			push(@pkgmsgs, &text('right_upinst', scalar(@inst),
-					     "security-updates/"));
+				     "security-updates/index.cgi?mode=new"));
 			}
 		if (@pkgmsgs) {
 			print "<tr> <td valign=top><b>",
@@ -267,7 +267,7 @@ if ($level == 0) {		# Master admin
 		print &text(
 			@poss > 1 ? 'right_upcount' : 'right_upcount1',
 			scalar(@poss),
-			'security-updates/'),"<p>\n";
+			'security-updates/index.cgi?mode=updates'),"<p>\n";
 		print &ui_columns_start([ $text{'right_upname'},
 					  $text{'right_updesc'},
 					  $text{'right_upver'} ]);
