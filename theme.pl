@@ -297,7 +297,7 @@ return "<a href='#' onClick='$js'>$text</a>";
 sub theme_ui_checked_columns_row
 {
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
-local ($cols, $tdtags, $checkname, $checkvalue, $checked) = @_;
+local ($cols, $tdtags, $checkname, $checkvalue, $checked, $disabled) = @_;
 local $rv;
 local $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
 local $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
@@ -309,7 +309,7 @@ if ($checked) {
 $mycb =~ s/class='/class='row$theme_ui_columns_row_toggle /;
 $rv .= "<tr id=\"$ridtr\" $mycb onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody row$theme_ui_columns_row_toggle'\">\n";
 $rv .= "<td ".$tdtags->[0].">".
-       &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
+       &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"", $disabled).
        "</td>\n";
 local $i;
 for($i=0; $i<@$cols; $i++) {
