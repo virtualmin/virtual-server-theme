@@ -83,16 +83,23 @@ else {
 	}
 }
 
+# theme_post_save_domain(domain, action)
 # Called by Virtualmin after a domain is updated, to refresh the left menu
 sub theme_post_save_domain
 {
 local ($d, $action) = @_;
-if ($action eq 'create' || $action eq 'delete' ||
-    !$done_theme_post_save_domain++) {
-	print "<script>\n";
-	print "top.left.location = top.left.location;\n";
-	print "</script>\n";
-	}
+print "<script>\n";
+print "top.left.location = top.left.location;\n";
+print "</script>\n";
+}
+
+# theme_post_save_domains([domain, action]+)
+# Called after multiple domains are updated, to refresh the left menu
+sub theme_post_save_domains
+{
+print "<script>\n";
+print "top.left.location = top.left.location;\n";
+print "</script>\n";
 }
 
 # Called by VM2 after a server is updated, to refresh the left menu
