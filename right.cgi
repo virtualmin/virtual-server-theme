@@ -12,13 +12,20 @@ do 'ui-lib.pl';
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
 $bar_width = 100;
+
+# Work out which sections are open by default
 foreach $o (split(/\0/, $in{'open'})) {
 	push(@open, $o);
 	}
+foreach $o (split(/\0/, $in{'auto'})) {
+	push(@open, $o);
+	push(@auto, $o);
+	}
 if (!defined($in{'open'})) {
 	@open = ( 'system', 'status', 'updates' );
+	@auto = ( 'status' );
 	}
-%open = map { $_, 1 } @open;
+%open = map { $_, &indexof($_, @auto) >= 0 ? 2 : 1 } @open;
 
 &popup_header(undef, &capture_function_output(\&theme_prehead));
 
@@ -287,9 +294,15 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt && !$sects->{'nostatus'} && $info->{'startstop'} &&
 	    &virtual_server::can_stop_servers()) {
 		# Show Virtualmin feature statuses
-		&show_toggleview("status", "toggler2", $open{'status'},
-				 $text{'right_statusheader'});
 		@ss = @{$info->{'startstop'}};
+		$status_open = $open{'status'};
+		if ($status_open == 2) {
+			# Open if something is down
+			@down = grep { !$_->{'status'} } @ss;
+			$status_open = @down ? 1 : 0;
+			}
+		&show_toggleview("status", "toggler2", $status_open,
+				 $text{'right_statusheader'});
 		print "<table>\n";
 		foreach $status (@ss) {
 			print &ui_form_start("virtual-server/".
