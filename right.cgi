@@ -22,7 +22,7 @@ foreach $o (split(/\0/, $in{'auto'})) {
 	push(@auto, $o);
 	}
 if (!defined($in{'open'})) {
-	@open = ( 'system', 'status', 'updates' );
+	@open = ( 'system', 'status', 'updates', 'common' );
 	@auto = ( 'status' );
 	}
 %open = map { $_, &indexof($_, @auto) >= 0 ? 2 : 1 } @open;
@@ -175,7 +175,7 @@ if ($level == 0) {		# Master admin
 			}
 
 		# System time
-		$tm = localtime(time());
+		$tm = &make_date(time());
 		print "<tr> <td><b>$text{'right_time'}</b></td>\n";
 		print "<td>$tm</td> </tr>\n";
 
@@ -671,8 +671,20 @@ elsif ($level == 2) {		# Domain owner
 	}
 elsif ($level == 3) {		# Usermin
 	# Show user's information
-	print "<h3>$text{'right_header5'}</h3>\n";
+	&show_toggleview("system", "toggler1", $open{'system'},
+			 $text{'right_header5'});
 	print "<table>\n";
+
+	# Login name and real name
+	print "<tr> <td><b>$text{'right_login'}</b></td>\n";
+	print "<td>",$remote_user,"</td> </tr>\n";
+
+	@uinfo = getpwnam($remote_user);
+	if ($uinfo[6]) {
+		print "<tr> <td><b>$text{'right_realname'}</b></td>\n";
+		$uinfo[6] =~ s/,.*$// if ($uinfo[6] =~ /,.*,/);
+		print "<td>",&html_escape($uinfo[6]),"</td> </tr>\n";
+		}
 
 	# Host and login info
 	print "<tr> <td><b>$text{'right_host'}</b></td>\n";
@@ -688,6 +700,11 @@ elsif ($level == 3) {		# Usermin
 
 	print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
 	print "<td>",&get_webmin_version(),"</td> </tr>\n";
+
+	# System time
+	$tm = &make_date(time());
+	print "<tr> <td><b>$text{'right_time'}</b></td>\n";
+	print "<td>$tm</td> </tr>\n";
 
 	# Disk quotas
 	if (&foreign_installed("quota")) {
@@ -716,6 +733,24 @@ elsif ($level == 3) {		# Usermin
 			      "</td> </tr>\n";
 			}
 		}
+	print "</table>\n";
+	print "</div></p>\n";
+
+	# Common modules
+	&show_toggleview("common", "toggler2", $open{'common'},
+			 $text{'right_header7'});
+	print "<dl>\n";
+	foreach $mod ("filter", "changepass", "gnupg", "file", "mysql",
+		      "postgresql", "datastore") {
+		if (&foreign_available($mod)) {
+			%minfo = &get_module_info($mod);
+			print "<dt><a href='$mod/'>$minfo{'desc'}</a><br>\n";
+			$desc = $text{'common_'.$mod} || $minfo{'longdesc'};
+			print "<dd>$desc<p>\n";
+			}
+		}
+	print "</dl>\n";
+	print "</div></p>\n";
 	}
 
 &popup_footer();

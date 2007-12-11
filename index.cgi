@@ -22,7 +22,7 @@ if (!$goto) {
 	# Default is determined by Webmin config, defaults to system info page
 	$minfo = &get_goto_module();
 	$goto = $minfo && $minfo->{'dir'} ne 'virtual-server' ?
-		"$minfo->{'dir'}/" :"right.cgi?open=system&auto=status&open=updates";
+		"$minfo->{'dir'}/" :"right.cgi?open=system&auto=status&open=updates&open=common";
 	$left = "left.cgi";
 	if ($minfo) {
 		$left .= "?$minfo->{'category'}=1";
