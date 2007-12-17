@@ -784,7 +784,7 @@ local $w1 = int($bar_width*$used1/$total)+1;
 local $w2 = int($bar_width*$used2/$total);
 local $w3 = int($bar_width*$used3/$total);
 local $w4 = int($bar_width - $w1 - $w2 - $w3);
-$rv .= "<div class='barchart'>";
+$rv .= "<div class='barchart' nowrap='nowrap'>";
 if ($w1) {$rv .= sprintf "<img src=images/red.gif width=%s%% height=12px>", $w1;}
 if ($w2) {$rv .= sprintf "<img src=images/purple.gif width=%s%% height=12px>", $w2;}
 if ($w3) {$rv .= sprintf "<img src=images/blue.gif width=%s%% height=12px>", $w3;}
