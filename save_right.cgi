@@ -26,6 +26,17 @@ else {
 	}
 if ($hasvirt) {
 	$sect->{'dom'} = $in{'dom'};
+	$sect->{'qsort'} = $in{'qsort'};
+	if ($in{'max_def'}) {
+		delete($sect->{'max'});
+		}
+	else {
+		$in{'max'} =~ /^[1-9]\d*$/ || &error($text{'edright_emax'});
+		$sect->{'max'} = $in{'max'};
+		}
+	}
+if ($hasvm2) {
+	$sect->{'server'} = $in{'server'};
 	}
 if ($hasvirt && &virtual_server::master_admin()) {
 	$sect->{'global'} = $in{'global'};

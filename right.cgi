@@ -844,13 +844,23 @@ sub show_quotas_info
 {
 local ($quota, $maxquota) = @_;
 local @quota = @$quota;
+local $max = $sects->{'max'} || $default_domains_to_show;
 if (@quota) {
 	# Show disk usage by various domains
-	@quota = sort { $b->[1] <=> $a->[1] } @quota;
+	if ($sects->{'qsort'}) {
+		# Sort by percent used
+		@quota = grep { $_->[2] } @quota;
+		@quota = sort { ($b->[1]+$b->[3])/$b->[2] <=>
+				($a->[1]+$a->[3])/$a->[2] } @quota;
+		}
+	else {
+		# Sort by usage
+		@quota = sort { $b->[1]+$b->[3] <=> $a->[1]+$a->[3] } @quota;
+		}
 	print "<table>\n";
-	if (@quota > 10) {
-		@quota = @quota[0..9];
-		$qmsg = $text{'right_quota10'};
+	if (@quota > $max) {
+		@quota = @quota[0..($max-1)];
+		$qmsg = &text('right_quotamax', $max);
 		}
 	else {
 		$qmsg = $text{'right_quotaall'};
@@ -862,18 +872,21 @@ if (@quota) {
 		print "<tr>\n";
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
 			"edit_domain.cgi" : "view_domain.cgi";
-		print "<td width=30%><a href='virtual-server/$ed?",
+		print "<td width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$q->[0]->{'dom'}</a></td>\n";
-		print "<td width=50%>",&bar_chart_three(
+		print "<td width=50% nowrap>",&bar_chart_three(
 				$maxquota,		# Highest quota
 				$q->[1],		# Domain's disk usage
 				$q->[3],		# DB usage
 				$q->[2] ? $q->[2]-$q->[1]-$q->[3] : 0,	# Leftover
 				),"</td>\n";
 		if ($q->[2]) {
-			print "<td>",&text('right_out',
-				&nice_size($q->[1]+$q->[3]),
-				&nice_size($q->[2])),"</td>\n";
+			local $pc = int(($q->[1]+$q->[3])*100 / $q->[2]);
+			$pc = "&nbsp;$pc" if ($pc < 10);
+			print "<td nowrap>",$pc,"% - ",
+				     &text('right_out',
+					   &nice_size($q->[1]+$q->[3]),
+					   &nice_size($q->[2])),"</td>\n";
 			}
 		else {
 			print "<td>",&nice_size($q->[1]+$q->[3]),"</td>\n";

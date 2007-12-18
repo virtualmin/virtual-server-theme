@@ -26,8 +26,8 @@ print &ui_table_row($text{'edright_alt'},
     &ui_opt_textbox("alt", $sects->{'alt'}, 40, $text{'edright_altdef'}."<br>",
 		    $text{'edright_alturl'}));
 
-# Default domain
 if ($hasvirt) {
+	# Default domain
 	print &ui_table_row($text{'edright_dom'},
 	    &ui_select("dom", $sects->{'dom'},
 		       [ [ "", $text{'edright_first'} ],
@@ -35,6 +35,27 @@ if ($hasvirt) {
 			     grep { &virtual_server::can_edit_domain($_) }
 				  sort { $a->{'dom'} cmp $b->{'dom'} }
 				       &virtual_server::list_domains() ]));
+
+	# Sort quotas by
+	print &ui_table_row($text{'edright_qsort'},
+	    &ui_radio("qsort", int($sects->{'qsort'}),
+		      [ [ 1, $text{'edright_qsort1'} ],
+		 	[ 0, $text{'edright_qsort0'} ] ]));
+
+	# Number of servers to show
+	print &ui_table_row($text{'edright_max'},
+	    &ui_opt_textbox("max", $sects->{'max'}, 5,
+			    $text{'default'}." ($default_domains_to_show)"));
+	}
+
+if ($hasvm2) {
+	# Default VM2 server
+	print &ui_table_row($text{'edright_server'},
+	    &ui_select("server", $sects->{'server'},
+		       [ [ "", $text{'edright_first'} ],
+			 map { [ $_->{'id'}, $_->{'host'} ] }
+			     sort { $a->{'host'} cmp $b->{'host'} }
+				  &server_manager::list_managed_servers() ]));
 	}
 
 # Allow changing

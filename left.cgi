@@ -64,6 +64,7 @@ $mode = $in{'mode'} ? $in{'mode'} :
 	$hasvm2 ? "vm2" :
 	$hasmail ? "mail" :
 		   &get_product_name();
+$sects = &get_right_frame_sections();
 
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
@@ -88,7 +89,6 @@ if ($mode eq "virtualmin" && $hasvirt) {
 		}
 
 	# Work out which domain we are editing
-	$sects = &get_right_frame_sections();
 	if (defined($in{'dom'})) {
 		$d = &virtual_server::get_domain($in{'dom'});
 		}
@@ -121,6 +121,9 @@ if ($mode eq "vm2" && $hasvm2) {
 	@servers = &server_manager::list_managed_servers();
 	@servers = sort { $a->{'host'} cmp $b->{'host'} } @servers;
 	($server) = grep { $_->{'id'} eq $in{'sid'} } @servers;
+	if (!$server && $sects && $sects->{'server'} ne '') {
+		($server) = grep { $_->{'id'} eq $sects->{'server'} } @servers;
+		}
 	$server ||= $servers[0];
 	}
 $sid = $server ? $server->{'id'} : undef;
