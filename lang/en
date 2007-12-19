@@ -191,6 +191,11 @@ edright_qsort1=Percentage of limit
 edright_qsort0=Disk space used
 edright_max=Maximum servers to show
 edright_emax=Maximum servers must be a number greater than zero
+edright_deftab=Default mode on left menu
+edright_tab1=Whichever is first
+edright_virtualmin=Virtualmin
+edright_vm2=VM2
+edright_webmin=Webmin
 
 has_virtualmin=Virtualmin
 has_mail=Mail

@@ -26,6 +26,14 @@ print &ui_table_row($text{'edright_alt'},
     &ui_opt_textbox("alt", $sects->{'alt'}, 40, $text{'edright_altdef'}."<br>",
 		    $text{'edright_alturl'}));
 
+# Default tab
+print &ui_table_row($text{'edright_deftab'},
+    &ui_select("tab", $sects->{'tab'},
+       [ [ "", $text{'edright_tab1'} ],
+	 $hasvirt ? ( [ "virtualmin", $text{'edright_virtualmin'} ] ) : ( ),
+	 $hasvm2 ? ( [ "vm2", $text{'edright_vm2'} ] ) : ( ),
+	 [ "webmin", $text{'edright_webmin'} ] ]));
+
 if ($hasvirt) {
 	# Default domain
 	print &ui_table_row($text{'edright_dom'},

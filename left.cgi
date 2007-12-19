@@ -59,12 +59,13 @@ if ($image) {
 	}
 
 # Work out current mode
+$sects = &get_right_frame_sections();
 $mode = $in{'mode'} ? $in{'mode'} :
+	$sects->{'tab'} ? $sects->{'tab'} :
 	$hasvirt ? "virtualmin" :
 	$hasvm2 ? "vm2" :
 	$hasmail ? "mail" :
 		   &get_product_name();
-$sects = &get_right_frame_sections();
 
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains

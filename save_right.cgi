@@ -24,6 +24,7 @@ else {
 	$in{'alt'} =~ /^(http|https|\/)/ || &error($text{'edright_ealt'});
 	$sect->{'alt'} = $in{'alt'};
 	}
+$sect->{'tab'} = $in{'tab'};
 if ($hasvirt) {
 	$sect->{'dom'} = $in{'dom'};
 	$sect->{'qsort'} = $in{'qsort'};
