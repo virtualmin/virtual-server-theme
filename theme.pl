@@ -158,7 +158,7 @@ if (window.parent && window.parent.frames[0]) {
 			// Need to change value
 			domsel.value = '$d->{'id'}';
 			window.parent.frames[0].location =
-				'/left.cgi?mode=virtualmin&dom=$d->{'id'}';
+				'$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
 			}
 		}
 	}
