@@ -27,7 +27,7 @@ return $rv;
 sub theme_ui_pre_footer
 {
 local $rv;
-$rv .= "</div>\n";
+$rv .= "</div><p>\n";
 return $rv;
 }
 

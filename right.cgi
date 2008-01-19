@@ -723,7 +723,12 @@ elsif ($level == 3) {		# Usermin
 				}
 			}
 		if ($quota) {
-			$bsize = $quota::config{'block_size'};
+			$bsize = undef;
+			if (defined(&quota::quota_block_size)) {
+				$bsize = &quota::quota_block_size();
+				}
+			$bsize ||= $quota::config{'block_size'};
+			$bsize ||= 1024;
 			print "<tr> <td><b>$text{'right_uquota'}</b></td>\n";
 			print "<td>",&text('right_out',
 				&nice_size($usage*$bsize),
