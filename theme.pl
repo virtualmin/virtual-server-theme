@@ -166,6 +166,30 @@ if (window.parent && window.parent.frames[0]) {
 EOF
 }
 
+# theme_post_save_folder(&folder, action)
+# Called after some folder is changed, to refresh the left frame. The action
+# may be 'create', 'delete', 'modify' or 'read'
+sub theme_post_save_folder
+{
+local ($folder, $action) = @_;
+local $ref;
+if ($action eq 'create' || $action eq 'delete' || $action eq 'modify') {
+	# Always refresh
+	$ref = 1;
+	}
+else {
+	# Only refesh if showing unread count
+	if (defined(&should_show_unread) && &should_show_unread($folder)) {
+		$ref = 1;
+		}
+	}
+if ($ref) {
+	print "<script>\n";
+	print "top.frames[0].document.location = top.frames[0].document.location;\n";
+	print "</script>\n";
+	}
+}
+
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
@@ -176,16 +200,6 @@ if ($module_name eq "virtual-server") {
 	# No need for Module Index link, as we have the left-side frame
 	$tconfig{'nomoduleindex'} = 1;
 	}
-}
-
-sub theme_postbody
-{
-# If we just came from a folder editing page, refresh the folder list
-if ($module_name eq "mailbox" && $ENV{'HTTP_REFERER'} =~ /(edit|save)_(folder|comp|imap|pop3|virt)\.cgi|mail_search\.cgi|delete_folders\.cgi/) {
-        print "<script>\n";
-        print "top.frames[0].document.location = top.frames[0].document.location;\n";
-        print "</script>\n";
-        }
 }
 
 sub theme_prehead
@@ -422,7 +436,6 @@ for($i=0; $i+1<@_; $i+=2) {
 	}
 print "<br>\n";
 if (!$_[$i]) {
-	&theme_postbody(@_);
 	print "</body></html>\n";
 	}
 }

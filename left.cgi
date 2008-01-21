@@ -457,7 +457,13 @@ if ($mode eq "mail") {
 			$mailbox::special_folder_id &&
 			$f->{'id'} == $mailbox::special_folder_id ?
 			  "<img src=mailbox/images/special.gif border=0>" : "";
-		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$star$f->{'name'}</a></div>\n";
+		$umsg = "";
+		if (defined(&mailbox::should_show_unread) &&
+		    &mailbox::should_show_unread($f)) {
+			local ($c, $u) = &mailbox::mailbox_folder_unread($f);
+			$umsg = " ($u)" if ($u);
+			}
+		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$star$f->{'name'}$umsg</a></div>\n";
 		}
 
 	# Show search box
