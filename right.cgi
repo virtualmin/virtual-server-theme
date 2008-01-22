@@ -192,7 +192,12 @@ if ($level == 0) {		# Master admin
 		# Running processes
 		if ($info->{'procs'}) {
 			print "<tr> <td><b>$text{'right_procs'}</b></td>\n";
-			print "<td>$info->{'procs'}</td>\n";
+			if (&foreign_available("proc")) {
+				print "<td><a href=proc/>$info->{'procs'}</a></td>\n";
+				}
+			else {
+				print "<td>$info->{'procs'}</td>\n";
+				}
 			print &history_link("procs");
 			print "</tr>\n";
 			}
