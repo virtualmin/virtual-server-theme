@@ -496,8 +496,8 @@ local @rv;
 if ($level == 0) {
 	@rv = ( 'system' );
 	if ($hasvirt) {
-		push(@rv, 'updates', 'status', 'virtualmin', 'quotas',
-			  'ips', 'sysinfo');
+		push(@rv, 'updates', 'status', 'newfeatures', 'virtualmin',
+			  'quotas', 'ips', 'sysinfo');
 		}
 	if ($hasvm2) {
 		push(@rv, 'vm2servers');

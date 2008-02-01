@@ -339,6 +339,17 @@ if ($level == 0) {		# Master admin
 		print "</div>\n";
 		}
 
+	if ($hasvirt && !$sects->{'nonewfeatures'} &&
+	    defined(&virtual_server::get_new_features_html) &&
+	    ($newhtml = &virtual_server::get_new_features_html($defdom))) {
+		# Show new features HTML
+		&show_toggleview("newfeatures", "toggler10",
+				 1,  # Always open
+				 $text{'right_newfeaturesheader'});
+		print $newhtml;
+		print "</div>\n";
+		}
+
 	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
 		# Show Virtualmin information
 		&show_toggleview("virtualmin", "toggler3", $open{'virtualmin'},

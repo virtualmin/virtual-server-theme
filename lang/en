@@ -163,6 +163,7 @@ right_vunlimited=Unlimited
 right_virtdocs=Virtualmin documentation
 right_vm2docs=VM2 documentation
 right_header7=Account Functions
+right_newfeaturesheader=New Virtualmin Features
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
