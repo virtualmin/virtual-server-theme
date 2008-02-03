@@ -685,13 +685,15 @@ if ($hasvirt &&
 # Show info link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 if ($mode eq "vm2") {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates'>$text{'left_home'}</a></div></div>\n";
+	$sparam = $server ? "&id=$server->{'id'}" : "";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates$sparam'>$text{'left_home'}</a></div></div>\n";
 	}
 elsif (&get_product_name() eq 'usermin') {
 	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";
 	}
 else {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates'>$text{'left_home'}</a></div></div>\n";
+	$dparam = $d ? "&dom=$d->{'id'}" : "";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates$dparam'>$text{'left_home'}</a></div></div>\n";
 	}
 
 # Show logout link

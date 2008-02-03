@@ -12,6 +12,9 @@ do 'ui-lib.pl';
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
 $bar_width = 100;
+if ($hasvirt && $in{'dom'}) {
+	$defdom = &virtual_server::get_domain($in{'dom'});
+	}
 
 # Work out which sections are open by default
 foreach $o (split(/\0/, $in{'open'})) {
@@ -339,16 +342,8 @@ if ($level == 0) {		# Master admin
 		print "</div>\n";
 		}
 
-	if ($hasvirt && !$sects->{'nonewfeatures'} &&
-	    defined(&virtual_server::get_new_features_html) &&
-	    ($newhtml = &virtual_server::get_new_features_html($defdom))) {
-		# Show new features HTML
-		&show_toggleview("newfeatures", "toggler10",
-				 1,  # Always open
-				 $text{'right_newfeaturesheader'});
-		print $newhtml;
-		print "</div>\n";
-		}
+	# New features for master admin
+	&show_new_features(0);
 
 	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
 		# Show Virtualmin information
@@ -548,6 +543,9 @@ elsif ($level == 1) {		# Reseller
 			     &virtual_server::list_domains();
 		&show_domains_info(\@doms);
 		}
+
+	# New features for reseller
+	&show_new_features(1);
 	}
 elsif ($level == 2) {		# Domain owner
 	# Show a server owner info about one domain
@@ -684,6 +682,9 @@ elsif ($level == 2) {		# Domain owner
 		}
 
 	print "</table>\n";
+
+	# New features for domain owner
+	&show_new_features(1);
 	}
 elsif ($level == 3) {		# Usermin
 	# Show user's information
@@ -964,5 +965,27 @@ if ($hasvirt &&
 	       ($notd ? "" : "</td>")."\n";
 	}
 return undef;
+}
+
+sub show_new_features
+{
+local ($nosect) = @_;
+if ($hasvirt && !$sects->{'nonewfeatures'} &&
+    defined(&virtual_server::get_new_features_html) &&
+    ($newhtml = &virtual_server::get_new_features_html($defdom))) {
+	# Show new features HTML
+	if ($nosect) {
+		print "<h3>$text{'right_newfeaturesheader'}</h3>\n";
+		}
+	else {
+		&show_toggleview("newfeatures", "toggler10",
+				 1,  # Always open
+				 $text{'right_newfeaturesheader'});
+		}
+	print $newhtml;
+	if (!$nosect) {
+		print "</div>\n";
+		}
+	}
 }
 
