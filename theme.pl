@@ -476,12 +476,14 @@ if ($sects->{'global'}) {
 	}
 else {
 	# Save own, and turn off global flag (if this is the master admin)
-	&foreign_require("virtual-server", "virtual-server-lib.pl");
-	if (&virtual_server::master_admin()) {
-		local %globalsect;
-		&read_file($right_frame_sections_file, \%globalsect);
-		$globalsect{'global'} = 0;
-		&write_file($right_frame_sections_file, \%globalsect);
+	if (&foreign_check("virtual-server")) {
+		&foreign_require("virtual-server", "virtual-server-lib.pl");
+		if (&virtual_server::master_admin()) {
+			local %globalsect;
+			&read_file($right_frame_sections_file, \%globalsect);
+			$globalsect{'global'} = 0;
+			&write_file($right_frame_sections_file, \%globalsect);
+			}
 		}
 	&write_file($right_frame_sections_file.".".$remote_user, $sects);
 	}
