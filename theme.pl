@@ -190,6 +190,18 @@ if ($ref) {
 	}
 }
 
+sub theme_post_change_modules
+{
+print <<EOF;
+<script>
+var url = '' + top.left.location;
+if (url.indexOf('mode=webmin') > 0) {
+    top.left.location = url;
+    }
+</script>
+EOF
+}
+
 sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {

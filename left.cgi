@@ -9,8 +9,12 @@ do './ui-lib.pl';
 %text = &load_language($current_theme);
 @admincats = ( "tmpl", "create", "backup" );
 
-# Work out what categories we have
+# Work out what modules and categories we have
 @modules = &get_visible_module_infos();
+if (&get_product_name() eq 'webmin') {
+	@unmodules = grep { $_->{'installed'} eq '0' } @modules;
+	@modules = grep { $_->{'installed'} ne '0' } @modules;
+	}
 %cats = &list_categories(\@modules);
 if (defined($cats{''})) {
 	$cats{'others'} = $cats{''};
@@ -657,6 +661,23 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 		print "</div>\n";
 		}
 
+	# Show un-installed modules
+	if (@unmodules) {
+		&print_category_opener('_unused', $in{'_unused'} ? 1 : 0,
+		       "<font color=#888888>$text{'main_unused'}</font>");
+		$cls = $in{'_unused'} ? "itemshown" : "itemhidden";
+		print "<div class='$cls' id='_unused'>";
+		foreach $minfo (@unmodules) {
+			&print_category_link("$minfo->{'dir'}/",
+					     $minfo->{'desc'},
+					     undef,
+					     undef,
+					     $minfo->{'noframe'} ? "_top" : "",
+					);
+			}
+		print "</div>\n";
+		}
+
 	# Show module/help search form
 	if (-r "$root_directory/webmin_search.cgi") {
 		print $text{'left_search'},"&nbsp;";
@@ -682,7 +703,7 @@ if ($hasvirt &&
 	print "<div class='aftericon'><a target=right href='virtual-server/bwgraph.cgi'>$text{'left_bw'}</a></div></div>\n";
 	}
 
-# Show info link
+# Show system information link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 if ($mode eq "vm2") {
 	$sparam = $server ? "&id=$server->{'id'}" : "";
@@ -694,6 +715,13 @@ elsif (&get_product_name() eq 'usermin') {
 else {
 	$dparam = $d ? "&dom=$d->{'id'}" : "";
 	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates$dparam'>$text{'left_home'}</a></div></div>\n";
+	}
+
+# Show refresh modules like
+if ($mode eq "webmin" && &foreign_available("webmin") &&
+    -r &module_root_directory("webmin")."/refresh_modules.cgi") {
+        print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
+        print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
 	}
 
 # Show logout link
