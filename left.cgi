@@ -555,6 +555,12 @@ if ($mode eq "vm2" && $server) {
 			   "id=$server->{'id'}&basic=0&ifaces=1' target=right>".
 			   "$text{'left_vm2ifaces'}</a>");
 		}
+	$lfunc = "server_manager::can_edit_limits";
+	if (defined(&$lfunc) && &$lfunc($server)) {
+		push(@acts, "<a href='server-manager/edit_serv.cgi?".
+			   "id=$server->{'id'}&basic=0&limits=1' target=right>".
+			   "$text{'left_vm2limits'}</a>");
+		}
 	if (@acts) {
 		print "<div class='leftlink'>&nbsp;&nbsp;",
 		      &ui_links_row(\@acts),"</div>\n";
