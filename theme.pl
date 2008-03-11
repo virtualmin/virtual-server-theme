@@ -85,14 +85,21 @@ else {
 	}
 }
 
-# theme_post_save_domain(domain, action)
+# theme_post_save_domain(&domain, action)
 # Called by Virtualmin after a domain is updated, to refresh the left menu
 sub theme_post_save_domain
 {
 local ($d, $action) = @_;
-print "<script>\n";
-print "top.left.location = top.left.location;\n";
-print "</script>\n";
+if ($action eq 'create') {
+	# Select the new domain
+	&theme_select_server($d);
+	}
+else {
+	# Just refresh left side, in case options have changed
+	print "<script>\n";
+	print "top.left.location = top.left.location;\n";
+	print "</script>\n";
+	}
 }
 
 # theme_post_save_domains([domain, action]+)
