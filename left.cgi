@@ -198,10 +198,10 @@ elsif ($mode eq "mail") {
 	print "    }\n";
 	print "}\n";
 	print "</script>\n";
-	print "<form action=mailbox/mail_search.cgi target=right onSubmit='GetMailFolder()'>\n";
-	print &ui_hidden("simple", 1),"\n";
-	print &ui_hidden("folder", $dfolder->{'index'}),"\n";
-	print &ui_hidden("id", undef),"\n";
+	print "<form action=mailbox/mail_search.cgi target=right onSubmit='GetMailFolder()' style='display:inline'>\n";
+	print &ui_hidden("simple", 1);
+	print &ui_hidden("folder", $dfolder->{'index'});
+	print &ui_hidden("id", undef);
 	$doneform = 1;
 	}
 
