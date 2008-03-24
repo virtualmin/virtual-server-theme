@@ -970,10 +970,11 @@ return undef;
 sub show_new_features
 {
 local ($nosect) = @_;
+local $newhtml;
 if ($hasvirt && !$sects->{'nonewfeatures'} &&
     defined(&virtual_server::get_new_features_html) &&
     ($newhtml = &virtual_server::get_new_features_html($defdom))) {
-	# Show new features HTML
+	# Show new features HTML for Virtualmin
 	if ($nosect) {
 		print "<h3>$text{'right_newfeaturesheader'}</h3>\n";
 		}
@@ -981,6 +982,23 @@ if ($hasvirt && !$sects->{'nonewfeatures'} &&
 		&show_toggleview("newfeatures", "toggler10",
 				 1,  # Always open
 				 $text{'right_newfeaturesheader'});
+		}
+	print $newhtml;
+	if (!$nosect) {
+		print "</div>\n";
+		}
+	}
+if ($hasvm2 && !$sects->{'nonewfeatures'} &&
+    defined(&server_manager::get_new_features_html) &&
+    ($newhtml = &server_manager::get_new_features_html(undef))) {
+	# Show new features HTML for VM2
+	if ($nosect) {
+		print "<h3>$text{'right_newfeaturesheadervm2'}</h3>\n";
+		}
+	else {
+		&show_toggleview("newfeatures", "toggler10",
+				 1,  # Always open
+				 $text{'right_newfeaturesheadervm2'});
 		}
 	print $newhtml;
 	if (!$nosect) {
