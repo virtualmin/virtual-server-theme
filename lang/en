@@ -72,6 +72,7 @@ left_vm2iwebmin=Install Webmin
 left_vm2recheck=Recheck Virtualmin Config
 left_vm2image=Create System Image
 left_direct=Direct Link
+left_others=Others
 
 right_header0=System Information
 right_host=System hostname

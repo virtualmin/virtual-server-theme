@@ -766,7 +766,7 @@ local $others = join("&", map { $_."=".$in{$_} } @others);
 $others = "&$others" if ($others);
 $others .= "&dom=$did";
 $others .= "&mode=$mode";
-$label = $c eq "others" ? "Others" : $label;
+$label = $c eq "others" ? $text{'left_others'} : $label;
 
 # Show link to close or open catgory
 print "<div class='linkwithicon'>";
