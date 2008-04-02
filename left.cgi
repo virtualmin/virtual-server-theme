@@ -162,12 +162,12 @@ if (@has > 1) {
 print "<div class='menubody'>\n";
 if ($mode eq "webmin" || $mode eq "usermin") {
 	# Left form is for searching Webmin
-	print "<form action=webmin_search.cgi target=right>\n";
+	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
 	$doneform = 1;
 	}
 elsif ($hasvirt || $hasvm2) {
 	# Left form is for changing domain / server
-	print "<form action=left.cgi>\n";
+	print "<form action=left.cgi style='display:inline'>\n";
 	$doneform = 1;
 	}
 elsif ($mode eq "mail") {
