@@ -538,61 +538,91 @@ if ($mode eq "vm2" && $server) {
 	print "<div class='leftlink'>",&text('left_vm2status', $statusmsg),
 	      "</div>\n";
 
-	# Show links to edit server
-	print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
-	local @acts;
-	if ($server->{'status'} eq 'virt') {
-		push(@acts, "<a href='server-manager/edit_serv.cgi?".
-			    "id=$server->{'id'}&basic=0&coll=1' target=right>".
-			    "$text{'left_vm2coll'}</a>");
-		push(@acts, "<a href='server-manager/edit_serv.cgi?".
-			    "id=$server->{'id'}&basic=0&doms=1' target=right>".
-			    "$text{'left_vm2doms'}</a>");
-		}
-	$ifunc = "server_manager::type_".$t."_list_interfaces";
-	if (defined(&$ifunc)) {
-		push(@acts, "<a href='server-manager/edit_serv.cgi?".
-			   "id=$server->{'id'}&basic=0&ifaces=1' target=right>".
-			   "$text{'left_vm2ifaces'}</a>");
-		}
-	$lfunc = "server_manager::can_edit_limits";
-	if (defined(&$lfunc) && &$lfunc($server)) {
-		push(@acts, "<a href='server-manager/edit_serv.cgi?".
-			   "id=$server->{'id'}&basic=0&limits=1' target=right>".
-			   "$text{'left_vm2limits'}</a>");
-		}
-	if (@acts) {
-		print "<div class='leftlink'>&nbsp;&nbsp;",
-		      &ui_links_row(\@acts),"</div>\n";
+	# Get actions for this system provided by VM2
+	@actions = grep { $_ } &server_manager::get_server_actions($server);
+	$oldstyle = 0;
+	foreach $b (@actions) {
+		if (ref($b) eq 'ARRAY') {
+			# Convert old-style to new
+			$b = { 'link' => $b->[3] ||
+					 "server-manager/save_serv.cgi?".
+					 "id=$server->{'id'}&$b->[0]=1",
+			       'desc' => $b->[1],
+			       'id' => $b->[0],
+			       'target' => $b->[2] ? "_new" : "right",
+			       'cat' => undef };
+			$oldstyle = 1;
+			}
+		$b->{'desc'} = $text{'leftvm2_'.$b->{'id'}}
+			if ($text{'leftvm2_'.$b->{'id'}});
 		}
 
-	# Show actions provided by VM2
-	foreach my $b (&server_manager::get_server_actions($server)) {
-		next if (!$b);
-		local $msg = $text{'left_vm2'.$b->[0]} || $b->[1];
-		if ($b->[3]) {
-			# Custom URL
-			local $target = $b->[2] ? "_new" : "right";
-			local $direct;
-			if ($b->[3] =~ /\/link.cgi\//) {
-				# Link via servers module - also show direct
-				$prot = $server->{'ssl'} ? 'https' : 'http';
-				$durl = "$prot://$server->{'host'}:".
-					"$server->{'port'}/";
-				$direct = " | <a href='$durl' target=$target>".
-					  "$text{'left_direct'}</a>";
-				}
-			print "<div class='leftlink'><a href='$b->[3]' target=$target>$msg</a>$direct</div>\n";
+	# Show links to edit server
+	if ($oldstyle) {
+		# XXX remove later
+		print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
+		local @acts;
+		if ($server->{'status'} eq 'virt') {
+			push(@acts, "<a href='server-manager/edit_serv.cgi?".
+				    "id=$server->{'id'}&basic=0&coll=1' target=right>".
+				    "$text{'left_vm2coll'}</a>");
+			push(@acts, "<a href='server-manager/edit_serv.cgi?".
+				    "id=$server->{'id'}&basic=0&doms=1' target=right>".
+				    "$text{'left_vm2doms'}</a>");
 			}
-		else {
-			# Link to VM2 CGI
-			print "<div class='leftlink'><a href='server-manager/save_serv.cgi?id=$server->{'id'}&$b->[0]=1' target=right>$msg</a></div>\n";
+		$ifunc = "server_manager::type_".$t."_list_interfaces";
+		if (defined(&$ifunc)) {
+			push(@acts, "<a href='server-manager/edit_serv.cgi?".
+				   "id=$server->{'id'}&basic=0&ifaces=1' target=right>".
+				   "$text{'left_vm2ifaces'}</a>");
+			}
+		$lfunc = "server_manager::can_edit_limits";
+		if (defined(&$lfunc) && &$lfunc($server)) {
+			push(@acts, "<a href='server-manager/edit_serv.cgi?".
+				   "id=$server->{'id'}&basic=0&limits=1' target=right>".
+				   "$text{'left_vm2limits'}</a>");
+			}
+		if (@acts) {
+			print "<div class='leftlink'>&nbsp;&nbsp;",
+			      &ui_links_row(\@acts),"</div>\n";
+			}
+		}
+
+	# Work out action categories, and show those under each
+	my @cats = sort { $a cmp $b } &unique(map { $_->{'cat'} } @actions);
+	foreach my $c (@cats) {
+		my @incat = grep { $_->{'cat'} eq $c } @actions;
+		if ($c) {
+			# Start of opener
+			&print_category_opener("cat_$c", \@cats,
+				$server_manager::text{'cat_'.$c});
+			print "<div class='itemhidden' id='cat_$c'>\n";
+			}
+		foreach my $b (sort { ($a->{'title'} || $a->{'desc'}) cmp
+				      ($b->{'title'} || $b->{'desc'})} @incat) {
+			if ($b->{'link'} =~ /\//) {
+				$url = $b->{'link'};
+				}
+			elsif ($b->{'link'}) {
+				$url = "server-manager/$b->{'link'}";
+				}
+			else {
+				$url = "server-manager/save_serv.cgi?id=$server->{'id'}&$b->{'id'}=1";
+				}
+			$title = $b->{'title'} || $b->{'desc'};
+			&print_category_link($url, $title,
+				     undef, undef, $b->{'target'}, !$c);
+			}
+		if ($c) {
+			# End of opener
+			print "</div>\n";
 			}
 		}
 	}
 
 if ($mode eq "vm2") {
 	# Show add / create links
+	print "<hr>\n";
 	@createlinks = @addlinks = ( );
 	foreach $t (@server_manager::server_management_types) {
 		$lfunc = "server_manager::type_".$t."_create_links";
@@ -609,7 +639,7 @@ if ($mode eq "vm2") {
 			}
 		}
 	foreach $ml ([ "create", \@createlinks ],
-		    [ "add", \@addlinks ]) {
+		     [ "add", \@addlinks ]) {
 		($m, $l) = @$ml;
 		if (@$l == 1) {
 			print "<div class='leftlink'><a href='server-manager/${m}_form.cgi?type=$l->[0]->{'type'}' target=right>$l->[0]->{'desc'}</a></div>\n";
@@ -782,9 +812,11 @@ print &category_link(@_);
 
 sub category_link
 {
-local ($link, $label, $image, $noimage, $target) = @_;
+local ($link, $label, $image, $noimage, $target, $noindent) = @_;
 $target ||= "right";
-return "<div class='linkindented'><a target=$target href=$link>$label</a></div>\n";
+return ($noindent ? "<div class='linknotindented'>"
+		  : "<div class='linkindented'>").
+       "<a target=$target href=$link>$label</a></div>\n";
 }
 
 sub shorten_hostname

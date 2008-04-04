@@ -22,6 +22,13 @@
   margin-right: 2px;
   margin-left: 20px;
 }
+.linknotindented {
+  border: none;
+  position: relative;
+  padding-top: 2px;
+  margin-right: 2px;
+  margin-left: 4px;
+}
 .aftericon {
   display: inline;
 }
