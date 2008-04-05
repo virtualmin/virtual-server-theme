@@ -52,6 +52,7 @@ left_customlinks=Custom Links
 left_vm2=List Managed Systems
 left_vm2create=Create System
 left_vm2add=Add System
+left_vm2new=New System
 left_vm2edit=Edit System
 left_vm2coll=Status
 left_vm2doms=Domains
@@ -71,6 +72,7 @@ left_vm2ivirt=Install Virtualmin
 left_vm2iwebmin=Install Webmin
 left_vm2recheck=Recheck Virtualmin Config
 left_vm2image=Create System Image
+left_vm2settings=System Settings
 left_direct=Direct Link
 left_others=Others
 

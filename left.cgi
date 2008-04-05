@@ -621,6 +621,32 @@ if ($mode eq "vm2" && $server) {
 	}
 
 if ($mode eq "vm2") {
+	# Get global settings, add Module Config
+	print "<hr>\n";
+	@vservers = grep { $_->{'status'} eq 'virt' } @servers;
+	($glinks, $gtitles, $gicons, $gcats) =
+		&server_manager::get_global_links(scalar(@vservers));
+	$glinks = [ map { "server-manager/$_" } @$glinks ];
+	$gcats = [ map { $_ || "settings" } @$gcats ];
+	push(@$glinks, "config.cgi?server-manager");
+	push(@$gtitles, $text{'header_config'});
+	push(@$gicons, undef);
+	push(@$gcats, 'settings');
+
+	# Show global settings, under categories
+	@ugcats = &unique(@$gcats);
+	foreach $c (@ugcats) {
+		&print_category_opener($c, undef,
+			       $server_manager::text{'cat_'.$c} ||
+			       $text{'left_vm2'.$c});
+		print "<div class='itemhidden' id='$c'>\n";
+		for($i=0; $i<@$glinks; $i++) {
+			next if ($gcats->[$i] ne $c);
+			&print_category_link($glinks->[$i], $gtitles->[$i]);
+			}
+		print "</div>\n";
+		}
+
 	# Show add / create links
 	print "<hr>\n";
 	@createlinks = @addlinks = ( );
@@ -638,8 +664,14 @@ if ($mode eq "vm2") {
 				}
 			}
 		}
+	if (scalar(@createlinks) + scalar(@addlinks) <= 3) {
+		# Collapse to one section
+		@newlinks = ( @createlinks, @addlinks );
+		@createlinks = @addlinks = ( );
+		}
 	foreach $ml ([ "create", \@createlinks ],
-		     [ "add", \@addlinks ]) {
+		     [ "add", \@addlinks ],
+		     [ "new", \@newlinks ]) {
 		($m, $l) = @$ml;
 		if (@$l == 1) {
 			print "<div class='leftlink'><a href='server-manager/${m}_form.cgi?type=$l->[0]->{'type'}' target=right>$l->[0]->{'desc'}</a></div>\n";
@@ -657,23 +689,6 @@ if ($mode eq "vm2") {
 			}
 		}
 
-	# Show global settings
-	@vservers = grep { $_->{'status'} eq 'virt' } @servers;
-	($glinks, $gtitles, $gicons) = &server_manager::get_global_links(
-						scalar(@vservers));
-	if (@$glinks) {
-		&print_category_opener('global', undef,
-				       $text{'left_vm2global'});
-		print "<div class='itemhidden' id='global'>\n";
-		for($i=0; $i<@$glinks; $i++) {
-			&print_category_link(
-			    "server-manager/$glinks->[$i]", $gtitles->[$i]);
-			}
-		&print_category_link(
-			"config.cgi?server-manager",
-			$text{'header_config'});
-		print "</div>\n";
-		}
 
 	# Show list of all servers
 	print "<div class='linkwithicon'><img src=images/vm2-small.gif><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
