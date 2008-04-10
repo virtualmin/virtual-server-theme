@@ -244,10 +244,20 @@ if ($mode eq "virtualmin" && @doms) {
 			}
 		}
 
-	# Show domain creation link
+	# Show domain creation link, if possible
 	if (&virtual_server::can_create_master_servers() ||
 	    &virtual_server::can_create_sub_servers()) {
-		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1&gparent=$d->{'id'}' target=right>$text{'left_generic'}</a></div>\n";
+		($rdleft, $rdreason, $rdmax) =
+			&virtual_server::count_domains("realdoms");
+                ($adleft, $adreason, $admax) =
+			&virtual_server::count_domains("aliasdoms");
+		if ($rdleft || $adleft) {
+			print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1&gparent=$d->{'id'}' target=right>$text{'left_generic'}</a></div>\n";
+			}
+		else {
+			print "<div class='leftlink'><b>",
+			      &text('left_nomore'),"</b></div>\n";
+			}
 		}
 
 	if (!$d) {

@@ -75,6 +75,7 @@ left_vm2image=Create System Image
 left_vm2settings=System Settings
 left_direct=Direct Link
 left_others=Others
+left_nomore=No more servers can be created
 
 right_header0=System Information
 right_host=System hostname

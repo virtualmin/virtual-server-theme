@@ -484,7 +484,7 @@ if ($level == 0) {		# Master admin
 		push(@lics, [ $text{'right_vmax'},
 		      $dmax <= 0 ? $text{'right_vunlimited'} : $dmax ]);
 		push(@lics, [ $text{'right_vleft'},
-		      $dleft <= 0 ? $text{'right_vunlimited'} : $dleft ]);
+		      $dleft < 0 ? $text{'right_vunlimited'} : $dleft ]);
 
 		# Add allowed server counts
 		&read_file($virtual_server::licence_status, \%lstatus);
