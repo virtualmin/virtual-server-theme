@@ -577,7 +577,9 @@ elsif ($level == 2) {		# Domain owner
 		}
 
 	print "<tr> <td><b>$text{'right_dom'}</b></td>\n";
-	print "<td><tt>$d->{'dom'}</tt></td> </tr>\n";
+	$dname = defined(&virtual_server::show_domain_name) ?
+		&virtual_server::show_domain_name($d) : $d->{'dom'};
+	print "<td><tt>$dname</tt></td> </tr>\n";
 
 	@subs = ( $d, &virtual_server::get_domain_by("parent", $d->{'id'}) );
 	@reals = grep { !$_->{'alias'} } @subs;
@@ -894,8 +896,10 @@ if (@quota) {
 		print "<tr>\n";
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
 			"edit_domain.cgi" : "view_domain.cgi";
+		$dname = defined(&virtual_server::show_domain_name) ?
+		    &virtual_server::show_domain_name($q->[0]) : $d->{'dom'};
 		print "<td width=20%><a href='virtual-server/$ed?",
-		      "dom=$q->[0]->{'id'}'>$q->[0]->{'dom'}</a></td>\n";
+		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
 		print "<td width=50% nowrap>",&bar_chart_three(
 				$maxquota,		# Highest quota
 				$q->[1],		# Domain's disk usage

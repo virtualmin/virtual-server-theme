@@ -77,7 +77,16 @@ if ($mode eq "virtualmin" && $hasvirt) {
 	@doms = grep { &virtual_server::can_edit_domain($_) } @alldoms;
 	if ($virtual_server::config{'domains_sort'} eq 'dom') {
 		# By domain name
-		@doms = sort { lc($a->{'dom'}) cmp lc($b->{'dom'}) } @doms;
+		local %sortkey;
+		if (defined(&virtual_server::show_domain_name)) {
+			%sortkey = map { $_->{'id'},
+				&virtual_server::show_domain_name($_) } @doms;
+			}
+		else {
+			%sortkey = map { $_->{'id'}, lc($_->{'dom'}) } @doms;
+			}
+		@doms = sort { $sortkey{$a->{'id'}} cmp $sortkey{$b->{'id'}} }
+			     @doms;
 		}
 	elsif ($virtual_server::config{'domains_sort'} eq 'user') {
 		# By username, with indents
