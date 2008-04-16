@@ -692,17 +692,21 @@ if ($mode eq "vm2") {
 		     [ "add", \@addlinks ],
 		     [ "new", \@newlinks ]) {
 		($m, $l) = @$ml;
-		$form = $m->{'create'} ? 'create_form.cgi' : 'add_form.cgi';
 		if (@$l == 1) {
-			print "<div class='leftlink'><a href='server-manager/$form?type=$l->[0]->{'type'}' target=right>$l->[0]->{'desc'}</a></div>\n";
+			$c = $l->[0];
+			$form = $c->{'create'} ? 'create_form.cgi'
+					       : 'add_form.cgi';
+			print "<div class='leftlink'><a href='server-manager/$form?type=$c->{'type'}' target=right>$c->{'desc'}</a></div>\n";
 			}
 		elsif (@$l) {
 			&print_category_opener($m, undef,
 					       $text{'left_vm2'.$m});
 			print "<div class='itemhidden' id='$m'>\n";
 			foreach $c (@$l) {
+				$form = $c->{'create'} ? 'create_form.cgi'
+						       : 'add_form.cgi';
 				&print_category_link(
-				    "server-manager/${m}_form.cgi?".
+				    "server-manager/$form?".
 				    "type=$c->{'type'}", $c->{'desc'});
 				}
 			print "</div>\n";
