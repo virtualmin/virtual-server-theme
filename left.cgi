@@ -132,8 +132,13 @@ $did = $d ? $d->{'id'} : undef;
 if ($mode eq "vm2" && $hasvm2) {
 	# Get and sort managed servers
 	&foreign_require("server-manager", "server-manager-lib.pl");
-	@servers = &server_manager::list_managed_servers();
-	@servers = sort { $a->{'host'} cmp $b->{'host'} } @servers;
+	if (defined(&server_manager::list_managed_servers_sorted)) {
+		@servers = &server_manager::list_managed_servers_sorted();
+		}
+	else {
+		@servers = &server_manager::list_managed_servers();
+		@servers = sort { $a->{'host'} cmp $b->{'host'} } @servers;
+		}
 	($server) = grep { $_->{'id'} eq $in{'sid'} } @servers;
 	if (!$server && $sects && $sects->{'server'} ne '') {
 		($server) = grep { $_->{'id'} eq $sects->{'server'} } @servers;
@@ -368,7 +373,8 @@ elsif ($mode eq "vm2") {
 	print "<div class='domainmenu'>\n";
 	print &ui_hidden("mode", $mode);
 	print &ui_select("sid", $sid,
-		[ map { [ $_->{'id'}, &shorten_hostname($_) ] } @servers ],
+		[ map { [ $_->{'id'}, ("&nbsp;&nbsp;" x $_->{'indent'}).
+				      &shorten_hostname($_) ] } @servers ],
 		1, 0, 0, 0, "onChange='form.submit()'");
 	print "<input type=image src=images/ok.gif>\n";
 	print "</div>\n";
