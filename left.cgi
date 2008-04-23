@@ -132,7 +132,10 @@ $did = $d ? $d->{'id'} : undef;
 if ($mode eq "vm2" && $hasvm2) {
 	# Get and sort managed servers
 	&foreign_require("server-manager", "server-manager-lib.pl");
-	if (defined(&server_manager::list_managed_servers_sorted)) {
+	if (defined(&server_manager::list_available_managed_servers_sorted)) {
+		@servers = &server_manager::list_available_managed_servers_sorted();
+		}
+	elsif (defined(&server_manager::list_managed_servers_sorted)) {
 		@servers = &server_manager::list_managed_servers_sorted();
 		}
 	else {
@@ -647,19 +650,23 @@ if ($mode eq "vm2" && $server) {
 
 if ($mode eq "vm2") {
 	# Get global settings, add Module Config
-	print "<hr>\n";
 	@vservers = grep { $_->{'status'} eq 'virt' } @servers;
 	($glinks, $gtitles, $gicons, $gcats) =
 		&server_manager::get_global_links(scalar(@vservers));
 	$glinks = [ map { "server-manager/$_" } @$glinks ];
 	$gcats = [ map { $_ || "settings" } @$gcats ];
-	push(@$glinks, "config.cgi?server-manager");
-	push(@$gtitles, $text{'header_config'});
-	push(@$gicons, undef);
-	push(@$gcats, 'settings');
+	if (!$server_manager::access{'noconfig'}) {
+		push(@$glinks, "config.cgi?server-manager");
+		push(@$gtitles, $text{'header_config'});
+		push(@$gicons, undef);
+		push(@$gcats, 'settings');
+		}
 
 	# Show global settings, under categories
 	@ugcats = &unique(@$gcats);
+	if (@ugcats) {
+		print "<hr>\n";
+		}
 	foreach $c (@ugcats) {
 		&print_category_opener($c, undef,
 			       $server_manager::text{'cat_'.$c} ||
@@ -673,22 +680,26 @@ if ($mode eq "vm2") {
 		}
 
 	# Show add / create links
-	print "<hr>\n";
-	@createlinks = @addlinks = ( );
-	foreach $t (@server_manager::server_management_types) {
-		$lfunc = "server_manager::type_".$t."_create_links";
-		if (defined(&$lfunc)) {
-			foreach $l (&$lfunc()) {
-				$l->{'type'} = $t;
-				if ($l->{'create'}) {
-					push(@createlinks, $l);
-					}
-				else {
-					push(@addlinks, $l);
+	if (defined(&server_manager::get_available_create_links)) {
+		@alllinks = &server_manager::get_available_create_links();
+		}
+	else {
+		@alllinks = ( );
+		foreach $t (@server_manager::server_management_types) {
+			$lfunc = "server_manager::type_".$t."_create_links";
+			if (defined(&$lfunc)) {
+				foreach $l (&$lfunc()) {
+					$l->{'type'} = $t;
+					push(@alllinks, $t);
 					}
 				}
 			}
 		}
+	if (@alllinks) {
+		print "<hr>\n";
+		}
+	@createlinks = grep { $_->{'create'} } @alllinks;
+	@addlinks = grep { !$_->{'create'} } @alllinks;
 	if (scalar(@createlinks) + scalar(@addlinks) <= 3) {
 		# Collapse to one section
 		@newlinks = ( @createlinks, @addlinks );
