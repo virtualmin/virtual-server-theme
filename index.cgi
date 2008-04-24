@@ -7,6 +7,7 @@ do './web-lib.pl';
 
 # Work out which module to open by default
 $hasvirt = &foreign_available("virtual-server");
+$hasvm2 = &foreign_available("server-manager");
 if ($in{'dom'} && $hasvirt) {
 	# Caller has requested a specific domain ..
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
@@ -41,6 +42,12 @@ if ($hasvirt) {
 	%minfo = &get_module_info("virtual-server");
 	$title = $gconfig{'nohostname'} ? $text{'vmain_title2'} :
 		&text('vmain_title', $minfo{'version'}, $host, $ostr);
+	}
+elsif ($hasvm2) {
+	# Show VM2 version
+	%minfo = &get_module_info("server-manager");
+	$title = $gconfig{'nohostname'} ? $text{'mmain_title2'} :
+		&text('mmain_title', $minfo{'version'}, $host, $ostr);
 	}
 else {
 	# Show Webmin version

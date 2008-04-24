@@ -626,7 +626,8 @@ if ($mode eq "vm2" && $server) {
 				$server_manager::text{'cat_'.$c});
 			print "<div class='itemhidden' id='cat_$c'>\n";
 			}
-		foreach my $b (sort { ($a->{'title'} || $a->{'desc'}) cmp
+		foreach my $b (sort { $b->{'priority'} <=> $a->{'priority'} ||
+				      ($a->{'title'} || $a->{'desc'}) cmp
 				      ($b->{'title'} || $b->{'desc'})} @incat) {
 			if ($b->{'link'} =~ /\//) {
 				$url = $b->{'link'};
