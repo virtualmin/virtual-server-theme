@@ -551,14 +551,18 @@ return @rv;
 sub get_virtualmin_user_level
 {
 local ($hasvirt, $hasvm2, $level);
-if (&foreign_available("server-manager")) {
+$hasvm2 = &foreign_available("server-manager");
+$hasvirt = &foreign_available("virtual-server");
+if ($hasvm2) {
 	&foreign_require("server-manager", "server-manager-lib.pl");
-	$hasvm2 = 1;
+	}
+if ($hasvirt) {
+	&foreign_require("virtual-server", "virtual-server-lib.pl");
+	}
+if ($hasvm2) {
 	$level = $server_manager::access{'owner'} ? 4 : 0;
 	}
-elsif (&foreign_available("virtual-server")) {
-	&foreign_require("virtual-server", "virtual-server-lib.pl");
-	$hasvirt = 1;
+elsif ($hasvirt) {
 	$level = &virtual_server::master_admin() ? 0 :
 		 &virtual_server::reseller_admin() ? 1 : 2;
 	}
