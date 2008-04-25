@@ -800,7 +800,7 @@ if ($hasvirt &&
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 if ($mode eq "vm2") {
 	$sparam = $server ? "&id=$server->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates$sparam'>$text{'left_home'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates&open=owner$sparam'>$text{'left_home'}</a></div></div>\n";
 	}
 elsif (&get_product_name() eq 'usermin') {
 	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";

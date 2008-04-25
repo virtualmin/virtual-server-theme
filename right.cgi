@@ -8,7 +8,7 @@ do 'ui-lib.pl';
 &load_theme_library();
 
 # Work out system capabilities. Level 3 = usermin, 2 = domain owner,
-# 1 = reseller, 0 = master
+# 1 = reseller, 0 = master, 4 = VM2 system owner
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 %text = &load_language($current_theme);
 $bar_width = 100;
@@ -434,34 +434,7 @@ if ($level == 0) {		# Master admin
 		&show_toggleview("vm2servers", "toggler8", $open{'vm2servers'},
 				 $text{'right_vm2serversheader'});
 		@servers = &server_manager::list_managed_servers();
-		%statuscount = ( );
-		%managercount = ( );
-		foreach $s (@servers) {
-			$statuscount{$s->{'status'}}++;
-			$managercount{$s->{'manager'}}++;
-			}
-
-		# Status grid
-		@tds = ( "width=40% align=left", "width=10% align=left",
-			 "width=40% align=left", "width=10% align=left" );
-		print "<table><tr><td><b>$text{'right_vm2statuses'}</td></tr></table>\n";
-		@grid = ( );
-		foreach $st (reverse(@server_manager::server_statuses)) {
-			local $fk = { 'status' => $st->[0] };
-			push(@grid, &server_manager::describe_status($fk, 1));
-			push(@grid, int($statuscount{$st->[0]}));
-			}
-		print &ui_grid_table(\@grid, 4, 75, \@tds);
-
-		# Types grid
-		print "<table><tr><td><b>$text{'right_vm2types'}</td></tr></table>\n";
-		@grid = ( );
-		foreach $mg (@server_manager::server_management_types) {
-			$tfunc = "server_manager::type_".$mg."_desc";
-			push(@grid, &$tfunc());
-			push(@grid, int($managercount{$mg}));
-			}
-		print &ui_grid_table(\@grid, 4, 75, \@tds);
+		&show_vm2_servers(\@servers, 1);
 		print "</div><p>\n";
 		}
 
@@ -776,6 +749,54 @@ elsif ($level == 3) {		# Usermin
 	print "</dl>\n";
 	print "</div></p>\n";
 	}
+elsif ($level == 4) {
+	# Show a VM2 system owner information about his systems
+	&show_toggleview("owner", "toggler11", $open{'owner'},
+			 $text{'right_ownerheader'});
+	print "<table>\n";
+
+	print "<tr> <td><b>$text{'right_login'}</b></td>\n";
+	print "<td>",$remote_user,"</td> </tr>\n";
+
+	print "<tr> <td><b>$text{'right_from'}</b></td>\n";
+	print "<td>",$ENV{'REMOTE_HOST'},"</td> </tr>\n";
+
+	print "<tr> <td><b>$text{'right_vm2'}</b></td>\n";
+	print "<td>",$server_manager::module_info{'version'},"</td> </tr>\n";
+
+	print "<tr> <td><b>$text{'right_vm2real'}</b></td>\n";
+	print "<td>",$server_manager::access{'real'},"</td> </tr>\n";
+
+	print "<tr> <td><b>$text{'right_vm2email'}</b></td>\n";
+	print "<td>",$server_manager::access{'email'},"</td> </tr>\n";
+
+	@servers = &server_manager::list_available_managed_servers_sorted();
+	if (@servers == 1) {
+		# Show primary system here
+		print "<tr> <td><b>$text{'right_vm2one'}</b></td>\n";
+		$s = $servers[0];
+		if (&server_manager::can_access($s, "view")) {
+			print "<td><a href='server-manager/edit_serv.cgi?id=$s->{'id'}'>$s->{'host'}</a></td>\n";
+			}
+		else {
+			print "<td>$s->{'host'}</td>\n";
+			}
+		}
+
+	print "</table>\n";
+	print "</div></p>\n";
+
+	# Show a list of his systems
+	if (@servers > 1) {
+		&show_toggleview("vm2servers", "toggler12", $open{'vm2servers'},
+				 $text{'right_vm2serversheader'});
+		&show_vm2_servers(\@servers);
+		print "</div></p>\n";
+		}
+
+	# New features for domain owner
+	&show_new_features(0);
+	}
 
 &popup_footer();
 
@@ -1011,3 +1032,42 @@ if ($hasvm2 && !$sects->{'nonewfeatures'} &&
 	}
 }
 
+# show_vm2_servers(&servers, showtypes?)
+# Prints a summary of VM2 systems
+sub show_vm2_servers
+{
+local ($servers, $showtypes) = @_;
+
+local %statuscount = ( );
+local %managercount = ( );
+foreach my $s (@servers) {
+	$statuscount{$s->{'status'}}++;
+	$managercount{$s->{'manager'}}++;
+	}
+
+# Status grid
+my @tds = ( "width=40% align=left", "width=10% align=left",
+	    "width=40% align=left", "width=10% align=left" );
+print "<table><tr><td><b>$text{'right_vm2statuses'}</td></tr></table>\n";
+my @grid = ( );
+foreach $st (reverse(@server_manager::server_statuses)) {
+	local $fk = { 'status' => $st->[0] };
+	if ($statuscount{$st->[0]}) {
+		push(@grid, &server_manager::describe_status($fk, 1));
+		push(@grid, int($statuscount{$st->[0]}));
+		}
+	}
+print &ui_grid_table(\@grid, 4, 75, \@tds);
+
+# Types grid
+if ($showtypes) {
+	print "<table><tr><td><b>$text{'right_vm2types'}</td></tr></table>\n";
+	@grid = ( );
+	foreach $mg (@server_manager::server_management_types) {
+		$tfunc = "server_manager::type_".$mg."_desc";
+		push(@grid, &$tfunc());
+		push(@grid, int($managercount{$mg}));
+		}
+	print &ui_grid_table(\@grid, 4, 75, \@tds);
+	}
+}

@@ -170,6 +170,10 @@ right_vm2docs=VM2 documentation
 right_header7=Account Functions
 right_newfeaturesheader=New Virtualmin Features
 right_newfeaturesheadervm2=New VM2 Features
+right_ownerheader=VM2 System Owner
+right_vm2real=Your name
+right_vm2email=Your contact address
+right_vm2one=Your virtual system
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

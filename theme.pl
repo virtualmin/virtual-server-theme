@@ -529,6 +529,9 @@ elsif ($level == 1) {
 elsif ($level == 2) {
 	push(@rv, 'system', 'quotas', 'bw');
 	}
+elsif ($level == 4) {
+	push(@rv, 'owner', 'vm2servers');
+	}
 else {
 	push(@rv, 'system');
 	}
@@ -543,16 +546,17 @@ return @rv;
 
 # get_virtualmin_user_level()
 # Returns three numbers - the first being a flag if virtualmin is installed,
-# the second a user type (3=usermin, 2=domain, 1=reseller, 0=master), the
-# third a flag for VM2
+# the second a user type (3=usermin, 2=domain, 1=reseller, 0=master, 4=system
+# owner), the third a flag for VM2
 sub get_virtualmin_user_level
 {
 local ($hasvirt, $hasvm2, $level);
 if (&foreign_available("server-manager")) {
 	&foreign_require("server-manager", "server-manager-lib.pl");
 	$hasvm2 = 1;
+	$level = $server_manager::access{'owner'} ? 4 : 0;
 	}
-if (&foreign_available("virtual-server")) {
+elsif (&foreign_available("virtual-server")) {
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
 	$hasvirt = 1;
 	$level = &virtual_server::master_admin() ? 0 :
