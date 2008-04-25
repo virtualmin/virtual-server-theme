@@ -786,6 +786,9 @@ elsif ($level == 4) {
 	print "</table>\n";
 	print "</div></p>\n";
 
+	# New features for domain owner
+	&show_new_features(0);
+
 	# Show a list of his systems
 	if (@servers > 1) {
 		&show_toggleview("vm2servers", "toggler12", $open{'vm2servers'},
@@ -793,9 +796,6 @@ elsif ($level == 4) {
 		&show_vm2_servers(\@servers);
 		print "</div></p>\n";
 		}
-
-	# New features for domain owner
-	&show_new_features(0);
 	}
 
 &popup_footer();
