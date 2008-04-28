@@ -775,7 +775,7 @@ elsif ($level == 4) {
 		# Show primary system here
 		print "<tr> <td><b>$text{'right_vm2one'}</b></td>\n";
 		$s = $servers[0];
-		if (&server_manager::can_access($s, "view")) {
+		if (&server_manager::can_action($s, "view")) {
 			print "<td><a href='server-manager/edit_serv.cgi?id=$s->{'id'}'>$s->{'host'}</a></td>\n";
 			}
 		else {
