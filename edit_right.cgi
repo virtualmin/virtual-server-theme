@@ -66,10 +66,17 @@ if ($hasvm2) {
 				  &server_manager::list_managed_servers() ]));
 	}
 
-# Allow changing
 if ($hasvirt && &virtual_server::master_admin()) {
+	# Allow changing
 	print &ui_table_row($text{'edright_global'},
 		&ui_yesno_radio("global", int($sects->{'global'})));
+
+	# Show Webmin category
+	print &ui_table_row($text{'edright_nowebmin'},
+		&ui_radio("nowebmin", int($sects->{'nowebmin'}),
+			  [ [ 0, $text{'yes'} ],
+			    [ 1, $text{'no'} ],
+			    [ 2, $text{'edright_others'} ] ]));
 	}
 
 print &ui_table_end();

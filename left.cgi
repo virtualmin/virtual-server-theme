@@ -48,6 +48,7 @@ $hasvm2 = &foreign_available("server-manager");
 # Show the hosting provider logo
 if ($hasvirt) {
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
+	$is_master = &virtual_server::master_admin();
 	}
 if (defined(&virtual_server::get_provider_link)) {
 	(undef, $image, $link) = &virtual_server::get_provider_link();
@@ -64,12 +65,12 @@ if ($image) {
 
 # Work out current mode
 $sects = &get_right_frame_sections();
+$product = &get_product_name();
 $mode = $in{'mode'} ? $in{'mode'} :
 	$sects->{'tab'} ? $sects->{'tab'} :
 	$hasvirt ? "virtualmin" :
 	$hasvm2 ? "vm2" :
-	$hasmail ? "mail" :
-		   &get_product_name();
+	$hasmail ? "mail" : $product;
 
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
@@ -154,7 +155,9 @@ $sid = $server ? $server->{'id'} : undef;
 @has = ($hasvirt ? ( "virtualmin" ) : ( ),
 	$hasmail ? ( "mail" ) : ( ),
 	$hasvm2 ? ( "vm2" ) : ( ),
-	&get_product_name());
+	$sects->{'nowebmin'} == 1 ||
+	  ($sects->{'nowebmin'} == 2 && !$is_master) &&
+	  $mode ne $product ? ( ) : ( $product ));
 if (@has > 1) {
 	print "<div class='mode'>";
 	foreach $m (@has) {

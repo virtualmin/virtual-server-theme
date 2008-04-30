@@ -41,6 +41,7 @@ if ($hasvm2) {
 	}
 if ($hasvirt && &virtual_server::master_admin()) {
 	$sect->{'global'} = $in{'global'};
+	$sect->{'nowebmin'} = $in{'nowebmin'};
 	}
 
 # Save config
