@@ -121,6 +121,7 @@ if ($level == 0 && &foreign_available("webmin") &&
 if ($level == 0) {		# Master admin
 	# Show Virtualmin master admin info
 	$hasposs = &foreign_check("security-updates");
+	$canposs = &foreign_available("security-updates");
 	if ($hasvirt) {
 		$info = &virtual_server::get_collected_info();
 		@poss = $info ? @{$info->{'poss'}} : ( );
@@ -252,12 +253,12 @@ if ($level == 0) {		# Master admin
 			}
 
 		@pkgmsgs = ( );
-		if (!$sects->{'noupdates'} && $hasposs && !@poss) {
+		if (!$sects->{'noupdates'} && $hasposs && !@poss && $canposs) {
 			# Re-assure the user that everything is up to date
 			push(@pkgmsgs, &text('right_upall',
 				     "security-updates/index.cgi?mode=all"));
 			}
-		if (!$sects->{'noupdates'} && $hasposs && @inst) {
+		if (!$sects->{'noupdates'} && $hasposs && @inst && $canposs) {
 			# Tell the user about extra packages
 			push(@pkgmsgs, &text('right_upinst', scalar(@inst),
 				     "security-updates/index.cgi?mode=new"));
@@ -274,7 +275,7 @@ if ($level == 0) {		# Master admin
 		}
 
 	# Check for package updates
-	if (!$sects->{'noupdates'} && $hasposs && @poss) {
+	if (!$sects->{'noupdates'} && $hasposs && @poss && $canposs) {
 		# Show updates section
 		&show_toggleview("updates", "toggler7", $open{'updates'},
 				 $text{'right_updatesheader'});
