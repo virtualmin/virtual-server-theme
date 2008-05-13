@@ -919,7 +919,7 @@ if (@quota) {
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
 			"edit_domain.cgi" : "view_domain.cgi";
 		$dname = defined(&virtual_server::show_domain_name) ?
-		    &virtual_server::show_domain_name($q->[0]) : $d->{'dom'};
+		    &virtual_server::show_domain_name($q->[0]) : $q->[0];
 		print "<td width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
 		print "<td width=50% nowrap>",&bar_chart_three(
