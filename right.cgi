@@ -337,6 +337,22 @@ if ($level == 0) {		# Master admin
 				print "<td>",&ui_submit($status->{'restartdesc'} || &text('right_restart', $status->{'name'})),"</td>\n";
 				print &ui_form_end();
 				}
+
+			# Show extra links
+			if ($status->{'links'} && @{$status->{'links'}}) {
+				print "<td>";
+				foreach my $l (@{$status->{'links'}}) {
+					if ($l->{'link'}) {
+						print &ui_button($l->{'desc'},
+							undef, undef,
+							"onClick='location = \"$l->{'link'}\"'"),"\n";
+						}
+					elsif ($l->{'stat'}) {
+						print &history_link($l->{'stat'}, 1);
+						}
+					}
+				print "</td>\n";
+				}
 			print "</tr>\n";
 			}
 		print "</table><p>\n";
