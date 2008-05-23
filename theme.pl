@@ -315,8 +315,16 @@ local ($name, $formno, $folder, $mail, $start, $end, $status, $label) = @_;
 $formno = int($formno);
 local @sel;
 for(my $i=$start; $i<=$end; $i++) {
-	local $m = $mail->[$i];
-	push(@sel, &get_mail_read($folder, $m) == $status ? 1 : 0);
+	local $read = &get_mail_read($folder, $mail->[$i]);
+	if ($status == 0) {
+		push(@sel, ($read&1) ? 0 : 1);
+		}
+	elsif ($status == 1) {
+		push(@sel, ($read&1) ? 1 : 0);
+		}
+	elsif ($status == 2) {
+		push(@sel, ($read&2) ? 1 : 0);
+		}
 	}
 local $js = "var sel = [ ".join(",", @sel)." ]; ";
 $js .= "var f = document.forms[$formno]; ";

@@ -473,8 +473,18 @@ if ($mode eq "virtualmin") {
 		print "<div class='itemhidden' id='backup'>";
 		&print_category_link("virtual-server/backup_form.cgi",
 				     $virtual_server::text{'index_backup'});
-		&print_category_link("virtual-server/backup_form.cgi?sched=1",
-				     $virtual_server::text{'index_sched'});
+		if (-r "$virtual_server::module_root_directory/list_sched.cgi"){
+			# Multiple schedules
+			&print_category_link(
+				"virtual-server/list_sched.cgi",
+				$virtual_server::text{'index_scheds'});
+			}
+		else {
+			# Just one schedule
+			&print_category_link(
+				"virtual-server/backup_form.cgi?sched=1",
+				$virtual_server::text{'index_sched'});
+			}
 		&print_category_link("virtual-server/restore_form.cgi",
 				     $virtual_server::text{'index_restore'});
 		print "</div>\n";
