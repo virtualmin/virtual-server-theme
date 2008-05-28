@@ -9,6 +9,9 @@ $main::vm2_no_global_links = 1;
 $main::mailbox_no_addressbook_button = 1;
 $main::mailbox_no_folder_button = 1;
 
+$main::basic_virtualmin_menu = 1;
+$main::nocreate_virtualmin_menu = 1;
+
 $default_domains_to_show = 10;
 
 # theme_ui_post_header([subtext])
@@ -608,4 +611,6 @@ sub get_vm2_docs
 local ($level) = @_;
 return "http://www.virtualmin.com/documentation/id,vm2_manual/";
 }
+
+1;
 

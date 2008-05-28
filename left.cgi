@@ -467,26 +467,29 @@ if ($mode eq "virtualmin") {
 		}
 
  	# Backup/restore forms
-	if (&virtual_server::can_backup_domains()) {
+	if (defined(&virtual_server::get_backup_actions)) {
+		($blinks, $btitles) = &virtual_server::get_backup_actions();
+		}
+	elsif (&virtual_server::can_backup_domains()) {
+		$blinks = [ "virtual-server/backup_form.cgi",
+			    "virtual-server/backup_form.cgi?sched=1",
+			    "virtual-server/restore_form.cgi" ];
+		$btitles = [ $virtual_server::text{'index_backup'},
+			     $virtual_server::text{'index_sched'},
+			     $virtual_server::text{'index_restore'} ];
+		}
+	else {
+		$blinks = [ ];
+		$btitles = [ ];
+		}
+	if (@$blinks) {
 		&print_category_opener("backup", \@admincats,
-					$text{'left_backup'});
+                                        $text{'left_backup'});
 		print "<div class='itemhidden' id='backup'>";
-		&print_category_link("virtual-server/backup_form.cgi",
-				     $virtual_server::text{'index_backup'});
-		if (-r "$virtual_server::module_root_directory/list_sched.cgi"){
-			# Multiple schedules
-			&print_category_link(
-				"virtual-server/list_sched.cgi",
-				$virtual_server::text{'index_scheds'});
+		for($i=0; $i<@$blinks; $i++) {
+			&print_category_link("virtual-server/$blinks->[$i]",
+					     $btitles->[$i]);
 			}
-		else {
-			# Just one schedule
-			&print_category_link(
-				"virtual-server/backup_form.cgi?sched=1",
-				$virtual_server::text{'index_sched'});
-			}
-		&print_category_link("virtual-server/restore_form.cgi",
-				     $virtual_server::text{'index_restore'});
 		print "</div>\n";
 		}
 
