@@ -38,11 +38,11 @@ if ($hasvirt) {
 	# Default domain
 	print &ui_table_row($text{'edright_dom'},
 	    &ui_select("dom", $sects->{'dom'},
-		       [ [ "", $text{'edright_first'} ],
-			 map { [ $_->{'id'}, $_->{'dom'} ] }
-			     grep { &virtual_server::can_edit_domain($_) }
-				  sort { $a->{'dom'} cmp $b->{'dom'} }
-				       &virtual_server::list_domains() ]));
+	       [ [ "", $text{'edright_first'} ],
+		 map { [ $_->{'id'}, &virtual_server::show_domain_name($_) ] }
+		     grep { &virtual_server::can_edit_domain($_) }
+			  sort { $a->{'dom'} cmp $b->{'dom'} }
+			       &virtual_server::list_domains() ]));
 
 	# Sort quotas by
 	print &ui_table_row($text{'edright_qsort'},
