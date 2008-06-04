@@ -798,7 +798,6 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 
 # Show change password link for resellers
 if ($hasvirt &&
-    $virtual_server::module_info{'version'} >= 3.121 &&
     &virtual_server::reseller_admin()) {
 	print "<div class='linkwithicon'><img src=images/pass.gif>\n";
 	print "<div class='aftericon'><a target=right href='virtual-server/edit_pass.cgi'>$text{'left_pass'}</a></div></div>\n";
@@ -806,8 +805,8 @@ if ($hasvirt &&
 
 # Show bandwidth link for resellers
 if ($hasvirt &&
-    $virtual_server::module_info{'version'} >= 3.171 &&
-    &virtual_server::reseller_admin()) {
+    &virtual_server::reseller_admin() &&
+    $virtual_server::config{'bw_active'}) {
 	print "<div class='linkwithicon'><img src=images/bw.gif>\n";
 	print "<div class='aftericon'><a target=right href='virtual-server/bwgraph.cgi'>$text{'left_bw'}</a></div></div>\n";
 	}
