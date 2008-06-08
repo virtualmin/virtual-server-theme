@@ -183,6 +183,13 @@ if ($level == 0) {		# Master admin
 		print "<tr> <td><b>$text{'right_time'}</b></td>\n";
 		print "<td>$tm</td> </tr>\n";
 
+		# Kernel type
+		if ($k = $info->{'kernel'}) {
+			print "<tr> <td><b>$text{'right_kernel'}</b></td>\n";
+			print "<td>",&text('right_kernelon', $k->{'os'},
+				$k->{'version'}, $k->{'arch'}),"</td> </tr>\n";
+			}
+
 		# Load and memory info
 		if ($info->{'load'}) {
 			@c = @{$info->{'load'}};
