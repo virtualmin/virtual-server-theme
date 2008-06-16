@@ -97,12 +97,15 @@ sub theme_post_save_domain
 local ($d, $action) = @_;
 # Refresh left side, in case options have changed
 print "<script>\n";
-print "top.left.location = top.left.location;\n";
-print "</script>\n";
 if ($action eq 'create') {
 	# Select the new domain
-	&theme_select_server($d);
+	print "top.left.location = '$gconfig{'webprefix'}/left.cgi?dom=$d->{'id'}';\n";
 	}
+else {
+	# Just refresh left
+	print "top.left.location = top.left.location;\n";
+	}
+print "</script>\n";
 }
 
 # theme_post_save_domains([domain, action]+)
