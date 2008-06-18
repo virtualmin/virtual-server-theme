@@ -272,7 +272,11 @@ if ($mode eq "virtualmin" && @doms) {
                 ($adleft, $adreason, $admax) =
 			&virtual_server::count_domains("aliasdoms");
 		if ($rdleft || $adleft) {
-			print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1&gparent=$d->{'id'}' target=right>$text{'left_generic'}</a></div>\n";
+			&print_virtualmin_link(
+				{ 'url' => "virtual-server/domain_form.cgi?".
+					   "generic=1&gparent=$d->{'id'}",
+				  'title' => $text{'left_generic'} },
+				'leftlink');
 			}
 		else {
 			print "<div class='leftlink'><b>",
@@ -343,22 +347,28 @@ elsif ($mode eq "vm2") {
 
 if ($mode eq "virtualmin") {
 	# Show Virtualmin global links
-	# XXX no cat mode
 	my @buts = &virtual_server::get_all_global_links();
 	my @tcats = &unique(map { $_->{'cat'} } @buts);
 	foreach my $tc (@tcats) {
 		my @incat = grep { $_->{'cat'} eq $tc } @buts;
-		&print_category_opener("tmpl_".$tc, \@tcats,
-				       $incat[0]->{'catname'});
-		print "<div class='itemhidden' id='tmpl_$tc'>\n";
-		foreach my $l (@incat) {
-			&print_virtualmin_link($l, 'linkindented');
+		if ($tc) {
+			# Show indented under section
+			&print_category_opener("tmpl_".$tc, \@tcats,
+					       $incat[0]->{'catname'});
+			print "<div class='itemhidden' id='tmpl_$tc'>\n";
+			foreach my $l (@incat) {
+				&print_virtualmin_link($l, 'linkindented');
+				}
+			print "</div>\n";
 			}
-		print "</div>\n";
+		else {
+			# Show with icons
+			print "<hr>\n";
+			foreach my $l (@incat) {
+				&print_virtualmin_link($l, 'aftericon', 1);
+				}
+			}
 		}
-
-	# Normal Virtualmin menu
-	#print "<div class='linkwithicon'><img src=images/virtualmin-small.gif><b><div class='aftericon'><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></div></div>\n";
 	}
 
 if ($mode eq "mail") {
@@ -617,21 +627,6 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	print "<hr>\n";
 	}
 
-# Show change password link for resellers
-if ($hasvirt &&
-    &virtual_server::reseller_admin()) {
-	print "<div class='linkwithicon'><img src=images/pass.gif>\n";
-	print "<div class='aftericon'><a target=right href='virtual-server/edit_pass.cgi'>$text{'left_pass'}</a></div></div>\n";
-	}
-
-# Show bandwidth link for resellers
-if ($hasvirt &&
-    &virtual_server::reseller_admin() &&
-    $virtual_server::config{'bw_active'}) {
-	print "<div class='linkwithicon'><img src=images/bw.gif>\n";
-	print "<div class='aftericon'><a target=right href='virtual-server/bwgraph.cgi'>$text{'left_bw'}</a></div></div>\n";
-	}
-
 # Show system information link
 print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
 if ($mode eq "vm2") {
@@ -714,9 +709,16 @@ return ($noindent ? "<div class='linknotindented'>"
 
 sub print_virtualmin_link
 {
-local ($l, $cls) = @_;
+local ($l, $cls, $icon) = @_;
 local $t = $l->{'target'} || "right";
-print "<div class='$cls'><a href='$l->{'url'}' target=$t>$l->{'title'}</a></div>\n";
+if ($icon) {
+	print "<div class='linkwithicon'><img src=images/$l->{'icon'}.gif>\n";
+	}
+print "<div class='$cls'><a href='$l->{'url'}' target=$t>$l->{'title'}</a></div>";
+if ($icon) {
+	print "</div>";
+	}
+print "\n";
 }
 
 sub shorten_hostname
