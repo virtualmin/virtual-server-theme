@@ -75,7 +75,7 @@ $mode = $in{'mode'} ? $in{'mode'} :
 if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
 	@alldoms = &virtual_server::list_domains();
-	@doms = grep { &virtual_server::can_edit_domain($_) } @alldoms;
+	@doms = &virtual_server::list_visible_domains();
 	if ($virtual_server::config{'domains_sort'} eq 'dom') {
 		# By domain name
 		local %sortkey;
@@ -285,73 +285,28 @@ if ($mode eq "virtualmin" && @doms) {
 		}
 
 	# Get actions and menus from Virtualmin
-	$canconfig = &virtual_server::can_config_domain($d);
-	@buts = &virtual_server::get_domain_actions($d);
-	push(@buts, &virtual_server::feature_links($d));
+	@buts = &virtual_server::get_all_domain_links($d);
 
-	# Always show edit domain link
-	if ($canconfig) {
-		print "<div class='leftlink'><a href='virtual-server/edit_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_edit'}</a></div>\n";
-		}
-	else {
-		print "<div class='leftlink'><a href='virtual-server/view_domain.cgi?dom=$d->{'id'}' target=right>$text{'left_view'}</a></div>\n";
-		}
-
-	# Show 'objects' category actions
+	# Show 'objects' category actions at top level
 	my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
 	foreach my $b (@incat) {
-		$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-		 join("&", map { $_->[0]."=".&urlize($_->[1]) }
-			       @{$b->{'hidden'}});
-		print "<div class='leftlink'><a href='$url' target=right>$b->{'title'}</a></div>\n";
+		&print_virtualmin_link($b, 'leftlink');
 		}
 
 	# Show others by category (except those for creation, which appear
-	# at the bottom)
+	# at the top)
 	my @cats = &unique(map { $_->{'cat'} } @buts);
 	foreach my $c (@cats) {
 		next if ($c eq 'objects' || $c eq 'create');
 		my @incat = grep { $_->{'cat'} eq $c } @buts;
 		&print_category_opener("cat_$c", \@cats,
-			$virtual_server::text{'cat_'.$c});
+				       $incat[0]->{'catname'});
 		print "<div class='itemhidden' id='cat_$c'>\n";
 		foreach my $b (sort { ($a->{'title'} || $a->{'desc'}) cmp
 				      ($b->{'title'} || $b->{'desc'})} @incat) {
-			if ($b->{'mod'}) {
-				$url = "$b->{'mod'}/$b->{'page'}";
-				}
-			else {
-				$url = "virtual-server/$b->{'page'}?dom=$d->{'id'}&".
-				 join("&", map { $_->[0]."=".&urlize($_->[1]) }
-					       @{$b->{'hidden'}});
-				}
-			$title = $b->{'title'} || $b->{'desc'};
-			&print_category_link($url, $title,
-				     undef, undef, $b->{'target'});
+			&print_virtualmin_link($b, "linkindented");
 			}
 		print "</div>\n";
-		}
-
-	# Custom links for this domain
-	@cl = defined(&virtual_server::list_visible_custom_links) ?
-		&virtual_server::list_visible_custom_links($d) : ( );
-	if (@cl) {
-		# Work out categories, and show links under them
-		@linkcats = &unique(map { $_->{'cat'} } @cl);
-		foreach my $lc (@linkcats) {
-			@catcl = grep { $_->{'cat'} eq $lc } @cl;
-			$catclid = "cat_custom_".$lc;
-			&print_category_opener($catclid, \@cats,
-					       $catcl[0]->{'catname'} ||
-						$text{'left_customlinks'});
-			print "<div class='itemhidden' id='$catclid'>\n";
-			foreach $l (@catcl) {
-				&print_category_link($l->{'url'},
-					     $l->{'desc'}, undef, undef,
-					     $l->{'open'} ? "_new" : "right");
-				}
-			print "</div>\n";
-			}
 		}
 
 	print "<hr>\n";
@@ -889,6 +844,13 @@ $target ||= "right";
 return ($noindent ? "<div class='linknotindented'>"
 		  : "<div class='linkindented'>").
        "<a target=$target href=$link>$label</a></div>\n";
+}
+
+sub print_virtualmin_link
+{
+local ($l, $cls) = @_;
+local $t = $l->{'target'} || "right";
+print "<div class='$cls'><a href='$l->{'url'}' target=$t>$l->{'title'}</a></div>\n";
 }
 
 sub shorten_hostname
