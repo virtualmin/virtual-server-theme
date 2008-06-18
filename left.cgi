@@ -422,21 +422,7 @@ if ($mode eq "virtualmin") {
 		}
 
  	# Backup/restore forms
-	if (defined(&virtual_server::get_backup_actions)) {
-		($blinks, $btitles) = &virtual_server::get_backup_actions();
-		}
-	elsif (&virtual_server::can_backup_domains()) {
-		$blinks = [ "virtual-server/backup_form.cgi",
-			    "virtual-server/backup_form.cgi?sched=1",
-			    "virtual-server/restore_form.cgi" ];
-		$btitles = [ $virtual_server::text{'index_backup'},
-			     $virtual_server::text{'index_sched'},
-			     $virtual_server::text{'index_restore'} ];
-		}
-	else {
-		$blinks = [ ];
-		$btitles = [ ];
-		}
+	($blinks, $btitles) = &virtual_server::get_backup_actions();
 	if (@$blinks) {
 		&print_category_opener("backup", \@admincats,
                                         $text{'left_backup'});
@@ -539,52 +525,9 @@ if ($mode eq "vm2" && $server) {
 
 	# Get actions for this system provided by VM2
 	@actions = grep { $_ } &server_manager::get_server_actions($server);
-	$oldstyle = 0;
 	foreach $b (@actions) {
-		if (ref($b) eq 'ARRAY') {
-			# Convert old-style to new
-			$b = { 'link' => $b->[3] ||
-					 "server-manager/save_serv.cgi?".
-					 "id=$server->{'id'}&$b->[0]=1",
-			       'desc' => $b->[1],
-			       'id' => $b->[0],
-			       'target' => $b->[2] ? "_new" : "right",
-			       'cat' => undef };
-			$oldstyle = 1;
-			}
 		$b->{'desc'} = $text{'leftvm2_'.$b->{'id'}}
 			if ($text{'leftvm2_'.$b->{'id'}});
-		}
-
-	# Show links to edit server
-	if ($oldstyle) {
-		# XXX remove later
-		print "<div class='leftlink'><a href='server-manager/edit_serv.cgi?id=$server->{'id'}' target=right>$text{'left_vm2edit'}</a></div>\n";
-		local @acts;
-		if ($server->{'status'} eq 'virt') {
-			push(@acts, "<a href='server-manager/edit_serv.cgi?".
-				    "id=$server->{'id'}&basic=0&coll=1' target=right>".
-				    "$text{'left_vm2coll'}</a>");
-			push(@acts, "<a href='server-manager/edit_serv.cgi?".
-				    "id=$server->{'id'}&basic=0&doms=1' target=right>".
-				    "$text{'left_vm2doms'}</a>");
-			}
-		$ifunc = "server_manager::type_".$t."_list_interfaces";
-		if (defined(&$ifunc)) {
-			push(@acts, "<a href='server-manager/edit_serv.cgi?".
-				   "id=$server->{'id'}&basic=0&ifaces=1' target=right>".
-				   "$text{'left_vm2ifaces'}</a>");
-			}
-		$lfunc = "server_manager::can_edit_limits";
-		if (defined(&$lfunc) && &$lfunc($server)) {
-			push(@acts, "<a href='server-manager/edit_serv.cgi?".
-				   "id=$server->{'id'}&basic=0&limits=1' target=right>".
-				   "$text{'left_vm2limits'}</a>");
-			}
-		if (@acts) {
-			print "<div class='leftlink'>&nbsp;&nbsp;",
-			      &ui_links_row(\@acts),"</div>\n";
-			}
 		}
 
 	# Work out action categories, and show those under each
