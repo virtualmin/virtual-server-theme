@@ -342,100 +342,23 @@ elsif ($mode eq "vm2") {
 	}
 
 if ($mode eq "virtualmin") {
-	if (&virtual_server::can_edit_templates()) {
-		# Show collapsible sections for template links
-		($tlinks, $ttitles, undef, $tcats) =
-			&virtual_server::get_template_pages();
-		if (!$tcats) {
-			$tcats = [ map { "setting" } @$tlinks ];
-			}
-		@$tlinks = map { $_ =~ /\// ? $_ : "virtual-server/$_" }
-			       @$tlinks;
-		push(@$tlinks, "config.cgi?virtual-server",
-			       "virtual-server/check.cgi");
-		push(@$ttitles, $text{'header_config'},
-				$text{'left_check'});
-		push(@$tcats, "setting", "setting");
-		@tcats = ( );
-		for(my $i=0; $i<@$tlinks; $i++) {
-			push(@tcats, $tcats->[$i])
-				if (&indexof($tcats->[$i], @tcats) < 0);
-			}
-		foreach $tc (@tcats) {
-			&print_category_opener("tmpl_".$tc, \@admincats,
-					       $text{'left_tmpl_'.$tc});
-			print "<div class='itemhidden' id='tmpl_$tc'>\n";
-			for(my $i=0; $i<@$tlinks; $i++) {
-				if ($tcats->[$i] eq $tc) {
-					&print_category_link(
-						$tlinks->[$i], $ttitles->[$i]);
-					}
-				}
-			print "</div>\n";
-			}
-		if (@tcats > 1) {
-			print "<hr>\n";
-			}
-		}
-
-	# Creation/migration forms
-	@createlinks = ( );
-	if (&virtual_server::can_create_master_servers() ||
-	    &virtual_server::can_create_sub_servers()) {
-		($dleft, $dreason, $dmax, $dhide) =
-			&virtual_server::count_domains("realdoms");
-		($aleft, $areason, $amax, $ahide) =
-			&virtual_server::count_domains("aliasdoms");
-
-		# Can create servers from batch file
-		$nobatch = defined(&virtual_server::can_create_batch) &&
-			   !&virtual_server::can_create_batch();
-		if ((&virtual_server::can_create_sub_servers() ||
-		     &virtual_server::can_create_master_servers()) && $dleft &&
-		    $virtual_server::virtualmin_pro &&
-		    !$nobatch) {
-			push(@createlinks,
-			   &category_link("virtual-server/mass_create_form.cgi",
-					   $text{'left_cmass'}));
-			}
-
-		# Migration/import
-		if (&virtual_server::can_import_servers()) {
-			push(@createlinks,
-			     &category_link("virtual-server/import_form.cgi",
-					    $text{'left_import'}));
-			}
-		if (&virtual_server::can_migrate_servers()) {
-			push(@createlinks,
-			     &category_link("virtual-server/migrate_form.cgi",
-					    $text{'left_migrate'}));
-			}
-		}
-	if (@createlinks) {
-	        &print_category_opener("create", \@admincats,
-				       $text{'left_create'});
-		print "<div class='itemhidden' id='create'>";
-		foreach $cl (@createlinks) {
-			print $cl;
-			}
-		print "</div>\n";		
-		}
-
- 	# Backup/restore forms
-	($blinks, $btitles) = &virtual_server::get_backup_actions();
-	if (@$blinks) {
-		&print_category_opener("backup", \@admincats,
-                                        $text{'left_backup'});
-		print "<div class='itemhidden' id='backup'>";
-		for($i=0; $i<@$blinks; $i++) {
-			&print_category_link("virtual-server/$blinks->[$i]",
-					     $btitles->[$i]);
+	# Show Virtualmin global links
+	# XXX no cat mode
+	my @buts = &virtual_server::get_all_global_links();
+	my @tcats = &unique(map { $_->{'cat'} } @buts);
+	foreach my $tc (@tcats) {
+		my @incat = grep { $_->{'cat'} eq $tc } @buts;
+		&print_category_opener("tmpl_".$tc, \@tcats,
+				       $incat[0]->{'catname'});
+		print "<div class='itemhidden' id='tmpl_$tc'>\n";
+		foreach my $l (@incat) {
+			&print_virtualmin_link($l, 'linkindented');
 			}
 		print "</div>\n";
 		}
 
 	# Normal Virtualmin menu
-	print "<div class='linkwithicon'><img src=images/virtualmin-small.gif><b><div class='aftericon'><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></div></div>\n";
+	#print "<div class='linkwithicon'><img src=images/virtualmin-small.gif><b><div class='aftericon'><a href='virtual-server/index.cgi' target=right>$text{'left_virtualmin'}</a></b></div></div>\n";
 	}
 
 if ($mode eq "mail") {
