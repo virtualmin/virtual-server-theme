@@ -50,12 +50,14 @@ if ($hasvirt) {
 	&foreign_require("virtual-server", "virtual-server-lib.pl");
 	$is_master = &virtual_server::master_admin();
 	}
+if ($hasvm2) {
+	&foreign_require("server-manager", "server-manager-lib.pl");
+	}
 if (defined(&virtual_server::get_provider_link)) {
 	(undef, $image, $link) = &virtual_server::get_provider_link();
 	}
-else {
-	$image = $vconfig{'theme_image'} || $gconfig{'virtualmin_theme_image'};
-	$link = $vconfig{'theme_link'} || $gconfig{'virtualmin_theme_link'};
+if (!$image && defined(&server_manager::get_provider_link)) {
+	(undef, $image, $link) = &server_manager::get_provider_link();
 	}
 if ($image) {
 	print "<a href='$link' target=_new>" if ($link);
@@ -132,7 +134,6 @@ $did = $d ? $d->{'id'} : undef;
 
 if ($mode eq "vm2" && $hasvm2) {
 	# Get and sort managed servers
-	&foreign_require("server-manager", "server-manager-lib.pl");
 	if (defined(&server_manager::list_available_managed_servers_sorted)) {
 		@servers = &server_manager::list_available_managed_servers_sorted();
 		}
