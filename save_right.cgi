@@ -28,6 +28,7 @@ $sect->{'tab'} = $in{'tab'};
 if ($hasvirt) {
 	$sect->{'dom'} = $in{'dom'};
 	$sect->{'qsort'} = $in{'qsort'};
+	$sect->{'qshow'} = $in{'qshow'};
 	if ($in{'max_def'}) {
 		delete($sect->{'max'});
 		}

@@ -909,13 +909,18 @@ print "</table>\n";
 }
 
 # show_quotas_info(&quotas, maxquota)
+# Show disk usage by various domains
 sub show_quotas_info
 {
 local ($quota, $maxquota) = @_;
 local @quota = @$quota;
 local $max = $sects->{'max'} || $default_domains_to_show;
 if (@quota) {
-	# Show disk usage by various domains
+	# If showing by percent used, limit to those with a limit
+	if ($sects->{'qshow'}) {
+		@quota = grep { $_->[2] } @quota;
+		}
+	
 	if ($sects->{'qsort'}) {
 		# Sort by percent used
 		@quota = grep { $_->[2] } @quota;
@@ -926,6 +931,8 @@ if (@quota) {
 		# Sort by usage
 		@quota = sort { $b->[1]+$b->[3] <=> $a->[1]+$a->[3] } @quota;
 		}
+
+	# Show message about number of domains being displayed
 	print "<table>\n";
 	if (@quota > $max) {
 		@quota = @quota[0..($max-1)];
@@ -934,9 +941,13 @@ if (@quota) {
 	else {
 		$qmsg = $text{'right_quotaall'};
 		}
+
+	# Show links to graphs
 	print "<tr> <td colspan=2>$qmsg ",
 	      &history_link("quotalimit", 1)," ",
 	      &history_link("quotaused", 1),"</td> </tr>\n";
+
+	# The table of domains
 	foreach my $q (@quota) {
 		print "<tr>\n";
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
@@ -945,12 +956,29 @@ if (@quota) {
 		    &virtual_server::show_domain_name($q->[0]) : $q->[0];
 		print "<td width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
-		print "<td width=50% nowrap>",&bar_chart_three(
-				$maxquota,		# Highest quota
-				$q->[1],		# Domain's disk usage
-				$q->[3],		# DB usage
-				$q->[2] ? $q->[2]-$q->[1]-$q->[3] : 0,	# Leftover
-				),"</td>\n";
+		print "<td width=50% nowrap>;
+		if ($sects->{'qshow'}) {
+			# By percent used
+			$qpc = int($q->[1]*100 / $q->[2]);
+			$dpc = int($q->[3]*100 / $q->[2]);
+			print &bar_chart_three(
+			    100,
+			    $qpc,
+			    $dpc,
+			    100-$pc-$dpc
+			    );
+			}
+		else {
+			# By actual usage
+			print &bar_chart_three(
+			    $maxquota,		# Highest quota
+			    $q->[1],		# Domain's disk usage
+			    $q->[3],		# DB usage
+			    $q->[2] ? $q->[2]-$q->[1]-$q->[3] : 0,  # Leftover
+			    );
+		print "</td>\n";
+
+		# Percent used, if available
 		if ($q->[2]) {
 			local $pc = int(($q->[1]+$q->[3])*100 / $q->[2]);
 			$pc = "&nbsp;$pc" if ($pc < 10);

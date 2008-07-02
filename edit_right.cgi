@@ -44,9 +44,15 @@ if ($hasvirt) {
 			  sort { $a->{'dom'} cmp $b->{'dom'} }
 			       &virtual_server::list_domains() ]));
 
-	# Sort quotas by
+	# Sort quotas by bytes or percent
 	print &ui_table_row($text{'edright_qsort'},
 	    &ui_radio("qsort", int($sects->{'qsort'}),
+		      [ [ 1, $text{'edright_qsort1'} ],
+		 	[ 0, $text{'edright_qsort0'} ] ]));
+
+	# Show quotas as bytes or percent
+	print &ui_table_row($text{'edright_qshow'},
+	    &ui_radio("qshow", int($sects->{'qshow'}),
 		      [ [ 1, $text{'edright_qsort1'} ],
 		 	[ 0, $text{'edright_qsort0'} ] ]));
 
