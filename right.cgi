@@ -956,7 +956,7 @@ if (@quota) {
 		    &virtual_server::show_domain_name($q->[0]) : $q->[0];
 		print "<td width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
-		print "<td width=50% nowrap>;
+		print "<td width=50% nowrap>";
 		if ($sects->{'qshow'}) {
 			# By percent used
 			$qpc = int($q->[1]*100 / $q->[2]);
@@ -965,7 +965,7 @@ if (@quota) {
 			    100,
 			    $qpc,
 			    $dpc,
-			    100-$pc-$dpc
+			    100-$qpc-$dpc
 			    );
 			}
 		else {
@@ -976,6 +976,7 @@ if (@quota) {
 			    $q->[3],		# DB usage
 			    $q->[2] ? $q->[2]-$q->[1]-$q->[3] : 0,  # Leftover
 			    );
+			}
 		print "</td>\n";
 
 		# Percent used, if available
