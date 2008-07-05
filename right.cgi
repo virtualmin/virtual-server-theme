@@ -409,6 +409,16 @@ if ($level == 0) {		# Master admin
 		print "</div><p>\n";
 		}
 
+	if ($hasvirt && !$sects->{'nobw'} && 
+	    $virtual_server::config{'bw_active'}) {
+		# Show bandwidth graph by domain
+		local @doms = &virtual_server::list_domains();
+		&show_toggleview("bw", "toggler13", $open{'bw'},
+				 $text{'right_bwheader'});
+		&show_bandwidth_info(\@doms);
+		print "</div><p>\n";
+		}
+
 	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
 		# Show virtual IPs used
 		&show_toggleview("ips", "toggler5", $open{'ips'},
@@ -952,8 +962,7 @@ if (@quota) {
 		print "<tr>\n";
 		my $ed = &virtual_server::can_config_domain($q->[0]) ?
 			"edit_domain.cgi" : "view_domain.cgi";
-		$dname = defined(&virtual_server::show_domain_name) ?
-		    &virtual_server::show_domain_name($q->[0]) : $q->[0];
+		$dname = &virtual_server::show_domain_name($q->[0]);
 		print "<td width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
 		print "<td width=50% nowrap>";
@@ -995,6 +1004,92 @@ if (@quota) {
 		}
 	print "</table>\n";
 	}
+}
+
+# show_bandwidth_info(&domains)
+# Show a table of bandwidth usage for all domains this user can access
+sub show_bandwidth_info
+{
+# Filter domains
+local @doms = @{$_[0]};
+local @doms = grep { !$_->{'parent'} } @doms;
+
+if ($sects->{'qsort'}) {
+	# Sort by percent used
+	@doms = grep { $_->{'bw_limit'} } @doms;
+	@doms = sort { $b->{'bw_usage'}/$b->{'bw_limit'} <=>
+		       $a->{'bw_usage'}/$a->{'bw_limit'} } @doms;
+	}
+else {
+	# Sort by usage
+	@doms = sort { $b->{'bw_usage'} <=> $a->{'bw_usage'} } @doms;
+	}
+
+# Show message about number of domains being displayed
+local $max = $sects->{'max'} || $default_domains_to_show;
+print "<table>\n";
+if (@doms > $max) {
+	@doms = @doms[0..($max-1)];
+	$qmsg = &text('right_quotamax', $max);
+	}
+else {
+	$qmsg = $text{'right_quotaall'};
+	}
+print "<tr> <td colspan=2>$qmsg</td> </tr>\n";
+
+# Work out highest usage or limit
+my $maxbw = 0;
+foreach my $d (@doms) {
+	$maxbw = $d->{'bw_limit'} if ($d->{'bw_limit'} > $maxbw);
+	$maxbw = $d->{'bw_usage'} if ($d->{'bw_usage'} > $maxbw);
+	}
+
+# The table of domains
+foreach my $d (@doms) {
+	print "<tr>\n";
+	my $ed = &virtual_server::can_config_domain($d) ?
+		"edit_domain.cgi" : "view_domain.cgi";
+	$dname = &virtual_server::show_domain_name($d);
+	print "<td width=20%><a href='virtual-server/$ed?",
+	      "dom=$d->{'id'}'>$dname</a></td>\n";
+	print "<td width=50% nowrap>";
+	$pc = $d->{'bw_limit'} ? int($d->{'bw_usage'}*100 / $d->{'bw_limit'})
+			       : undef;
+	if ($sects->{'qshow'}) {
+		# By percent used
+		print &bar_chart_three(
+		    100,
+		    $pc,
+		    0,
+		    100-$pc,
+		    );
+		}
+	else {
+		# By actual usage
+		print &bar_chart_three(
+		    $maxbw,		# Highest usage
+		    $d->{'bw_usage'},	# Domain's bandwidth
+		    0,
+		    $d->{'bw_limit'} ? $d->{'bw_limit'}-$d->{'bw_usage'}
+				     : 0,  # Leftover
+		    );
+		}
+	print "</td>\n";
+
+	# Percent used, if available
+	if ($d->{'bw_usage'}) {
+		$pc = "&nbsp;$pc" if ($pc < 10);
+		print "<td nowrap>",$pc,"% - ",
+			     &text('right_out',
+				   &nice_size($d->{'bw_usage'}),
+				   &nice_size($d->{'bw_limit'})),"</td>\n";
+		}
+	else {
+		print "<td>",&nice_size($d->{'bw_usage'}),"</td>\n";
+		}
+	print "</tr>\n";
+	}
+print "</table>\n";
 }
 
 # collapsed_header(text, name)

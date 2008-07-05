@@ -529,25 +529,30 @@ sub list_right_frame_sections
 local ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 local @rv;
 if ($level == 0) {
+	# Master admin
 	@rv = ( 'system' );
 	if ($hasvirt) {
 		push(@rv, 'updates', 'status', 'newfeatures', 'virtualmin',
-			  'quotas', 'ips', 'sysinfo');
+			  'quotas', 'bw', 'ips', 'sysinfo');
 		}
 	if ($hasvm2) {
 		push(@rv, 'vm2servers');
 		}
 	}
 elsif ($level == 1) {
+	# Domain owner
 	push(@rv, 'virtualmin');
 	}
 elsif ($level == 2) {
+	# Reseller
 	push(@rv, 'system', 'quotas', 'bw');
 	}
 elsif ($level == 4) {
+	# VM2 system owner
 	push(@rv, 'owner', 'vm2servers');
 	}
 else {
+	# Usermin
 	push(@rv, 'system');
 	}
 @rv = map { { 'name' => $_, 'title' => $text{'right_'.$_.'header'} } } @rv;
