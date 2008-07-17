@@ -178,6 +178,11 @@ if ($level == 0) {		# Master admin
 			print "<td>",$server_manager::module_info{'version'},"</td> </tr>\n";
 			}
 
+		# Theme version
+		%current_theme_info = &get_theme_info($current_theme);
+		print "<tr> <td><b>$text{'right_themever'}</b></td>\n";
+		print "<td>",$current_theme_info{'version'},"</td> </tr>\n";
+
 		# System time
 		$tm = &make_date(time());
 		print "<tr> <td><b>$text{'right_time'}</b></td>\n";

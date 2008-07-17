@@ -34,6 +34,11 @@ print &ui_table_row($text{'edright_deftab'},
 	 $hasvm2 ? ( [ "vm2", $text{'edright_vm2'} ] ) : ( ),
 	 [ "webmin", $text{'edright_webmin'} ] ]));
 
+# Left frame size
+print &ui_table_row($text{'edright_fsize'},
+    &ui_opt_textbox("fsize", $sects->{'fsize'}, 6, $text{'edright_fsizedef'}).
+    " ".$text{'edright_pixels'});
+
 if ($hasvirt) {
 	# Default domain
 	print &ui_table_row($text{'edright_dom'},

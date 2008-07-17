@@ -25,6 +25,13 @@ else {
 	$sect->{'alt'} = $in{'alt'};
 	}
 $sect->{'tab'} = $in{'tab'};
+if ($in{'fsize_def'}) {
+	delete($sect->{'fsize'});
+	}
+else {
+	$in{'fsize'} =~ /^\d+$/ || &error($text{'edright_efsize'});
+	$sect->{'fsize'} = $in{'fsize'};
+	}
 if ($hasvirt) {
 	$sect->{'dom'} = $in{'dom'};
 	$sect->{'qsort'} = $in{'qsort'};

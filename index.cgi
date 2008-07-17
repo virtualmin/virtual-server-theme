@@ -2,6 +2,7 @@
 
 do './web-lib.pl';
 &init_config();
+&load_theme_library();
 %text = &load_language($current_theme);
 &ReadParse();
 
@@ -60,7 +61,9 @@ if ($gconfig{'showlogin'}) {
 
 # Show frameset
 &PrintHeader();
-$cols = &get_product_name() eq 'usermin' ? 180 :
+$sects = &get_right_frame_sections();
+$cols = $sects->{'fsize'} ? $sects->{'fsize'} :
+	&get_product_name() eq 'usermin' ? 180 :
 	&foreign_available("server-manager") &&
 	&foreign_available("virtual-server") ? 260 : 230;
 $frame1 = "<frame name=left src='$left' scrolling=auto>";

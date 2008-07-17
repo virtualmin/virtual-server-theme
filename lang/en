@@ -152,6 +152,7 @@ right_pkgupdesc=Package updates
 right_upall=All <a href='$1'>Virtualmin packages</a> are up to date.
 right_upinst=There are <a href='$2'>$1 optional Virtualmin packages</a> that you can install.
 right_vm2=VM2 version
+right_themever=Theme version
 right_vm2serversheader=VM2 Managed Systems
 right_vm2statuses=System Counts By Status
 right_vm2types=System Counts By Type
@@ -214,6 +215,10 @@ edright_tab1=Whichever is first
 edright_virtualmin=Virtualmin
 edright_vm2=VM2
 edright_webmin=Webmin
+edright_fsize=Left frame width
+edright_fsizedef=Decide automatically
+edright_pixels=pixels
+edright_efsize=Missing or invalid left frame width in pixels
 
 has_virtualmin=Virtualmin
 has_mail=Mail
