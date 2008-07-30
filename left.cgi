@@ -715,7 +715,11 @@ local $t = $l->{'target'} || "right";
 if ($icon) {
 	print "<div class='linkwithicon'><img src=images/$l->{'icon'}.gif>\n";
 	}
-print "<div class='$cls'><a href='$l->{'url'}' target=$t>$l->{'title'}</a></div>";
+print "<div class='$cls'>";
+print "<b>" if ($l->{'icon'} eq 'index');
+print "<a href='$l->{'url'}' target=$t>$l->{'title'}</a>";
+print "</b>" if ($l->{'icon'} eq 'index');
+print "</div>";
 if ($icon) {
 	print "</div>";
 	}
