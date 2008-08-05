@@ -251,7 +251,11 @@ if ($mode eq "virtualmin" && @doms) {
 	else {
 		# Show menu of domains
 		print &ui_select("dom", $did,
-			[ map { [ $_->{'id'}, &virtual_server::shorten_domain_name($_) ] } @doms ],
+			[ map { [ $_->{'id'},
+				  &virtual_server::shorten_domain_name($_),
+				  $_->{'disabled'} ?
+					"style='font-style:italic'" : "" ] }
+			      @doms ],
 			1, 0, 0, 0, "onChange='form.submit()'");
 		}
 	print "<input type=image src=images/ok.gif>\n";
