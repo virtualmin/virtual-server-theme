@@ -180,7 +180,7 @@ if (@has > 1) {
 	print "</div>";
 	}
 
-print "<div class='menubody'>\n";
+print "<div class='menubody'><div class='menubodyInner'>\n";
 if ($mode eq "webmin" || $mode eq "usermin") {
 	# Left form is for searching Webmin
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
@@ -675,6 +675,7 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 
 print "</form>\n" if ($doneform);
 print <<EOF;
+</div>
 </div>
 </body>
 EOF

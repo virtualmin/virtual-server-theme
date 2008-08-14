@@ -13,7 +13,7 @@
   position: relative;
   left: 4px;
   right: 4px;
-  padding-top: 2px;
+  line-height: 150%;
 }
 .linkindented {
   border: none;
@@ -39,7 +39,12 @@
   padding-top: 2px;
 }
 .menubody {
-  border: 1px solid #B3B6B0;
-  padding: 2px;
+ 	border:1px solid #D9D9D9;
+  background-color:#F5F5F5;
+  padding:0;
 }
-
+.menubodyInner {
+  border:1px solid #FFFFFF;
+  margin:0;
+  padding:0;
+}

@@ -77,7 +77,7 @@ tr.mainhighsel { background-color: #bbffcc; }
 }
 hr { border: 0;
   width: 90%;
-  height: 2px;
-  color: #EFF0F1;
-  background-color: #EFF0F1;
+  height: 1px;
+  color: #D9D9D9;
+  background-color: #D9D9D9;
 }
