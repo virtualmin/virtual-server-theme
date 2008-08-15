@@ -65,9 +65,9 @@ else {
 print "<tr> <td colspan=2 align=center>",
       &text($gconfig{'nohostname'} ? 'session_mesg2' : 'session_mesg',
 	    "<tt>$host</tt>"),"</td> </tr>\n";
-print "<tr> <td><b>$text{'session_user'}</b></td>\n";
+print "<tr> <td align=right><b>$text{'session_user'}</b></td>\n";
 print "<td><input name=user size=20 value='".&html_escape($in{'failed'})."'></td> </tr>\n";
-print "<tr> <td><b>$text{'session_pass'}</b></td>\n";
+print "<tr> <td align=right><b>$text{'session_pass'}</b></td>\n";
 print "<td><input name=pass size=20 type=password></td> </tr>\n";
 print "<tr> <td colspan=2 align=center><input type=submit value='$text{'session_login'}'>\n";
 print "<input type=reset value='$text{'session_clear'}'><br>\n";
