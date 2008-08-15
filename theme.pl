@@ -16,6 +16,8 @@ $main::nosingledomain_virtualmin_mode = 1;
 $default_domains_to_show = 10;
 
 # Global state for wrapper
+# if 0, wrapper isn't on, add one and open it, if 1 close it, if 2+, subtract
+# but don't close
 $WRAPPER_OPEN = 0;
 
 # theme_ui_post_header([subtext])
@@ -25,7 +27,7 @@ sub theme_ui_post_header
 local ($text) = @_;
 local $rv;
 $rv .= "<div class='ui_post_header'>$text</div>\n" if (defined($text));
-$rv .= "<div class='section'>\n";
+#$rv .= "<div class='section'>\n";
 $rv .= "<p>" if (!defined($text));
 return $rv;
 }
@@ -255,9 +257,12 @@ local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
 $theme_ui_columns_row_toggle = 0;
-if (!$noborder) {
+if (!$noborder && !$WRAPPER_OPEN) {
 	print "<div class='wrapper'>\n";
-	$WRAPPER_OPEN = 1;
+	$WRAPPER_OPEN++;
+	}
+elsif ($WRAPPER_OPEN) {
+	$WRAPPER_OPEN++;
 	}
 local @classes;
 push(@classes, "ui_table") if (!$noborder);
@@ -300,11 +305,59 @@ return $rv;
 # Returns HTML to end a table started by ui_columns_start
 sub theme_ui_columns_end
 {
-if ($WRAPPER_OPEN) {
-	$WRAPPER_OPEN = 0;
+if ($WRAPPER_OPEN == 1) {
+	$WRAPPER_OPEN--;
 	return "</tbody> </table> </div>\n";
-}
+	}
+elsif ( $WRAPPER_OPEN ) {
+	$WRAPPER_OPEN--;
+	}
 else { return "</tbody> </table>\n" }
+}
+
+# ui_hidden_table_start(heading, [tabletags], [cols], name, status,
+#     [&default-tds])
+# A table with a heading and table inside, and which is collapsible
+sub theme_ui_hidden_table_start
+{
+my ($heading, $tabletags, $cols, $name, $status, $tds) = @_;
+my $rv;
+if (!$main::ui_hidden_start_donejs++) {
+  $rv .= &ui_hidden_javascript();
+  }
+my $divid = "hiddendiv_$name";
+my $openerid = "hiddenopener_$name";
+my $defimg = $status ? "open.gif" : "closed.gif";
+my $defclass = $status ? 'opener_shown' : 'opener_hidden';
+my $text = defined($tconfig{'cs_text'}) ? $tconfig{'cs_text'} :
+        defined($gconfig{'cs_text'}) ? $gconfig{'cs_text'} : "000000";
+if (!$WRAPPER_OPEN) {
+	$rv .= "<div class='wrapper'>\n";
+	$WRAPPER_OPEN++;
+	}
+elsif ($WRAPPER_OPEN) { $WRAPPER_OPEN++; }
+$rv .= "<table class='ui_table' border $tabletags class='ui_table'>\n";
+$rv .= "<thead> <tr> <td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td> </tr> </thead>\n" if (defined($heading));
+$rv .= "<tbody><tr> <td><div class='$defclass' id='$divid'><table width=100%>\n";
+$main::ui_table_cols = $cols || 4;
+$main::ui_table_pos = 0;
+$main::ui_table_default_tds = $tds;
+return $rv;
+}
+
+# ui_hidden_table_end(name)
+# Returns HTML for the end of table with hiding, as started by
+# ui_hidden_table_start
+sub theme_ui_hidden_table_end
+{
+my ($name) = @_;
+$rv .= "</table></div></td></tr></tbody></table>\n";
+if ( $WRAPPER_OPEN == 1 ) {
+	$WRAPPER_OPEN--;
+	$rv .= "</div>\n";
+	}
+elsif ($WRAPPER_OPEN) { $WRAPPER_OPEN--; }
+return $rv;
 }
 
 # theme_select_all_link(field, form, text)
