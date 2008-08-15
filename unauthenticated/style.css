@@ -9,7 +9,7 @@ table { border-width: 0px;
 }
 table.formsection, table.sortable, table.ui_table, table.loginform {
   border-collapse: collapse;
-  border: 2px solid #aaaacc;
+  border: 1px solid #FFFFFF;
   width:98%;
   margin: 4px;
 }
@@ -50,10 +50,9 @@ h4 { color: #333333;
 th { font-size: small; }
 pre { font-size: 8pt; }
 #main { border-style: solid;
-	border-color: #ccccff;
-	border-width: 2px;
-	background-color: #e8e8ea;
-  margin: 4px;
+  border:1px solid #FFFFFF;
+  margin:0;
+  padding:0;
 }
 tr.mainsel { background-color: #ddffbb; }
 tr.mainhigh { background-color: #ffffbb; }
@@ -81,3 +80,9 @@ hr { border: 0;
   color: #D9D9D9;
   background-color: #D9D9D9;
 }
+.wrapper {
+  border:1px solid #D9D9D9;
+  background-color:#F5F5F5;
+  padding:0;
+}
+

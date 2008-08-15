@@ -15,6 +15,9 @@ $main::nosingledomain_virtualmin_mode = 1;
 
 $default_domains_to_show = 10;
 
+# Global state for wrapper
+$WRAPPER_OPEN = 0;
+
 # theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call
 sub theme_ui_post_header
@@ -51,6 +54,7 @@ sub theme_icons_table
 local ($i, $need_tr);
 local $cols = $_[3] ? $_[3] : 4;
 local $per = int(100.0 / $cols);
+print "<div class='wrapper'>\n";
 print "<table id='main' width=100% cellpadding=5>\n";
 for($i=0; $i<@{$_[0]}; $i++) {
 	if ($i%$cols == 0) { print "<tr>\n"; }
@@ -63,6 +67,7 @@ for($i=0; $i<@{$_[0]}; $i++) {
 while($i++%$cols) { print "<td width=$per%></td>\n"; $need_tr++; }
 print "</tr>\n" if ($need_tr);
 print "</table>\n";
+print "</div>\n";
 }
 
 sub theme_generate_icon
@@ -250,6 +255,10 @@ local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
 $theme_ui_columns_row_toggle = 0;
+if (!$noborder) {
+	print "<div class='wrapper'>\n";
+	$WRAPPER_OPEN = 1;
+	}
 local @classes;
 push(@classes, "ui_table") if (!$noborder);
 push(@classes, "sortable") if (!$href);
@@ -291,7 +300,11 @@ return $rv;
 # Returns HTML to end a table started by ui_columns_start
 sub theme_ui_columns_end
 {
-return "</tbody> </table>\n";
+if ($WRAPPER_OPEN) {
+	$WRAPPER_OPEN = 0;
+	return "</tbody> </table> </div>\n";
+}
+else { return "</tbody> </table>\n" }
 }
 
 # theme_select_all_link(field, form, text)
