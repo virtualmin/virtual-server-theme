@@ -10,12 +10,15 @@ table { border-width: 0px;
 table.formsection, table.sortable, table.ui_table, table.loginform {
   border-collapse: collapse;
   border: 1px solid #FFFFFF;
-  width:98%;
-  margin: 4px;
 }
-table.loginform {width:40%}
 tr.row0 {background-color:#e8e8ea;}
 tr.row1 {background-color:#f8f8fa;}
+table.formsection thead, table.sortable thead, table.ui_table thead, table.loginform thead {
+background-color:#dadaf8;
+}
+table.formsection tbody, table.sortable tbody, table.ui_table tbody, table.loginform tbody {
+background-color:#f5f5f5;
+}
 a:link { color: #333399;
   text-decoration: none;
 }
