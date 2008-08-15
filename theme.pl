@@ -315,7 +315,7 @@ elsif ( $WRAPPER_OPEN ) {
 else { return "</tbody> </table>\n" }
 }
 
-# ui_hidden_table_start(heading, [tabletags], [cols], name, status,
+# theme_ui_hidden_table_start(heading, [tabletags], [cols], name, status,
 #     [&default-tds])
 # A table with a heading and table inside, and which is collapsible
 sub theme_ui_hidden_table_start
