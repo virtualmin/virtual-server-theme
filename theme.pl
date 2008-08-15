@@ -335,7 +335,7 @@ if (!$WRAPPER_OPEN) {
 	$rv .= "<div class='wrapper'>\n";
 	$WRAPPER_OPEN++;
 	}
-elsif ($WRAPPER_OPEN) { $WRAPPER_OPEN++; }
+else { $WRAPPER_OPEN++; } # Add to the count, but don't open a new div
 $rv .= "<table class='ui_table' border $tabletags class='ui_table'>\n";
 $rv .= "<thead> <tr> <td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td> </tr> </thead>\n" if (defined($heading));
 $rv .= "<tbody><tr> <td><div class='$defclass' id='$divid'><table width=100%>\n";
