@@ -249,6 +249,58 @@ sub theme_popup_prehead
 return &theme_prehead();
 }
 
+# ui_table_start(heading, [tabletags], [cols], [&default-tds])
+# A table with a heading and table inside
+sub theme_ui_table_start
+{
+my ($heading, $tabletags, $cols, $tds) = @_;
+if (defined($main::ui_table_cols)) {
+  # Push on stack, for nested call
+  push(@main::ui_table_cols_stack, $main::ui_table_cols);
+  push(@main::ui_table_pos_stack, $main::ui_table_pos);
+  push(@main::ui_table_default_tds_stack, $main::ui_table_default_tds);
+  }
+my $rv;
+if (!$WRAPPER_OPEN) {
+	$rv .= "<div class='shrinkwrapper'>";
+	}
+$WRAPPER_OPEN++;
+$rv .= "<table class='ui_table' $tabletags>\n";
+$rv .= "<thead> <tr> <td><b>$heading</b></td> </tr> </thead>\n" if (defined($heading));
+$rv .= "<tbody> <tr> <td><table width=100%>\n";
+$main::ui_table_cols = $cols || 4;
+$main::ui_table_pos = 0;
+$main::ui_table_default_tds = $tds;
+return $rv;
+}
+
+# ui_table_end()
+# The end of a table started by ui_table_start
+sub theme_ui_table_end
+{
+my $rv;
+if ($main::ui_table_cols == 4 && $main::ui_table_pos) {
+  # Add an empty block to balance the table
+  $rv .= &ui_table_row(" ", " ");
+  }
+if (@main::ui_table_cols_stack) {
+  $main::ui_table_cols = pop(@main::ui_table_cols_stack);
+  $main::ui_table_pos = pop(@main::ui_table_pos_stack);
+  $main::ui_table_default_tds = pop(@main::ui_table_default_tds_stack);
+  }
+else {
+  $main::ui_table_cols = undef;
+  $main::ui_table_pos = undef;
+  $main::ui_table_default_tds = undef;
+  }
+$rv .= "</tbody></table></td></tr></table>\n";
+if ($WRAPPER_OPEN==1) {
+	$rv .= "</div>\n";
+	}
+$WRAPPER_OPEN--;
+return $rv;
+}
+
 # theme_ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
 # Returns HTML for a multi-column table, with the given headings
 sub theme_ui_columns_start
@@ -259,11 +311,8 @@ local $rv;
 $theme_ui_columns_row_toggle = 0;
 if (!$noborder && !$WRAPPER_OPEN) {
 	$rv .= "<div class='wrapper'>\n";
-	$WRAPPER_OPEN++;
 	}
-elsif ($WRAPPER_OPEN) {
-	$WRAPPER_OPEN++;
-	}
+$WRAPPER_OPEN++;
 local @classes;
 push(@classes, "ui_table") if (!$noborder);
 push(@classes, "sortable") if (!$href);
@@ -305,14 +354,13 @@ return $rv;
 # Returns HTML to end a table started by ui_columns_start
 sub theme_ui_columns_end
 {
-if ($WRAPPER_OPEN == 1) {
-	$WRAPPER_OPEN--;
-	return "</tbody> </table> </div>\n";
+my $rv;
+if ($WRAPPER_OPEN == 1) { # Last wrapper
+	$rv = "</tbody> </table> </div>\n";
 	}
-elsif ( $WRAPPER_OPEN ) {
-	$WRAPPER_OPEN--;
-	}
-else { return "</tbody> </table>\n" }
+else { $rv .= "</tbody> </table>\n" }
+$WRAPPER_OPEN--;
+return $rv;
 }
 
 # theme_ui_hidden_table_start(heading, [tabletags], [cols], name, status,
@@ -331,11 +379,10 @@ my $defimg = $status ? "open.gif" : "closed.gif";
 my $defclass = $status ? 'opener_shown' : 'opener_hidden';
 my $text = defined($tconfig{'cs_text'}) ? $tconfig{'cs_text'} :
         defined($gconfig{'cs_text'}) ? $gconfig{'cs_text'} : "000000";
-if (!$WRAPPER_OPEN) {
+if (!$WRAPPER_OPEN) { # If we're not already inside of a wrapper, wrap it
 	$rv .= "<div class='wrapper'>\n";
-	$WRAPPER_OPEN++;
 	}
-else { $WRAPPER_OPEN++; } # Add to the count, but don't open a new div
+$WRAPPER_OPEN++;
 $rv .= "<table class='ui_table' border $tabletags class='ui_table'>\n";
 $rv .= "<thead> <tr> <td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td> </tr> </thead>\n" if (defined($heading));
 $rv .= "<tbody><tr> <td><div class='$defclass' id='$divid'><table width=100%>\n";
