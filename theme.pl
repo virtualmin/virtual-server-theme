@@ -258,7 +258,7 @@ local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 local $rv;
 $theme_ui_columns_row_toggle = 0;
 if (!$noborder && !$WRAPPER_OPEN) {
-	print "<div class='wrapper'>\n";
+	$rv .= "<div class='wrapper'>\n";
 	$WRAPPER_OPEN++;
 	}
 elsif ($WRAPPER_OPEN) {
