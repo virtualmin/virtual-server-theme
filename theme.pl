@@ -53,7 +53,7 @@ print &ui_pre_footer();
 
 sub theme_icons_table
 {
-local ($i, $need_tr);
+my ($i, $need_tr);
 my $cols = $_[3] ? $_[3] : 4;
 my $per = int(100.0 / $cols);
 print "<div class='wrapper'>\n";
@@ -448,6 +448,47 @@ if ($WRAPPER_OPEN == 1) { # Last wrapper
 	$rv .= "</td> </tr> </table>\n";
 	}
 $WRAPPER_OPEN--;
+return $rv;
+}
+
+# theme_ui_grid_table(&elements, columns, [width-percent], [tds], [tabletags],
+#   [title])
+# Given a list of HTML elements, formats them into a table with the given
+# number of columns. However, themes are free to override this to use fewer
+# columns where space is limited.
+sub theme_ui_grid_table
+{
+my ($elements, $cols, $width, $tds, $tabletags, $title) = @_;
+return "" if (!@$elements);
+	
+my $rv = "<table class='wrapper' " 
+       . ($width ? " width=$width%" : "")
+       . ($tabletags ? " ".$tabletags : "")
+       . "><tr><td>\n";
+$rv .= "<table class='ui_table'"
+     . ($width ? " width=$width%" : "")
+     . ($tabletags ? " ".$tabletags : "")
+     . ">\n";
+if ($title) {
+	$rv .= "<thead><tr $tb> <td colspan=$cols><b>$title</b></td> </tr></thead>\n";
+	}
+$rv .= "<tbody>\n";
+my $i;
+for($i=0; $i<@$elements; $i++) {
+  $rv .= "<tr>" if ($i%$cols == 0);
+  $rv .= "<td ".$tds->[$i%$cols]." valign=top>".$elements->[$i]."</td>\n";
+  $rv .= "</tr>" if ($i%$cols == $cols-1);
+  }
+if ($i%$cols) {
+  while($i%$cols) {
+    $rv .= "<td ".$tds->[$i%$cols]."><br></td>\n";
+    $i++;
+    }
+  $rv .= "</tr>\n";
+  }
+$rv .= "</table>\n";
+$rv .= "</tbody>\n";
+$rv .= "</td></tr></table>\n"; # wrapper
 return $rv;
 }
 
