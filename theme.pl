@@ -25,7 +25,7 @@ $WRAPPER_OPEN = 0;
 sub theme_ui_post_header
 {
 local ($text) = @_;
-local $rv;
+my $rv;
 $rv .= "<div class='ui_post_header'>$text</div>\n" if (defined($text));
 #$rv .= "<div class='section'>\n";
 $rv .= "<p>" if (!defined($text));
@@ -36,7 +36,7 @@ return $rv;
 # Returns HTML to appear directly before a standard footer() call
 sub theme_ui_pre_footer
 {
-local $rv;
+my $rv;
 $rv .= "</div><p>\n";
 return $rv;
 }
@@ -54,8 +54,8 @@ print &ui_pre_footer();
 sub theme_icons_table
 {
 local ($i, $need_tr);
-local $cols = $_[3] ? $_[3] : 4;
-local $per = int(100.0 / $cols);
+my $cols = $_[3] ? $_[3] : 4;
+my $per = int(100.0 / $cols);
 print "<div class='wrapper'>\n";
 print "<table id='main' width=100% cellpadding=5>\n";
 for($i=0; $i<@{$_[0]}; $i++) {
@@ -74,8 +74,8 @@ print "</div>\n";
 
 sub theme_generate_icon
 {
-local $w = !defined($_[4]) ? "width=48" : $_[4] ? "width=$_[4]" : "";
-local $h = !defined($_[5]) ? "height=48" : $_[5] ? "height=$_[5]" : "";
+my $w = !defined($_[4]) ? "width=48" : $_[4] ? "width=$_[4]" : "";
+my $h = !defined($_[5]) ? "height=48" : $_[5] ? "height=$_[5]" : "";
 if ($tconfig{'noicons'}) {
 	if ($_[2]) {
 		print "$_[6]<a href=\"$_[2]\" $_[3]>$_[1]</a>$_[7]\n";
@@ -192,7 +192,7 @@ EOF
 sub theme_post_save_folder
 {
 local ($folder, $action) = @_;
-local $ref;
+my $ref;
 if ($action eq 'create' || $action eq 'delete' || $action eq 'modify') {
 	# Always refresh
 	$ref = 1;
@@ -261,8 +261,13 @@ if (defined($main::ui_table_cols)) {
   push(@main::ui_table_default_tds_stack, $main::ui_table_default_tds);
   }
 my $rv;
+
 if (!$WRAPPER_OPEN) {
-	$rv .= "<div class='shrinkwrapper'>";
+	#my ($width) = $tabletags =~ m/width=(\d+\%)/;
+	#$rv .= "<div class='shrinkwrapper'>\n";
+	#$rv .= "<span>\n"; # for IE
+	$rv .= "<table class='shrinkwrapper' $tabletags>\n";
+	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
 $rv .= "<table class='ui_table' $tabletags>\n";
@@ -295,9 +300,91 @@ else {
   }
 $rv .= "</tbody></table></td></tr></table>\n";
 if ($WRAPPER_OPEN==1) {
-	$rv .= "</div>\n";
+	#$rv .= "</div>\n";
+	$rv .= "</td></tr>\n";
+	$rv .= "</table>\n";
 	}
 $WRAPPER_OPEN--;
+return $rv;
+}
+
+# theme_ui_tabs_start(&tabs, name, selected, show-border)
+# Render a row of tabs from which one can be selected. Each tab is an array
+# ref containing a name, title and link.
+sub theme_ui_tabs_start
+{
+my ($tabs, $name, $sel, $border) = @_;
+my $rv;
+if (!$main::ui_hidden_start_donejs++) {
+  $rv .= &ui_hidden_javascript();
+  }
+
+# Build list of tab titles and names
+my $tabnames = "[".join(",", map { "\"".&html_escape($_->[0])."\"" } @$tabs)."]";
+my $tabtitles = "[".join(",", map { "\"".&html_escape($_->[1])."\"" } @$tabs)."]";
+$rv .= "<script>\n";
+$rv .= "document.${name}_tabnames = $tabnames;\n";
+$rv .= "document.${name}_tabtitles = $tabtitles;\n";
+$rv .= "</script>\n";
+
+# Output the tabs
+my $imgdir = "$gconfig{'webprefix'}/images";
+$rv .= &ui_hidden($name, $sel)."\n";
+$rv .= "<table border=0 cellpadding=0 cellspacing=0>\n";
+$rv .= "<tr><td bgcolor=#ffffff colspan=".(scalar(@$tabs)*2+1).">";
+if ($ENV{'HTTP_USER_AGENT'} !~ /msie/i) {
+	# For some reason, the 1-pixel space above the tabs appears huge on IE!
+	$rv .= "<img src=$imgdir/1x1.gif>";
+	}
+$rv .= "</td></tr>\n";
+$rv .= "<tr>\n";
+$rv .= "<td bgcolor=#ffffff width=1><img src=$imgdir/1x1.gif></td>\n";
+foreach my $t (@$tabs) {
+	if ($t ne $tabs[0]) {
+		# Spacer
+		$rv .= "<td width=2 bgcolor=#ffffff>".
+		       "<img src=$imgdir/1x1.gif></td>\n";
+		}
+	my $tabid = "tab_".$t->[0];
+	$rv .= "<td id=${tabid}>";
+	$rv .= "<table cellpadding=0 cellspacing=0 border=0><tr>";
+	if ($t->[0] eq $sel) {
+		# Selected tab
+		$rv .= "<td valign=top class='selectedtab'>".
+		       "<img src=$imgdir/lc2.gif alt=\"\"></td>";
+		$rv .= "<td class='selectedtab' nowrap>".
+		       "&nbsp;<b>$t->[1]</b>&nbsp;</td>";
+		$rv .= "<td valign=top class='selectedtab'>".
+		       "<img src=$imgdir/rc2.gif alt=\"\"></td>";
+		}
+	else {
+		# Other tab (which has a link)
+		$rv .= "<td valign=top $tb>".
+		       "<img src=$imgdir/lc1.gif alt=\"\"></td>";
+		$rv .= "<td $tb nowrap>".
+		       "&nbsp;<a href='$t->[2]' ".
+		       "onClick='return select_tab(\"$name\", \"$t->[0]\")'>".
+		       "$t->[1]</a>&nbsp;</td>";
+		$rv .= "<td valign=top $tb>".
+		       "<img src=$imgdir/rc1.gif ".
+		       "alt=\"\"></td>";
+		$rv .= "</td>\n";
+		}
+	$rv .= "</tr></table>";
+	$rv .= "</td>\n";
+	}
+$rv .= "<td bgcolor=#ffffff width=1><img src=$imgdir/1x1.gif></td>\n";
+$rv .= "</table>\n";
+
+if ($border) {
+	# All tabs are within a grey box
+	$rv .= "<table width=100% cellpadding=0 cellspacing=0 border=0>\n";
+	$rv .= "<tr> <td bgcolor=#ffffff rowspan=3 width=1><img src=$imgdir/1x1.gif></td>\n";
+	$rv .= "<td class='selectedtab' colspan=3 height=2><img src=$imgdir/1x1.gif></td> </tr>\n";
+	$rv .= "<tr> <td class='selectedtab' width=2><img src=$imgdir/1x1.gif></td>\n";
+	$rv .= "<td valign=top>";
+	}
+$main::ui_tabs_selected = $sel;
 return $rv;
 }
 
@@ -307,10 +394,11 @@ sub theme_ui_columns_start
 {
 local ($heads, $width, $noborder, $tdtags, $heading) = @_;
 local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
-local $rv;
+my $rv;
 $theme_ui_columns_row_toggle = 0;
 if (!$noborder && !$WRAPPER_OPEN) {
-	$rv .= "<div class='wrapper'>\n";
+	$rv .= "<table class='wrapper' width=$width%>\n";
+	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
 local @classes;
@@ -323,7 +411,7 @@ if ($heading) {
          "><b>$heading</b></td></tr> </thead> <tbody>\n";
   }
 $rv .= "<thead> <tr $tb>\n";
-local $i;
+my $i;
 for($i=0; $i<@$heads; $i++) {
   $rv .= "<td ".$tdtags->[$i]."><b>".
          ($heads->[$i] eq "" ? "<br>" : $heads->[$i])."</b></td>\n";
@@ -339,9 +427,9 @@ sub theme_ui_columns_row
 {
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
 local ($cols, $tdtags) = @_;
-local $rv;
+my $rv;
 $rv .= "<tr class='ui_columns row$theme_ui_columns_row_toggle' onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody row$theme_ui_columns_row_toggle'\">\n";
-local $i;
+my $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i].">".
 	       ($cols->[$i] !~ /\S/ ? "<br>" : $cols->[$i])."</td>\n";
@@ -355,10 +443,10 @@ return $rv;
 sub theme_ui_columns_end
 {
 my $rv;
+$rv = "</tbody> </table>\n";
 if ($WRAPPER_OPEN == 1) { # Last wrapper
-	$rv = "</tbody> </table> </div>\n";
+	$rv .= "</td> </tr> </table>\n";
 	}
-else { $rv .= "</tbody> </table>\n" }
 $WRAPPER_OPEN--;
 return $rv;
 }
@@ -380,7 +468,9 @@ my $defclass = $status ? 'opener_shown' : 'opener_hidden';
 my $text = defined($tconfig{'cs_text'}) ? $tconfig{'cs_text'} :
         defined($gconfig{'cs_text'}) ? $gconfig{'cs_text'} : "000000";
 if (!$WRAPPER_OPEN) { # If we're not already inside of a wrapper, wrap it
-	$rv .= "<div class='wrapper'>\n";
+	#$rv .= "<div class='wrapper'>\n";
+	$rv .= "<table class='wrapper' $tabletags>\n";
+	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
 $rv .= "<table class='ui_table' border $tabletags class='ui_table'>\n";
@@ -401,7 +491,8 @@ my ($name) = @_;
 $rv .= "</table></div></td></tr></tbody></table>\n";
 if ( $WRAPPER_OPEN == 1 ) {
 	$WRAPPER_OPEN--;
-	$rv .= "</div>\n";
+	#$rv .= "</div>\n";
+	$rv .= "</td></tr></table>\n";
 	}
 elsif ($WRAPPER_OPEN) { $WRAPPER_OPEN--; }
 return $rv;
@@ -446,7 +537,7 @@ for(my $i=$start; $i<=$end; $i++) {
 		push(@sel, ($read&2) ? 1 : 0);
 		}
 	}
-local $js = "var sel = [ ".join(",", @sel)." ]; ";
+my $js = "var sel = [ ".join(",", @sel)." ]; ";
 $js .= "var f = document.forms[$formno]; ";
 $js .= "for(var i=0; i<sel.length; i++) { document.forms[$formno].${name}[i].checked = sel[i]; var ff = f.${name}[i]; var r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } }";
 $js .= "return false;";
@@ -457,7 +548,7 @@ sub theme_select_rows_link
 {
 local ($field, $form, $text, $rows) = @_;
 $form = int($form);
-local $js = "var sel = { ".join(",", map { "\"".&quote_escape($_)."\":1" } @$rows)." }; ";
+my $js = "var sel = { ".join(",", map { "\"".&quote_escape($_)."\":1" } @$rows)." }; ";
 $js .= "for(var i=0; i<document.forms[$form].${field}.length; i++) { var ff = document.forms[$form].${field}[i]; var r = document.getElementById(\"row_\"+ff.id); ff.checked = sel[ff.value]; if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } } ";
 $js .= "return false;";
 return "<a href='#' onClick='$js'>$text</a>";
@@ -467,11 +558,11 @@ sub theme_ui_checked_columns_row
 {
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
 local ($cols, $tdtags, $checkname, $checkvalue, $checked, $disabled) = @_;
-local $rv;
-local $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
-local $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
-local $ridtr = &quote_escape("row_${checkname}_${checkvalue}");
-local $mycb = $cb;
+my $rv;
+my $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
+my $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
+my $ridtr = &quote_escape("row_${checkname}_${checkvalue}");
+my $mycb = $cb;
 if ($checked) {
 	$mycb =~ s/mainbody/mainsel/g;
 	}
@@ -480,7 +571,7 @@ $rv .= "<tr id=\"$ridtr\" $mycb onMouseOver=\"this.className = document.getEleme
 $rv .= "<td ".$tdtags->[0].">".
        &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"", $disabled).
        "</td>\n";
-local $i;
+my $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i+1].">";
 	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
@@ -500,11 +591,11 @@ return $rv;
 sub theme_ui_radio_columns_row
 {
 local ($cols, $tdtags, $checkname, $checkvalue, $checked) = @_;
-local $rv;
-local $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
-local $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
-local $ridtr = &quote_escape("row_${checkname}_${checkvalue}");
-local $mycb = $cb;
+my $rv;
+my $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
+my $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
+my $ridtr = &quote_escape("row_${checkname}_${checkvalue}");
+my $mycb = $cb;
 if ($checked) {
 	$mycb =~ s/mainbody/mainsel/g;
 	}
@@ -513,7 +604,7 @@ $rv .= "<tr $mycb id=\"$ridtr\" onMouseOver=\"this.className = document.getEleme
 $rv .= "<td ".$tdtags->[0].">".
        &ui_oneradio($checkname, $checkvalue, undef, $checked, "onClick=\"for(i=0; i<form.$checkname.length; i++) { ff = form.${checkname}[i]; r = document.getElementById('row_'+ff.id); if (r) { r.className = 'mainbody' } } document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
        "</td>\n";
-local $i;
+my $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i+1].">";
 	if ($cols->[$i] !~ /<a\s+href|<input|<select|<textarea/) {
@@ -534,8 +625,8 @@ return $rv;
 # Output a footer for returning to some page
 sub theme_footer
 {
-local $i;
-local $count = 0;
+my $i;
+my $count = 0;
 for($i=0; $i+1<@_; $i+=2) {
 	local $url = $_[$i];
 	if ($url ne '/' || !$tconfig{'noindex'}) {
@@ -732,6 +823,28 @@ sub get_vm2_docs
 {
 local ($level) = @_;
 return "http://www.virtualmin.com/documentation/id,vm2_manual/";
+}
+
+sub ie_wrapper_fix
+{
+return <<"END_WRAPPER_FIX";
+<!--[if IE]>
+div.shrinkwrapper {
+/* reset for IE */
+display:block;
+padding:0;
+border: none;
+background-color: #fff;
+}
+div.shrinkwrapper span {
+display:inline-block;
+text-align:left;
+border: 1px solid #D9D9D9;
+background: #F5F5F5;
+zoom:1;
+}
+<![endif]-->
+END_WRAPPER_FIX
 }
 
 1;
