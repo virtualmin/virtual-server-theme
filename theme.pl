@@ -254,6 +254,7 @@ return &theme_prehead();
 sub theme_ui_table_start
 {
 my ($heading, $tabletags, $cols, $tds) = @_;
+if (! $tabletags =~ /width/) { $tabletages .= " width=100%"; }
 if (defined($main::ui_table_cols)) {
   # Push on stack, for nested call
   push(@main::ui_table_cols_stack, $main::ui_table_cols);
@@ -263,9 +264,6 @@ if (defined($main::ui_table_cols)) {
 my $rv;
 
 if (!$WRAPPER_OPEN) {
-	#my ($width) = $tabletags =~ m/width=(\d+\%)/;
-	#$rv .= "<div class='shrinkwrapper'>\n";
-	#$rv .= "<span>\n"; # for IE
 	$rv .= "<table class='shrinkwrapper' $tabletags>\n";
 	$rv .= "<tr><td>\n";
 	}
@@ -392,12 +390,14 @@ return $rv;
 # Returns HTML for a multi-column table, with the given headings
 sub theme_ui_columns_start
 {
-local ($heads, $width, $noborder, $tdtags, $heading) = @_;
-local ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
+my ($heads, $width, $noborder, $tdtags, $heading) = @_;
+my ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 my $rv;
 $theme_ui_columns_row_toggle = 0;
 if (!$noborder && !$WRAPPER_OPEN) {
-	$rv .= "<table class='wrapper' width=$width%>\n";
+	$rv .= "<table class='wrapper' width="
+	     . ($width ? $width : "100")
+	     . "%>\n";
 	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
@@ -462,7 +462,7 @@ my ($elements, $cols, $width, $tds, $tabletags, $title) = @_;
 return "" if (!@$elements);
 	
 my $rv = "<table class='wrapper' " 
-       . ($width ? " width=$width%" : "")
+       . ($width ? " width=$width%" : " width=100%")
        . ($tabletags ? " ".$tabletags : "")
        . "><tr><td>\n";
 $rv .= "<table class='ui_table'"
@@ -509,12 +509,11 @@ my $defclass = $status ? 'opener_shown' : 'opener_hidden';
 my $text = defined($tconfig{'cs_text'}) ? $tconfig{'cs_text'} :
         defined($gconfig{'cs_text'}) ? $gconfig{'cs_text'} : "000000";
 if (!$WRAPPER_OPEN) { # If we're not already inside of a wrapper, wrap it
-	#$rv .= "<div class='wrapper'>\n";
-	$rv .= "<table class='wrapper' $tabletags>\n";
+	$rv .= "<table class='wrapper' width=100%>\n";
 	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
-$rv .= "<table class='ui_table' border $tabletags class='ui_table'>\n";
+$rv .= "<table class='ui_table' $tabletags class='ui_table'>\n";
 $rv .= "<thead> <tr> <td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td> </tr> </thead>\n" if (defined($heading));
 $rv .= "<tbody><tr> <td><div class='$defclass' id='$divid'><table width=100%>\n";
 $main::ui_table_cols = $cols || 4;
@@ -864,28 +863,6 @@ sub get_vm2_docs
 {
 local ($level) = @_;
 return "http://www.virtualmin.com/documentation/id,vm2_manual/";
-}
-
-sub ie_wrapper_fix
-{
-return <<"END_WRAPPER_FIX";
-<!--[if IE]>
-div.shrinkwrapper {
-/* reset for IE */
-display:block;
-padding:0;
-border: none;
-background-color: #fff;
-}
-div.shrinkwrapper span {
-display:inline-block;
-text-align:left;
-border: 1px solid #D9D9D9;
-background: #F5F5F5;
-zoom:1;
-}
-<![endif]-->
-END_WRAPPER_FIX
 }
 
 1;
