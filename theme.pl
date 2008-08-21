@@ -348,22 +348,22 @@ foreach my $t (@$tabs) {
 	$rv .= "<table cellpadding=0 cellspacing=0 border=0><tr>";
 	if ($t->[0] eq $sel) {
 		# Selected tab
-		$rv .= "<td valign=top class='selectedtab'>".
+		$rv .= "<td valign=top class='tabSelected'>".
 		       "<img src=$imgdir/lc2.gif alt=\"\"></td>";
-		$rv .= "<td class='selectedtab' nowrap>".
+		$rv .= "<td class='tabSelected' nowrap>".
 		       "&nbsp;<b>$t->[1]</b>&nbsp;</td>";
-		$rv .= "<td valign=top class='selectedtab'>".
+		$rv .= "<td valign=top class='tabSelected'>".
 		       "<img src=$imgdir/rc2.gif alt=\"\"></td>";
 		}
 	else {
 		# Other tab (which has a link)
-		$rv .= "<td valign=top $tb>".
+		$rv .= "<td valign=top class='tabUnselected'>".
 		       "<img src=$imgdir/lc1.gif alt=\"\"></td>";
-		$rv .= "<td $tb nowrap>".
+		$rv .= "<td class='tabUnselected' nowrap>".
 		       "&nbsp;<a href='$t->[2]' ".
 		       "onClick='return select_tab(\"$name\", \"$t->[0]\")'>".
 		       "$t->[1]</a>&nbsp;</td>";
-		$rv .= "<td valign=top $tb>".
+		$rv .= "<td valign=top class='tabUnselected'>".
 		       "<img src=$imgdir/rc1.gif ".
 		       "alt=\"\"></td>";
 		$rv .= "</td>\n";
@@ -376,10 +376,10 @@ $rv .= "</table>\n";
 
 if ($border) {
 	# All tabs are within a grey box
-	$rv .= "<table width=100% cellpadding=0 cellspacing=0 border=0>\n";
+	$rv .= "<table width=100% cellpadding=0 cellspacing=0>\n";
 	$rv .= "<tr> <td bgcolor=#ffffff rowspan=3 width=1><img src=$imgdir/1x1.gif></td>\n";
-	$rv .= "<td class='selectedtab' colspan=3 height=2><img src=$imgdir/1x1.gif></td> </tr>\n";
-	$rv .= "<tr> <td class='selectedtab' width=2><img src=$imgdir/1x1.gif></td>\n";
+	$rv .= "<td $cb colspan=3 height=2><img src=$imgdir/1x1.gif></td> </tr>\n";
+	$rv .= "<tr> <td $cb width=2><img src=$imgdir/1x1.gif></td>\n";
 	$rv .= "<td valign=top>";
 	}
 $main::ui_tabs_selected = $sel;
@@ -863,6 +863,78 @@ sub get_vm2_docs
 {
 local ($level) = @_;
 return "http://www.virtualmin.com/documentation/id,vm2_manual/";
+}
+
+# theme_ui_hidden_javascript()
+# Returns <script> and <style> sections for hiding functions and CSS
+sub theme_ui_hidden_javascript
+{
+my $rv;
+my $imgdir = "$gconfig{'webprefix'}/images";
+
+return <<EOF;
+<style>
+.opener_shown {display:inline}
+.opener_hidden {display:none}
+</style>
+<script>
+// Open or close a hidden section
+function hidden_opener(divid, openerid)
+{
+var divobj = document.getElementById(divid);
+var openerobj = document.getElementById(openerid);
+if (divobj.className == 'opener_shown') {
+  divobj.className = 'opener_hidden';
+  openerobj.innerHTML = '<img border=0 src=$imgdir/closed.gif>';
+  }
+else {
+  divobj.className = 'opener_shown';
+  openerobj.innerHTML = '<img border=0 src=$imgdir/open.gif>';
+  }
+}
+
+// Show a tab
+function select_tab(name, tabname, form)
+{
+var tabnames = document[name+'_tabnames'];
+var tabtitles = document[name+'_tabtitles'];
+for(var i=0; i<tabnames.length; i++) {
+  var tabobj = document.getElementById('tab_'+tabnames[i]);
+  var divobj = document.getElementById('div_'+tabnames[i]);
+  var title = tabtitles[i];
+  if (tabnames[i] == tabname) {
+    // Selected table
+    tabobj.innerHTML = '<table cellpadding=0 cellspacing=0><tr>'+
+		       '<td valign=top class=\\'tabSelected\\'>'+
+		       '<img src=$imgdir/lc2.gif alt=""></td>'+
+		       '<td class=\\'tabSelected\\' nowrap>'+
+		       '&nbsp;<b>'+title+'</b>&nbsp;</td>'+
+	               '<td valign=top class=\\'tabSelected\\'>'+
+		       '<img src=$imgdir/rc2.gif alt=""></td>'+
+		       '</tr></table>';
+    divobj.className = 'opener_shown';
+    }
+  else {
+    // Non-selected tab
+    tabobj.innerHTML = '<table cellpadding=0 cellspacing=0><tr>'+
+		       '<td valign=top class=\\'tabUnselected\\'>'+
+		       '<img src=$imgdir/lc1.gif alt=""></td>'+
+		       '<td class=\\'tabUnselected\\' nowrap>'+
+                       '&nbsp;<a href=\\'\\' onClick=\\'return select_tab("'+
+		       name+'", "'+tabnames[i]+'")\\'>'+title+'</a>&nbsp;</td>'+
+		       '<td valign=top class=\\'tabUnselected\\'>'+
+    		       '<img src=$imgdir/rc1.gif alt=""></td>'+
+		       '</tr></table>';
+    divobj.className = 'opener_hidden';
+    }
+  }
+if (document.forms[0] && document.forms[0][name]) {
+  document.forms[0][name].value = tabname;
+  }
+return false;
+}
+</script>
+EOF
 }
 
 1;
