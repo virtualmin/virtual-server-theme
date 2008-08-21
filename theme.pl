@@ -513,7 +513,7 @@ if (!$WRAPPER_OPEN) { # If we're not already inside of a wrapper, wrap it
 	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
-$rv .= "<table class='ui_table' $tabletags class='ui_table'>\n";
+$rv .= "<table class='ui_table' $tabletags>\n";
 $rv .= "<thead> <tr> <td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td> </tr> </thead>\n" if (defined($heading));
 $rv .= "<tbody><tr> <td><div class='$defclass' id='$divid'><table width=100%>\n";
 $main::ui_table_cols = $cols || 4;
