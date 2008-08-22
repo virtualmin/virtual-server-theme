@@ -25,14 +25,15 @@ if (defined($cats{''})) {
 $charset = defined($force_charset) ? $force_charset : &get_charset();
 &PrintHeader($charset);
 print <<EOF;
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css' />
-<link rel="stylesheet" type="text/css" href="left.css" />
+<title>Virtualmin</title>
+<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css'>
+<link rel="stylesheet" type="text/css" href="left.css">
 <script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>
 </head>
-<body bgcolor=#e8e8ea>
+<body>
 EOF
 
 # Find out which modules we have
@@ -60,8 +61,8 @@ if (!$image && defined(&server_manager::get_provider_link)) {
 	(undef, $image, $link) = &server_manager::get_provider_link();
 	}
 if ($image) {
-	print "<a href='$link' target=_new>" if ($link);
-	print "<img src='$image' border=0>";
+	print "<a href='$link' target='_new'>" if ($link);
+	print "<img src='$image' alt=''>";
 	print "</a><br>\n" if ($link);
 	}
 
@@ -163,12 +164,12 @@ if (@has > 1) {
 	print "<div class='mode'>";
 	foreach $m (@has) {
 		if ($m ne $mode) {
-			print "<a href='left.cgi?mode=$m&dom=$did'>";
+			print "<a href='left.cgi?mode=$m&amp;dom=$did'>";
 			}
 		else {
 			print "<b>";
 			}
-		print "<img src=images/$m-small.gif border=0> ".
+		print "<img src='images/$m-small.gif' alt='$m'> ".
 		      $text{'has_'.$m};
 		if ($m ne $mode) {
 			print "</a>\n";
@@ -180,7 +181,8 @@ if (@has > 1) {
 	print "</div>";
 	}
 
-print "<div class='menubody'><div class='menubodyInner'>\n";
+print "<div class='wrapper'>\n";
+print "<table id='main' width='100%'><tbody><tr><td>\n";
 if ($mode eq "webmin" || $mode eq "usermin") {
 	# Left form is for searching Webmin
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
@@ -258,7 +260,7 @@ if ($mode eq "virtualmin" && @doms) {
 			      @doms ],
 			1, 0, 0, 0, "onChange='form.submit()'");
 		}
-	print "<input type=image src=images/ok.gif>\n";
+	print "<input type=image src='images/ok.gif' alt=''>\n";
 	foreach $a (@admincats) {
 		print &ui_hidden($a, 1),"\n" if ($in{$a});
 		}
@@ -279,7 +281,7 @@ if ($mode eq "virtualmin" && @doms) {
 		if ($rdleft || $adleft) {
 			&print_virtualmin_link(
 				{ 'url' => "virtual-server/domain_form.cgi?".
-					   "generic=1&gparent=$d->{'id'}",
+					   "generic=1&amp;gparent=$d->{'id'}",
 				  'title' => $text{'left_generic'} },
 				'leftlink');
 			}
@@ -383,7 +385,7 @@ if ($mode eq "mail") {
 		$star = $f->{'type'} == 6 &&
 			$mailbox::special_folder_id &&
 			$f->{'id'} == $mailbox::special_folder_id ?
-			  "<img src=mailbox/images/special.gif border=0>" : "";
+			  "<img src='mailbox/images/special.gif' alt='special'>" : "";
 		$umsg = "";
 		if (defined(&mailbox::should_show_unread) &&
 		    &mailbox::should_show_unread($f)) {
@@ -405,18 +407,18 @@ if ($mode eq "mail") {
 	print "<hr>\n";
 
 	# Folder list link
-	print "<div class='linkwithicon'><img src=images/mail-small.gif>\n";
+	print "<div class='linkwithicon'><img src='images/mail-small.gif' alt=''>\n";
 	$fprog = $mconfig{'mail_system'} == 4 &&
 		 &get_webmin_version() >= 1.227 ? "list_ifolders.cgi"
 					        : "list_folders.cgi";
 	print "<div class='aftericon'><a target=right href='mailbox/$fprog'>$text{'left_folders'}</a></div></div>\n";
 
-	print "<div class='linkwithicon'><img src=images/address-small.gif>\n";
+	print "<div class='linkwithicon'><img src='images/address-small.gif' alt=''>\n";
 	print "<div class='aftericon'><a target=right href='mailbox/list_addresses.cgi'>$text{'left_addresses'}</a></div></div>\n";
 
 	# Preferences for read mail link
 	if (!$mconfig{'noprefs'}) {
-		print "<div class='linkwithicon'><img src=images/usermin-small.gif>\n";
+		print "<div class='linkwithicon'><img src='images/usermin-small.gif' alt=''>\n";
 		print "<div class='aftericon'><a target=right href='uconfig.cgi?mailbox'>$text{'left_prefs'}</a></div></div>\n";
 		}
 
@@ -428,26 +430,26 @@ if ($mode eq "mail") {
 			# Forwarding link, unless it isn't available
 			if (defined(&filter::can_simple_forward) &&
 			    &filter::can_simple_forward()) {
-				print "<div class='linkwithicon'><img src=images/forward.gif>\n";
+				print "<div class='linkwithicon'><img src='images/forward.gif' alt=''>\n";
 				print "<div class='aftericon'><a target=right href='filter/edit_forward.cgi'>$text{'left_forward'}</a></div></div>\n";
 				}
 
 			# Autoreply link, unless it isn't available
 			if (defined(&filter::can_simple_autoreply) &&
 			    &filter::can_simple_autoreply()) {
-				print "<div class='linkwithicon'><img src=images/autoreply.gif>\n";
+				print "<div class='linkwithicon'><img src='images/autoreply.gif' alt=''>\n";
 				print "<div class='aftericon'><a target=right href='filter/edit_auto.cgi'>$text{'left_autoreply'}</a></div></div>\n";
 				}
 
 			# Filter mail link
-			print "<div class='linkwithicon'><img src=images/filter.gif>\n";
+			print "<div class='linkwithicon'><img src='images/filter.gif' alt=''>\n";
 			print "<div class='aftericon'><a target=right href='filter/'>$text{'left_filter'}</a></div></div>\n";
 			}
 		}
 
 	# Change password link
 	if (&foreign_available("changepass")) {
-		print "<div class='linkwithicon'><img src=images/pass.gif>\n";
+		print "<div class='linkwithicon'><img src='images/pass.gif' alt=''>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
 		}
 	}
@@ -488,7 +490,7 @@ if ($mode eq "vm2" && $server) {
 				$url = "server-manager/$b->{'link'}";
 				}
 			else {
-				$url = "server-manager/save_serv.cgi?id=$server->{'id'}&$b->{'id'}=1";
+				$url = "server-manager/save_serv.cgi?id=$server->{'id'}&amp;$b->{'id'}=1";
 				}
 			$title = $b->{'title'} || $b->{'desc'};
 			&print_category_link($url, $title,
@@ -585,7 +587,7 @@ if ($mode eq "vm2") {
 
 
 	# Show list of all servers
-	print "<div class='linkwithicon'><img src=images/vm2-small.gif><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
+	print "<div class='linkwithicon'><img src='images/vm2-small.gif' alt=''><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
 	}
 
 if ($mode eq "webmin" || $mode eq "usermin") {
@@ -609,7 +611,7 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	# Show un-installed modules
 	if (@unmodules) {
 		&print_category_opener('_unused', $in{'_unused'} ? 1 : 0,
-		       "<font color=#888888>$text{'main_unused'}</font>");
+		       "<font color='#888888'>$text{'main_unused'}</font>");
 		$cls = $in{'_unused'} ? "itemshown" : "itemhidden";
 		print "<div class='$cls' id='_unused'>";
 		foreach $minfo (@unmodules) {
@@ -633,23 +635,23 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	}
 
 # Show system information link
-print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
+print "<div class='linkwithicon'><img src='images/gohome.png' alt=''>\n";
 if ($mode eq "vm2") {
-	$sparam = $server ? "&id=$server->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates&open=owner$sparam'>$text{'left_home'}</a></div></div>\n";
+	$sparam = $server ? "&amp;id=$server->{'id'}" : "";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates&amp;open=owner$sparam'>$text{'left_home'}</a></div></div>\n";
 	}
 elsif (&get_product_name() eq 'usermin') {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;open=common'>$text{'left_home2'}</a></div></div>\n";
 	}
 else {
-	$dparam = $d ? "&dom=$d->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates$dparam'>$text{'left_home'}</a></div></div>\n";
+	$dparam = $d ? "&amp;dom=$d->{'id'}" : "";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;auto=status&amp;open=updates$dparam'>$text{'left_home'}</a></div></div>\n";
 	}
 
 # Show refresh modules like
 if ($mode eq "webmin" && &foreign_available("webmin") &&
     -r &module_root_directory("webmin")."/refresh_modules.cgi") {
-        print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
+        print "<div class='linkwithicon'><img src='images/reload.png' alt=''>\n";
         print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
 	}
 
@@ -657,7 +659,7 @@ if ($mode eq "webmin" && &foreign_available("webmin") &&
 &get_miniserv_config(\%miniserv);
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
-	print "<div class='linkwithicon'><img src=images/stock_quit.gif>\n";
+	print "<div class='linkwithicon'><img src='images/stock_quit.png' alt=''>\n";
 	if ($main::session_id) {
 		print "<div class='aftericon'><a target=_top href='session_login.cgi?logout=1'>$text{'main_logout'}</a></div>";
 		}
@@ -669,13 +671,13 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 
 # Show link back to original Webmin server
 if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
-	print "<div class='linkwithicon'><img src=images/webmin-small.gif>\n";
-	print "<div class='aftericon'><a target=_top href='$ENV{'HTTP_WEBMIN_SERVERS'}'>$text{'header_servers'}</a></div>";
+	print "<div class='linkwithicon'><img src='images/webmin-small.gif' alt=''>\n";
+	print "<div class='aftericon'><a target=_top href='$ENV{'HTTP_WEBMIN_SERVERS'}'>$text{'header_servers'}</a></div></div>";
 	}
 
 print "</form>\n" if ($doneform);
 print <<EOF;
-</div>
+</td></tr></tbody></table>
 </div>
 </body>
 EOF
@@ -688,14 +690,14 @@ local ($c, $cats, $label) = @_;
 local @others = grep { $_ ne $c } @$cats;
 local $others = join("&", map { $_."=".$in{$_} } @others);
 $others = "&$others" if ($others);
-$others .= "&dom=$did";
-$others .= "&mode=$mode";
+$others .= "&amp;dom=$did";
+$others .= "&amp;mode=$mode";
 $label = $c eq "others" ? $text{'left_others'} : $label;
 
 # Show link to close or open catgory
 print "<div class='linkwithicon'>";
 print "<a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><img border='0' src='images/closed.gif' alt='[+]'></a>\n";
-print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggle$c'><font color=#000000>$label</font></a></div></div>\n";
+print "<div class='aftericon'><a href=\"javascript:toggleview('$c','toggle$c')\" id='toggletext$c'><font color='#000000'>$label</font></a></div></div>\n";
 }
 
 
@@ -710,7 +712,7 @@ local ($link, $label, $image, $noimage, $target, $noindent) = @_;
 $target ||= "right";
 return ($noindent ? "<div class='linknotindented'>"
 		  : "<div class='linkindented'>").
-       "<a target=$target href=$link>$label</a></div>\n";
+       "<a target='$target' href='$link'>$label</a></div>\n";
 }
 
 sub print_virtualmin_link
@@ -718,7 +720,7 @@ sub print_virtualmin_link
 local ($l, $cls, $icon) = @_;
 local $t = $l->{'target'} || "right";
 if ($icon) {
-	print "<div class='linkwithicon'><img src=images/$l->{'icon'}.gif>\n";
+	print "<div class='linkwithicon'><img src='images/$l->{'icon'}.png' alt=''>\n";
 	}
 print "<div class='$cls'>";
 print "<b>" if ($l->{'icon'} eq 'index');

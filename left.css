@@ -38,12 +38,13 @@
   left: 4px;
   padding-top: 2px;
 }
-.menubody {
+div.menubody {
  	border:1px solid #D9D9D9;
   background-color:#F5F5F5;
   padding:0;
+  margin:0;
 }
-.menubodyInner {
+div.menubodyInner {
   border:1px solid #FFFFFF;
   margin:0;
   padding:0;
