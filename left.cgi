@@ -79,31 +79,12 @@ if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
 	@alldoms = &virtual_server::list_domains();
 	@doms = &virtual_server::list_visible_domains();
-	if ($virtual_server::config{'domains_sort'} eq 'dom') {
-		# By domain name
-		local %sortkey;
-		if (defined(&virtual_server::show_domain_name)) {
-			%sortkey = map { $_->{'id'},
-				&virtual_server::show_domain_name($_) } @doms;
-			}
-		else {
-			%sortkey = map { $_->{'id'}, lc($_->{'dom'}) } @doms;
-			}
-		@doms = sort { $sortkey{$a->{'id'}} cmp $sortkey{$b->{'id'}} }
-			     @doms;
-		}
-	elsif ($virtual_server::config{'domains_sort'} eq 'user') {
-		# By username, with indents
-		@doms = sort { lc($a->{'user'}) cmp lc($b->{'user'}) ||
-			       $a->{'parent'} <=> $b->{'parent'} ||
-			       $a->{'created'} <=> $b->{'created'} } @doms;
-		foreach my $d (@doms) {
-			local $show = $d->{'dom'};
-			$show = "  ".$show if ($d->{'parent'});
-			$show = "  ".$show if ($d->{'alias'});
-			#$show = $show." ($d->{'user'})" if (!$d->{'parent'});
-			$d->{'showdom'} = $show;
-			}
+	@doms = &virtual_server::sort_indent_domains(\@doms);
+	foreach my $d (@doms) {
+		local $show = $d->{'dom'};
+		$show = "  ".$show if ($d->{'parent'});
+		$show = "  ".$show if ($d->{'alias'});
+		$d->{'showdom'} = $show;
 		}
 
 	# Work out which domain we are editing
