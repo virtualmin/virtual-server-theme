@@ -25,7 +25,7 @@ foreach $o (split(/\0/, $in{'auto'})) {
 	push(@auto, $o);
 	}
 if (!defined($in{'open'})) {
-	@open = ( 'system', 'status', 'updates', 'common' );
+	@open = ( 'system', 'reseller', 'status', 'updates', 'common' );
 	@auto = ( 'status' );
 	}
 %open = map { $_, &indexof($_, @auto) >= 0 ? 2 : 1 } @open;
@@ -549,15 +549,38 @@ if ($level == 0) {		# Master admin
 	}
 elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains
+	@doms = grep { &virtual_server::can_edit_domain($_) }
+		     &virtual_server::list_domains();
+	$info = &virtual_server::get_collected_info();
+	@qdoms = grep { &virtual_server::can_edit_domain($_->[0]) }
+		      @{$info->{'quota'}};
+
+	# Domain and feature counts
 	if (!$sects->{'novirtualmin'}) {
-		print "<h3>$text{'right_header2'}</h3>\n";
-		@doms = grep { &virtual_server::can_edit_domain($_) }
-			     &virtual_server::list_domains();
+		show_toggleview("reseller", "toggler14", $open{'reseller'},
+				$text{'right_resellerheader'});
 		&show_domains_info(\@doms);
+		print "</div><p>\n";
+		}
+
+	# Show quotas across reseller-owned domains
+	if (!$sects->{'noquotas'} && @qdoms) {
+		&show_toggleview("quotas", "toggler4", $open{'quotas'},
+				 $text{'right_quotasheader'});
+		&show_quotas_info(\@qdoms, $info->{'maxquota'});
+		print "</div><p>\n";
+		}
+
+	# Show bandwidth across reseller-owned domains
+	if (!$sects->{'nobw'} && $virtual_server::config{'bw_active'}) {
+		&show_toggleview("bw", "toggler13", $open{'bw'},
+				 $text{'right_bwheader'});
+		&show_bandwidth_info(\@doms);
+		print "</div><p>\n";
 		}
 
 	# New features for reseller
-	&show_new_features(1);
+	&show_new_features(0);
 	}
 elsif ($level == 2) {		# Domain owner
 	# Show a server owner info about one domain
@@ -953,8 +976,11 @@ if (@quota) {
 		@quota = @quota[0..($max-1)];
 		$qmsg = &text('right_quotamax', $max);
 		}
-	else {
+	elsif ($level == 0) {
 		$qmsg = $text{'right_quotaall'};
+		}
+	else {
+		$qmsg = $text{'right_quotayours'};
 		}
 
 	# Show links to graphs

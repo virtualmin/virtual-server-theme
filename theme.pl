@@ -783,13 +783,13 @@ if ($level == 0) {
 		push(@rv, 'vm2servers');
 		}
 	}
-elsif ($level == 1) {
+elsif ($level == 2) {
 	# Domain owner
 	push(@rv, 'virtualmin');
 	}
-elsif ($level == 2) {
+elsif ($level == 1) {
 	# Reseller
-	push(@rv, 'system', 'quotas', 'bw');
+	push(@rv, 'reseller', 'quotas', 'bw');
 	}
 elsif ($level == 4) {
 	# VM2 system owner

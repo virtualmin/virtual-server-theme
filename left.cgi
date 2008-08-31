@@ -626,7 +626,7 @@ elsif (&get_product_name() eq 'usermin') {
 	}
 else {
 	$dparam = $d ? "&amp;dom=$d->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;auto=status&amp;open=updates$dparam'>$text{'left_home'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;auto=status&amp;open=updates&amp;open=reseller$dparam'>$text{'left_home'}</a></div></div>\n";
 	}
 
 # Show refresh modules like
