@@ -66,6 +66,13 @@ if ($image) {
 	print "</a><br>\n" if ($link);
 	}
 
+# Work out the user's email address
+if ($hasmail) {
+	&foreign_require("mailbox", "mailbox-lib.pl");
+	($fromaddr) = &mailbox::split_addresses(
+			&mailbox::get_preferred_from_address());
+	}
+
 # Work out current mode
 $sects = &get_right_frame_sections();
 $product = &get_product_name();
@@ -176,7 +183,6 @@ elsif ($hasvirt || $hasvm2) {
 	}
 elsif ($mode eq "mail") {
 	# Left form is for searching a mail folder
-	&foreign_require("mailbox", "mailbox-lib.pl");
 	@folders = &mailbox::list_folders_sorted();
 	$df = $mailbox::userconfig{'default_folder'};
 	$dfolder = $df ? &mailbox::find_named_folder($df, \@folders) :
@@ -210,7 +216,14 @@ elsif ($mode eq "mail") {
 	}
 
 # Show login and Virtualmin access level
-print &text('left_login', $remote_user);
+if ($fromaddr) {
+	print $fromaddr->[1],"<br>\n" if ($fromaddr->[1]);
+	print $fromaddr->[0],"\n";
+	print "<hr>\n";
+	}
+else {
+	print &text('left_login', $remote_user);
+	}
 if (@doms) {
 	$level = &virtual_server::master_admin() ? $text{'left_master'} :
 		 &virtual_server::reseller_admin() ? $text{'left_reseller'} :
