@@ -198,6 +198,14 @@ if ($level == 0) {		# Master admin
 		# Load and memory info
 		if ($info->{'load'}) {
 			@c = @{$info->{'load'}};
+			}
+		elsif (&foreign_check("proc")) {
+			&foreign_require("proc", "proc-lib.pl");
+			if (defined(&proc::get_cpu_info)) {
+				@c = &proc::get_cpu_info();
+				}
+			}
+		if (@c) {
 			print "<tr> <td><b>$text{'right_cpu'}</b></td>\n";
 			print "<td>",&text('right_loadgraph',
 			   $c[0], &history_link("load", 1),
@@ -221,44 +229,56 @@ if ($level == 0) {		# Master admin
 		# Memory used
 		if ($info->{'mem'}) {
 			@m = @{$info->{'mem'}};
-			if (@m && $m[0]) {
-				print "<tr> <td><b>$text{'right_real'}</b></td>\n";
-				print "<td>",&text('right_used',
-					&nice_size($m[0]*1024),
-					&nice_size(($m[0]-$m[1])*1024)),
-				      "</td> </tr>\n";
-				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
-				      "</td>\n";
-				print &history_link("memused");
-				print "</tr>\n";
+			}
+		elsif (&foreign_check("proc")) {
+			&foreign_require("proc", "proc-lib.pl");
+			if (defined(&proc::get_memory_info)) {
+				@m = &proc::get_memory_info();
 				}
-
-			if (@m && $m[2]) {
-				print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
-				print "<td>",&text('right_used',
-					&nice_size($m[2]*1024),
-					&nice_size(($m[2]-$m[3])*1024)),
-				      "</td> </tr>\n";
-				print "<tr> <td></td>\n";
-				print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
-				      "</td>\n";
-				print &history_link("swapused");
-				print "</tr>\n";
-				}
+			}
+		if (@m && $m[0]) {
+			print "<tr> <td><b>$text{'right_real'}</b></td>\n";
+			print "<td>",&text('right_used',
+				&nice_size($m[0]*1024),
+				&nice_size(($m[0]-$m[1])*1024)),
+			      "</td> </tr>\n";
+			print "<tr> <td></td>\n";
+			print "<td>",&bar_chart($m[0], $m[0]-$m[1], 1),
+			      "</td>\n";
+			print &history_link("memused");
+			print "</tr>\n";
+			}
+		if (@m && $m[2]) {
+			print "<tr> <td><b>$text{'right_virt'}</b></td>\n";
+			print "<td>",&text('right_used',
+				&nice_size($m[2]*1024),
+				&nice_size(($m[2]-$m[3])*1024)),
+			      "</td> </tr>\n";
+			print "<tr> <td></td>\n";
+			print "<td>",&bar_chart($m[2], $m[2]-$m[3], 1),
+			      "</td>\n";
+			print &history_link("swapused");
+			print "</tr>\n";
 			}
 
 		# Disk space on local drives
 		if ($info->{'disk_total'}) {
+			($total, $free) = ($info->{'disk_total'},
+					   $info->{'disk_free'});
+			}
+		elsif (&foreign_check("mount")) {
+			&foreign_require("mount", "mount-lib.pl");
+			if (defined(&mount::local_disk_space)) {
+				($total, $free) = &mount::local_disk_space();
+				}
+			}
+		if ($total) {
 			print "<tr> <td><b>$text{'right_disk'}</b></td>\n";
 			print "<td>",&text('right_used',
-			   &nice_size($info->{'disk_total'}),
-			   &nice_size($info->{'disk_total'}-
-				      $info->{'disk_free'})),"</td> </tr>\n";
+			   &nice_size($total),
+			   &nice_size($total-$free)),"</td> </tr>\n";
 			print "<tr> <td></td>\n";
-			print "<td>",&bar_chart($info->{'disk_total'},
-						$info->{'disk_total'}-
-						 $info->{'disk_free'}, 1),
+			print "<td>",&bar_chart($total, $total-$free, 1),
 			      "</td>\n";
 			print &history_link("diskused");
 			print "</tr>\n";
@@ -522,7 +542,7 @@ if ($level == 0) {		# Master admin
 		local $cb = undef;
 		&show_toggleview("licence", "toggler9", $open{'licence'},
 				 $text{'right_licenceheader'});
-		print &ui_table_start(undef, undef, 4,
+		print &ui_table_start(undef, "width=75%", 4,
 			[ "width=25%", "width=25%", "width=25%", "width=25%" ]);
 		foreach my $l (@lics) {
 			print &ui_table_row(@$l);
