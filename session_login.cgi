@@ -52,8 +52,7 @@ print "<input type=hidden name=page value='".&html_escape($in{'page'})."'>\n";
 print "<table class='wrapper' width=40%><tr><td>\n"; # single cell for border
 print "<table class='loginform'>\n";
 print "<thead> <tr> <td colspan=2><b>$text{'session_header'}</b></td> </tr> </thead>\n";
-print "<tbody> <tr> <td align=center>\n";
-#print "<table>\n";
+print "<tbody>\n";
 if ($gconfig{'realname'}) {
 	$host = &get_display_hostname();
 	}
@@ -75,7 +74,7 @@ if (!$gconfig{'noremember'}) {
 	print "<input type=checkbox name=save value=1> $text{'session_save'}\n";
 	}
 print "</td> </tr>\n";
-print "</td></tr></tbody></table>\n";
+print "</tbody></table>\n";
 print "</td></td></table>\n"; # wrapper
 print "</form></center>\n";
 print "$text{'session_postfix'}\n";
