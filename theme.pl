@@ -661,6 +661,22 @@ $rv .= "</tr>\n";
 return $rv;
 }
 
+# theme_ui_nav_link(direction, url, disabled)
+# Returns an arrow icon linking to provided url
+sub theme_ui_nav_link
+{
+my ($direction, $url, $disabled) = @_;
+my $alt = $direction eq "left" ? '<-' : '->';
+if ($disabled) {
+  return "<img alt=\"$alt\" align=\"middle\""
+       . "src=\"$gconfig{'webprefix'}/images/$direction-grey.gif\">\n";
+  }
+else {
+  return "<a href=\"$url\"><img alt=\"$alt\" align=\"top\""
+       . "src=\"$gconfig{'webprefix'}/images/$direction.gif\"></a>\n";
+  }
+}
+
 # theme_footer([page, name]+, [noendbody])
 # Output a footer for returning to some page
 sub theme_footer
@@ -703,7 +719,7 @@ for($i=0; $i+1<@_; $i+=2) {
 			}
 		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
 		if ($count++ == 0) {
-			print "<a href=\"$url\"><img alt=\"<-\" align=middle border=0 src=\"$gconfig{'webprefix'}/images/left.gif\"></a>\n";
+			print ui_nav_link("left", $url);
 			}
 		else {
 			print "&nbsp;|\n";
