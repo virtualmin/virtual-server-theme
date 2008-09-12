@@ -59,6 +59,15 @@ if ($gconfig{'showlogin'}) {
 	$title = $remote_user." : ".$title;
 	}
 
+# Work out if we have a top frame
+if ($hasvirt) {
+	%vconfig = &foreign_config("virtual-server");
+	}
+$upperframe = $vconfig{'theme_topframe'} ||
+	      $gconfig{'theme_topframe'};
+$upperrows = $vconfig{'theme_toprows'} ||
+	     $gconfig{'theme_toprows'} || 200;
+
 # Show frameset
 &PrintHeader();
 $sects = &get_right_frame_sections();
@@ -74,22 +83,40 @@ if ($current_lang_info->{'rtl'} || $current_lang eq "ar") {
 	$fscols = "*,$cols";
 	}
 
-print <<EOF;
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head> <title>$title</title> </head>
+# Page header
+print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
+print "<html>\n";
+print "<head> <title>$title</title> </head>\n";
 
-<frameset cols='$fscols' border=0>
-	$frame1
-	$frame2
-<noframes>
-<body>
+# Upper custom frame
+if ($upperframe) {
+	print "<frameset rows='$upperrows,*' border=0>\n";
+	if ($upperframe =~ /^\//) {
+		# Local file to serve
+		print "<frame name=top src='top.cgi' scrolling=auto>\n";
+		}
+	else {
+		# Absolute URL
+		print "<frame name=top src='$upperframe' scrolling=auto>\n";
+		}
+	}
 
-<p>This page uses frames, but your browser doesn't support them.</p>
+# Left and right frames
+print "<frameset cols='$fscols' border=0>\n";
+print $frame1,"\n";
+print $frame2,"\n";
 
-</body>
-</noframes>
-</frameset>
-</html>
-EOF
+# What if no frames?
+print "<noframes>\n";
+print "<body>\n";
+print "<p>This page uses frames, but your browser doesn't support them.</p>\n";
+print "</body>\n";
+print "</noframes>\n";
+
+# End of the frames and page
+if ($upperframe) {
+	print "</frameset>\n";
+	}
+print "</frameset>\n";
+print "</html>\n";
 
