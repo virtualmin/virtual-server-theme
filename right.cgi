@@ -1112,7 +1112,7 @@ foreach my $d (@doms) {
 		    100,
 		    $pc,
 		    0,
-		    100-$pc,
+		    $pc > 100 ? 0 : 100-$pc,
 		    );
 		}
 	else {
@@ -1121,6 +1121,7 @@ foreach my $d (@doms) {
 		    $maxbw,		# Highest usage
 		    $d->{'bw_usage'},	# Domain's bandwidth
 		    0,
+		    $d->{'bw_usage'} > $d->{'bw_limit'} ? 0 :
 		    $d->{'bw_limit'} ? $d->{'bw_limit'}-$d->{'bw_usage'}
 				     : 0,  # Leftover
 		    );
