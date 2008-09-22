@@ -719,7 +719,7 @@ for($i=0; $i+1<@_; $i+=2) {
 			}
 		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
 		if ($count++ == 0) {
-			print ui_nav_link("left", $url);
+			print theme_ui_nav_link("left", $url);
 			}
 		else {
 			print "&nbsp;|\n";
