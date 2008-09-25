@@ -1076,6 +1076,14 @@ else {
 	@doms = sort { $b->{'bw_usage'} <=> $a->{'bw_usage'} } @doms;
 	}
 
+# Work out highest usage or limit
+my $maxbw = 0;
+foreach my $d (@doms) {
+	$maxbw = $d->{'bw_limit'} if ($d->{'bw_limit'} > $maxbw);
+	$maxbw = $d->{'bw_usage'} if ($d->{'bw_usage'} > $maxbw);
+	}
+return if (!$maxbw);	# No bandwidth yet
+
 # Show message about number of domains being displayed
 local $max = $sects->{'max'} || $default_domains_to_show;
 print "<table>\n";
@@ -1087,13 +1095,6 @@ else {
 	$qmsg = $text{'right_quotaall'};
 	}
 print "<tr> <td colspan=2>$qmsg</td> </tr>\n";
-
-# Work out highest usage or limit
-my $maxbw = 0;
-foreach my $d (@doms) {
-	$maxbw = $d->{'bw_limit'} if ($d->{'bw_limit'} > $maxbw);
-	$maxbw = $d->{'bw_usage'} if ($d->{'bw_usage'} > $maxbw);
-	}
 
 # The table of domains
 foreach my $d (@doms) {
