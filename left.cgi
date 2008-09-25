@@ -217,21 +217,30 @@ elsif ($mode eq "mail") {
 
 # Show login and Virtualmin access level
 if ($fromaddr) {
+	# Show email address and real name
 	print $fromaddr->[1],"<br>\n" if ($fromaddr->[1]);
 	print $fromaddr->[0],"\n";
-	print "<hr>\n";
 	}
 else {
-	print &text('left_login', $remote_user);
+	# Show login
+	print print &text('left_login', $remote_user),"<br>\n";
 	}
 if (@doms) {
+	# Show Virtualmin login level
 	$level = &virtual_server::master_admin() ? $text{'left_master'} :
 		 &virtual_server::reseller_admin() ? $text{'left_reseller'} :
 		 &virtual_server::extra_admin() ? $text{'left_extra'} :
 		 $virtual_server::single_domain_mode ? $text{'left_single'} :
 						       $text{'left_user'};
-	print " ($level)";
+	print "$level<br>\n";
 	}
+elsif ($hasvm2) {
+	# Show VM2 login level
+	$level = $server_manager::access{'owner'} ? $text{'left_owner'}
+						  : $text{'left_master2'};
+	print "$level<br>\n";
+	}
+print "<hr>\n";
 
 if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
