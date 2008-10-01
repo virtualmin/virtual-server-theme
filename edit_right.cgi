@@ -69,12 +69,11 @@ if ($hasvirt) {
 
 if ($hasvm2) {
 	# Default VM2 server
+	@servers = &server_manager::list_available_managed_servers_sorted();
 	print &ui_table_row($text{'edright_server'},
 	    &ui_select("server", $sects->{'server'},
 		       [ [ "", $text{'edright_first'} ],
-			 map { [ $_->{'id'}, $_->{'host'} ] }
-			     sort { $a->{'host'} cmp $b->{'host'} }
-				  &server_manager::list_managed_servers() ]));
+			 map { [ $_->{'id'}, $_->{'host'} ] } @servers ]));
 	}
 
 if ($hasvirt && &virtual_server::master_admin()) {
