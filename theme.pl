@@ -877,6 +877,17 @@ else {
 return ($hasvirt, $level, $hasvm2);
 }
 
+# get_left_frame_width()
+# Returns the width of the left frame in pixels
+sub get_left_frame_width
+{
+local $sects = &get_right_frame_sections();
+return $sects->{'fsize'} ? $sects->{'fsize'} :
+       &get_product_name() eq 'usermin' ? 180 :
+       &foreign_available("server-manager") &&
+       &foreign_available("virtual-server") ? 260 : 240;
+}
+
 # Don't show virtualmin menu
 sub theme_redirect
 {

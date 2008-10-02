@@ -242,6 +242,7 @@ elsif ($hasvm2) {
 	}
 print "<hr>\n";
 
+$selwidth = (&get_left_frame_width() - 50)."px";
 if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each
@@ -261,7 +262,8 @@ if ($mode eq "virtualmin" && @doms) {
 				  $_->{'disabled'} ?
 					"style='font-style:italic'" : "" ] }
 			      @doms ],
-			1, 0, 0, 0, "onChange='form.submit()'");
+			1, 0, 0, 0,
+			"onChange='form.submit()' style='width:$selwidth'");
 		}
 	print "<input type=image src='images/ok.gif' alt=''>\n";
 	foreach $a (@admincats) {
@@ -350,7 +352,8 @@ elsif ($mode eq "vm2") {
 	print &ui_select("sid", $sid,
 		[ map { [ $_->{'id'}, ("&nbsp;&nbsp;" x $_->{'indent'}).
 				      &shorten_hostname($_) ] } @servers ],
-		1, 0, 0, 0, "onChange='form.submit()'");
+		1, 0, 0, 0,
+		"onChange='form.submit()' style='width:$selwidth'");
 	print "<input type=image src=images/ok.gif>\n";
 	print "</div>\n";
 	}

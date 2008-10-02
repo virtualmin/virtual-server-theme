@@ -70,11 +70,7 @@ $upperrows = $vconfig{'theme_toprows'} ||
 
 # Show frameset
 &PrintHeader();
-$sects = &get_right_frame_sections();
-$cols = $sects->{'fsize'} ? $sects->{'fsize'} :
-	&get_product_name() eq 'usermin' ? 180 :
-	&foreign_available("server-manager") &&
-	&foreign_available("virtual-server") ? 260 : 240;
+$cols = &get_left_frame_width();
 $frame1 = "<frame name=left src='$left' scrolling=auto>";
 $frame2 = "<frame name=right src='$goto' noresize>";
 $fscols = "$cols,*";
