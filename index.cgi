@@ -67,6 +67,16 @@ $upperframe = $vconfig{'theme_topframe'} ||
 	      $gconfig{'theme_topframe'};
 $upperrows = $vconfig{'theme_toprows'} ||
 	     $gconfig{'theme_toprows'} || 200;
+if ($upperframe =~ /\$LEVEL|\$\{LEVEL/) {
+	# Sub in user level
+	$levelnum = &get_virtualmin_user_level();
+	$level = $levelnum == 0 ? "master" :
+		 $levelnum == 1 ? "reseller" :
+		 $levelnum == 2 ? "domain" :
+		 $levelnum == 3 ? "usermin" :
+		 $levelnum == 4 ? "owner" : "unknown";
+	$upperframe = &substitute_template($upperframe, { 'level' => $level });
+	}
 
 # Show frameset
 &PrintHeader();
