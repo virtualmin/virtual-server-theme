@@ -541,21 +541,7 @@ if ($mode eq "vm2") {
 		}
 
 	# Show add / create links
-	if (defined(&server_manager::get_available_create_links)) {
-		@alllinks = &server_manager::get_available_create_links();
-		}
-	else {
-		@alllinks = ( );
-		foreach $t (@server_manager::server_management_types) {
-			$lfunc = "server_manager::type_".$t."_create_links";
-			if (defined(&$lfunc)) {
-				foreach $l (&$lfunc()) {
-					$l->{'type'} = $t;
-					push(@alllinks, $t);
-					}
-				}
-			}
-		}
+	@alllinks = &server_manager::get_available_create_links();
 	if (@alllinks) {
 		print "<hr>\n";
 		}
@@ -572,8 +558,9 @@ if ($mode eq "vm2") {
 		($m, $l) = @$ml;
 		if (@$l == 1) {
 			$c = $l->[0];
-			$form = $c->{'create'} ? 'create_form.cgi'
-					       : 'add_form.cgi';
+			$form = $c->{'link'} ? $c->{'link'} :
+				$c->{'create'} ? 'create_form.cgi' :
+					         'add_form.cgi';
 			print "<div class='leftlink'><a href='server-manager/$form?type=$c->{'type'}' target=right>$c->{'desc'}</a></div>\n";
 			}
 		elsif (@$l) {
@@ -581,8 +568,9 @@ if ($mode eq "vm2") {
 					       $text{'left_vm2'.$m});
 			print "<div class='itemhidden' id='$m'>\n";
 			foreach $c (@$l) {
-				$form = $c->{'create'} ? 'create_form.cgi'
-						       : 'add_form.cgi';
+				$form = $c->{'link'} ? $c->{'link'} :
+				        $c->{'create'} ? 'create_form.cgi' :
+						         'add_form.cgi';
 				&print_category_link(
 				    "server-manager/$form?".
 				    "type=$c->{'type'}", $c->{'desc'});
