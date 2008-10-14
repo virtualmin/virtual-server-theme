@@ -100,20 +100,15 @@ if ($hasvm2) {
 	print &server_manager::licence_error_message();
 	}
 
-# Check if OS according to Webmin is out of date
-if ($level == 0 && &foreign_available("webmin") &&
-    &get_webmin_version() >= 1.326) {
+# Show Webmin notifications, if supported
+if (&foreign_check("webmin")) {
 	&foreign_require("webmin", "webmin-lib.pl");
-	%realos = &webmin::detect_operating_system(undef, 1);
-	if ($realos{'os_version'} ne $gconfig{'os_version'} ||
-	    $realos{'os_type'} ne $gconfig{'os_type'}) {
+	if (defined(&webmin::show_webmin_notifications)) {
+		@notifs = &webmin::get_webmin_notifications();
+		}
+	if (@notifs) {
 		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
-		print &ui_form_start("webmin/fix_os.cgi");
-		print "<b>",&webmin::text('os_incorrect',
-                        $realos{'real_os_type'},
-                        $realos{'real_os_version'}),"</b><p>\n";
-		print &ui_submit($webmin::text{'os_fix'});
-		print &ui_form_end();
+		print @notifs;
 		print "</td></tr></table>\n";
 		}
 	}

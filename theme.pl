@@ -124,6 +124,7 @@ print "top.left.location = top.left.location;\n";
 print "</script>\n";
 }
 
+# theme_post_save_server(&server, action)
 # Called by VM2 after a server is updated, to refresh the left menu
 sub theme_post_save_server
 {
