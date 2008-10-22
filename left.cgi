@@ -157,7 +157,7 @@ if (@has > 1) {
 		else {
 			print "<b>";
 			}
-		print "<img src='images/$m-small.gif' alt='$m'> ".
+		print "<img src='images/$m-small.png' alt='$m'> ".
 		      $text{'has_'.$m};
 		if ($m ne $mode) {
 			print "</a>\n";
@@ -265,7 +265,7 @@ if ($mode eq "virtualmin" && @doms) {
 			1, 0, 0, 0,
 			"onChange='form.submit()' style='width:$selwidth'");
 		}
-	print "<input type=image src='images/ok.gif' alt=''>\n";
+	print "<input type='image' src='images/ok.gif' alt='' class='goArrow'>\n";
 	foreach $a (@admincats) {
 		print &ui_hidden($a, 1),"\n" if ($in{$a});
 		}
@@ -354,7 +354,7 @@ elsif ($mode eq "vm2") {
 				      &shorten_hostname($_) ] } @servers ],
 		1, 0, 0, 0,
 		"onChange='form.submit()' style='width:$selwidth'");
-	print "<input type=image src=images/ok.gif>\n";
+	print "<input type='image' src='images/ok.gif' alt='' class='goArrow'>\n";
 	print "</div>\n";
 	}
 
@@ -581,7 +581,7 @@ if ($mode eq "vm2") {
 
 
 	# Show list of all servers
-	print "<div class='linkwithicon'><img src='images/vm2-small.gif' alt=''><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
+	print "<div class='linkwithicon'><img src='images/vm2-small.png' alt=''><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
 	}
 
 if ($mode eq "webmin" || $mode eq "usermin") {

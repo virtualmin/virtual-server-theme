@@ -530,7 +530,7 @@ $rv .= "<table class='ui_table' $tabletags>\n";
 if (defined($heading) || defined($rightheading)) {
 	$rv .= "<thead><tr>";
 	if (defined($heading)) {
-		$rv .= "<td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\"><b><font color=#$text>$heading</font></b></a></td>";
+		$rv .= "<td><a href=\"javascript:hidden_opener('$divid', '$openerid')\" id='$openerid'><img border=0 src='$gconfig{'webprefix'}/images/$defimg'></a> <a href=\"javascript:hidden_opener('$divid', '$openerid')\" class='ui-hidden-table-title'><b>$heading</b></a></td>";
 		}
         if (defined($rightheading)) {
                 $rv .= "<td align=right>$rightheading</td>";

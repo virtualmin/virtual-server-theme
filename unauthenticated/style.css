@@ -1,8 +1,8 @@
 head { background-color: #ffffff;
-  color: #333333;
+  color: #393939;
 }
 body { background-color: #ffffff;
-  color: #333333;
+  color: #393939;
 }
 table { border-width: 0px;
 	empty-cells: hide;
@@ -16,40 +16,38 @@ img, a img { border:0; }
 tr.row0 {background-color:#e8e8ea;}
 tr.row1 {background-color:#f8f8fa;}
 table.formsection thead, table.sortable thead, table.ui_table thead, table.loginform thead {
-background-color:#dadaf8;
+background-color:#d0e0fc;
 border:0px;
 }
 table.formsection tbody, table.sortable tbody, table.ui_table tbody, table.loginform tbody {
 background-color:#f5f5f5;
 }
-a:link { color: #333399;
+a:link, a:visited { color: #0b46ab;
   text-decoration: none;
 }
-a:hover, a:visited:hover { color: #6666EE;
+a:hover, a:visited:hover { color: #0b46ab;
   text-decoration: none;
 }
-a:visited { color: #333399;
-  text-decoration: none;
-}
+a.ui-hidden-table-title { color: #393939; }
 body, p, td, br, center { font-size: 10pt;
   font-family: sans-serif;
 }
-title { color: #333333;
+title { color: #393939;
   font-family: sans-serif;
 }
-h1 { color: #333333;
+h1 { color: #393939;
   font-size: 150%;
   font-family: sans-serif;
 }
-h2 { color: #333333;
+h2 { color: #393939;
   font-size: 130%;
   font-family: sans-serif;
 }
-h3 { color: #333333;
+h3 { color: #393939;
   font-size: 125%;
   font-family: sans-serif;
 }   
-h4 { color: #333333;
+h4 { color: #393939;
   font-size: 120%;
   font-family: sans-serif;
 } 
@@ -100,8 +98,9 @@ div.wrapper {
   border-collapse:collapse;
 }
 .tabSelected {
-	background-color:#D9D9D9;
+  background-color:#D0E0FC;
 }
 .tabUnselected {
-  background-color:#dadaf8;
+  background-color:#D9D9D9;
 }
+.goArrow { margin-top: 4px; }
