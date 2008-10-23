@@ -811,20 +811,22 @@ elsif ($level == 3) {		# Usermin
 	print "</div></p>\n";
 
 	# Common modules
-	&show_toggleview("common", "toggler2", $open{'common'},
-			 $text{'right_header7'});
-	print "<dl>\n";
-	foreach $mod ("filter", "changepass", "gnupg", "file", "mysql",
-		      "postgresql", "datastore") {
-		if (&foreign_available($mod)) {
+	@commonmods = grep { &foreign_available($_) }
+			   ( "filter", "changepass", "gnupg", "file", "mysql",
+			     "postgresql", "datastore" );
+	if (@commonmods) {
+		&show_toggleview("common", "toggler2", $open{'common'},
+				 $text{'right_header7'});
+		print "<dl>\n";
+		foreach $mod (@commonmods) {
 			%minfo = &get_module_info($mod);
 			print "<dt><a href='$mod/'>$minfo{'desc'}</a><br>\n";
 			$desc = $text{'common_'.$mod} || $minfo{'longdesc'};
 			print "<dd>$desc<p>\n";
 			}
+		print "</dl>\n";
+		print "</div></p>\n";
 		}
-	print "</dl>\n";
-	print "</div></p>\n";
 	}
 elsif ($level == 4) {
 	# Show a VM2 system owner information about his systems
