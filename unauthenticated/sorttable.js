@@ -64,7 +64,7 @@ function ts_resortTable(lnk,clid) {
     }
     var spantext = ts_getInnerText(span);
     var td = lnk.parentNode;
-    var column = clid || td.cellIndex;
+    var column = typeof(clid) == 'undefined' ? td.cellIndex : clid;
     var table = getParent(td,'TABLE');
     
     // Work out a type for the column
