@@ -104,7 +104,7 @@ if ($hasvm2) {
 if (&foreign_check("webmin")) {
 	&foreign_require("webmin", "webmin-lib.pl");
 	if (defined(&webmin::show_webmin_notifications)) {
-		@notifs = &webmin::get_webmin_notifications();
+		@notifs = &webmin::get_webmin_notifications(1);
 		}
 	if (@notifs) {
 		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
