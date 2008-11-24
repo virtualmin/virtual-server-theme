@@ -433,10 +433,14 @@ if ($level == 0) {		# Master admin
 	    $virtual_server::config{'bw_active'}) {
 		# Show bandwidth graph by domain
 		local @doms = &virtual_server::list_domains();
-		&show_toggleview("bw", "toggler13", $open{'bw'},
-				 $text{'right_bwheader'});
-		&show_bandwidth_info(\@doms);
-		print "</div><p>\n";
+		local @bwdoms = grep { !$_->{'parent'} &&
+				       defined($_->{'bw_usage'}) } @doms;
+		if (@bwdoms) {
+			&show_toggleview("bw", "toggler13", $open{'bw'},
+					 $text{'right_bwheader'});
+			&show_bandwidth_info(\@doms);
+			print "</div><p>\n";
+			}
 		}
 
 	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
