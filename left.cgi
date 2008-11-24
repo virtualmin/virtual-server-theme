@@ -306,8 +306,12 @@ if ($mode eq "virtualmin" && @doms) {
 		&print_category_opener("cat_$c", \@cats,
 				       $incat[0]->{'catname'});
 		print "<div class='itemhidden' id='cat_$c'>\n";
-		foreach my $b (sort { ($a->{'title'} || $a->{'desc'}) cmp
-				      ($b->{'title'} || $b->{'desc'})} @incat) {
+		my @incatsort = grep { !$_->{'nosort'} } @incat;
+		if (@incatsort) {
+			@incat = sort { ($a->{'title'} || $a->{'desc'}) cmp
+                                        ($b->{'title'} || $b->{'desc'})} @incat;
+			}
+		foreach my $b (@incat) {
 			&print_virtualmin_link($b, "linkindented");
 			}
 		print "</div>\n";
