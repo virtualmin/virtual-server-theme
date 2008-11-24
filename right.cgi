@@ -435,12 +435,15 @@ if ($level == 0) {		# Master admin
 		local @doms = &virtual_server::list_domains();
 		local @bwdoms = grep { !$_->{'parent'} &&
 				       defined($_->{'bw_usage'}) } @doms;
+		&show_toggleview("bw", "toggler13", $open{'bw'},
+				 $text{'right_bwheader'});
 		if (@bwdoms) {
-			&show_toggleview("bw", "toggler13", $open{'bw'},
-					 $text{'right_bwheader'});
 			&show_bandwidth_info(\@doms);
-			print "</div><p>\n";
 			}
+		else {
+			print $text{'right_bwnone'},"<br>\n";
+			}
+		print "</div><p>\n";
 		}
 
 	if ($hasvirt && !$sects->{'noips'} && $info->{'ips'}) {
@@ -1100,11 +1103,9 @@ print "<tr> <td colspan=2>$qmsg</td> </tr>\n";
 # The table of domains
 foreach my $d (@doms) {
 	print "<tr>\n";
-	my $ed = &virtual_server::can_config_domain($d) ?
-		"edit_domain.cgi" : "view_domain.cgi";
 	$dname = &virtual_server::show_domain_name($d);
-	print "<td width=20%><a href='virtual-server/$ed?",
-	      "dom=$d->{'id'}'>$dname</a></td>\n";
+	print "<td width=20%><a href='virtual-server/bwgraph.cgi?",
+	      "dom=$d->{'id'}&mode=1'>$dname</a></td>\n";
 	print "<td width=50% nowrap>";
 	$pc = $d->{'bw_limit'} ? int($d->{'bw_usage'}*100 / $d->{'bw_limit'})
 			       : undef;

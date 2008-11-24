@@ -142,6 +142,7 @@ right_kernel=Kernel and CPU
 right_kernelon=$1 $2 on $3
 right_edit=Configure this page
 right_bwheader=Bandwidth
+right_bwnone=Bandwidth usage statistics have not been collected for any virtual servers yet.
 right_return=system information
 right_updatesheader=Package Updates
 right_upcount=$1 updates to Virtualmin packages are available. Use the <a href='$2'>Virtualmin Package Updates</a> module to install them selectively.
