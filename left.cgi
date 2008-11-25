@@ -211,7 +211,7 @@ if ($fromaddr) {
 	}
 else {
 	# Show login
-	print print &text('left_login', $remote_user),"<br>\n";
+	print &text('left_login', $remote_user),"<br>\n";
 	}
 if (@doms) {
 	# Show Virtualmin login level
