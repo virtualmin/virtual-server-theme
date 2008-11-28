@@ -75,12 +75,6 @@ if ($mode eq "virtualmin" && $hasvirt) {
 	@alldoms = &virtual_server::list_domains();
 	@doms = &virtual_server::list_visible_domains();
 	@doms = &virtual_server::sort_indent_domains(\@doms);
-	foreach my $d (@doms) {
-		local $show = $d->{'dom'};
-		$show = "  ".$show if ($d->{'parent'});
-		$show = "  ".$show if ($d->{'alias'});
-		$d->{'showdom'} = $show;
-		}
 
 	# Work out which domain we are editing
 	if (defined($in{'dom'})) {
@@ -246,6 +240,7 @@ if ($mode eq "virtualmin" && @doms) {
 		# Show menu of domains
 		print &ui_select("dom", $did,
 			[ map { [ $_->{'id'},
+				  ("&nbsp;&nbsp;" x $_->{'indent'}).
 				  &virtual_server::shorten_domain_name($_),
 				  $_->{'disabled'} ?
 					"style='font-style:italic'" : "" ] }
