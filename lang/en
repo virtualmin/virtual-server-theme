@@ -120,6 +120,7 @@ right_aliases=Alias servers
 right_of=$1 out of $2
 right_quota=Disk usage and quota
 right_bw=Bandwith usage and limit
+right_bwnone=Bandwidth usage statistics have not been collected for any virtual servers yet.
 right_header5=Account Information
 right_uquota=Disk quota and usage
 right_header6=Service Status
@@ -181,6 +182,9 @@ right_ownerheader=VM2 System Owner
 right_vm2real=Your name
 right_vm2email=Your contact address
 right_vm2one=Your virtual system
+right_status_service=Service
+right_status_up=Up?
+right_status_actions=Actions
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

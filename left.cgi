@@ -17,8 +17,8 @@ print <<EOF;
 <html>
 <head>
 <title>Virtualmin</title>
-<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css'>
-<link rel="stylesheet" type="text/css" href="left.css">
+<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/reset-fonts-base.css'>
+<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/virtual-server-style.css'>
 <script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>
 </head>
 <body>
@@ -224,7 +224,7 @@ elsif ($hasvm2) {
 	}
 print "<hr>\n";
 
-$selwidth = (&get_left_frame_width() - 50)."px";
+$selwidth = (&get_left_frame_width() - 70)."px";
 if ($mode eq "virtualmin" && @doms) {
 	# Show Virtualmin servers this user can edit, plus links for various
 	# functions within each

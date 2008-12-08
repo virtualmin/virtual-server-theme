@@ -1,4 +1,4 @@
-# Virtualmin Framed heme
+# Virtualmin Framed Theme
 # Icons copyright David Vignoni, all other theme elements copyright 2005-2007
 # Virtualmin, Inc.
 
@@ -24,7 +24,7 @@ $WRAPPER_OPEN = 0;
 # Returns HTML to appear directly after a standard header() call
 sub theme_ui_post_header
 {
-local ($text) = @_;
+my ($text) = @_;
 my $rv;
 $rv .= "<div class='ui_post_header'>$text</div>\n" if (defined($text));
 #$rv .= "<div class='section'>\n";
@@ -227,7 +227,13 @@ sub theme_prebody
 {
 if ($script_name =~ /session_login.cgi/) {
 	# Generate CSS link
-	print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css'>\n";
+	print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/reset-fonts-grids-base.css'>\n";
+	print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/virtual-server-style.css'>\n";
+	print "<!--[if IE]>\n";
+	print "<style type=\"text/css\">\n";
+	print "table.formsection, table.ui_table, table.loginform { border-collapse: collapse; }\n";
+	print "</style>\n";
+	print "<![endif]-->\n";
 	}
 if ($module_name eq "virtual-server") {
 	# No need for Module Index link, as we have the left-side frame
@@ -237,8 +243,13 @@ if ($module_name eq "virtual-server") {
 
 sub theme_prehead
 {
-print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/style.css' />\n";
-print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
+print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/reset-fonts-grids-base.css'>\n";
+print "<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/virtual-server-style.css' />\n";
+print "<!--[if IE]>\n";
+print "<style type=\"text/css\">\n";
+print "table.formsection, table.ui_table, table.loginform { border-collapse: collapse; }\n";
+print "</style>\n";
+print "<![endif]-->\n";
 print "<script>\n";
 print "var rowsel = new Array();\n";
 print "</script>\n";
@@ -282,10 +293,37 @@ if (defined($heading) || defined($rightheading)) {
                 }
         $rv .= "</tr></thead>\n";
         }
-$rv .= "<tbody> <tr> <td colspan=$colspan><table width=100%>\n";
+$rv .= "<tbody> <tr> <td colspan=$colspan><table>\n";
 $main::ui_table_cols = $cols || 4;
 $main::ui_table_pos = 0;
 $main::ui_table_default_tds = $tds;
+return $rv;
+}
+
+# ui_table_row(label, value, [cols], [&td-tags])
+# Returns HTML for a row in a table started by ui_table_start, with a 1-column
+# label and 1+ column value.
+sub theme_ui_table_row
+{
+my ($label, $value, $cols, $tds) = @_;
+$cols ||= 1;
+$tds ||= $main::ui_table_default_tds;
+my $rv;
+if ($main::ui_table_pos+$cols+1 > $main::ui_table_cols &&
+    $main::ui_table_pos != 0) {
+    # If the requested number of cols won't fit in the number
+    # remaining, start a new row
+    $rv .= "</tr>\n";
+    $main::ui_table_pos = 0;
+    }
+$rv .= "<tr class='ui_form_pair'>\n" if ($main::ui_table_pos%$main::ui_table_cols == 0);
+$rv .= "<td class='ui_form_label' $tds->[0]><b>$label</b></td>\n" if (defined($label));
+$rv .= "<td class='ui_form_value' colspan=$cols $tds->[1]>$value</td>\n";
+$main::ui_table_pos += $cols+(defined($label) ? 1 : 0);
+if ($main::ui_table_pos%$main::ui_table_cols == 0) {
+    $rv .= "</tr>\n";
+    $main::ui_table_pos = 0;
+    }
 return $rv;
 }
 
@@ -398,11 +436,11 @@ $main::ui_tabs_selected = $sel;
 return $rv;
 }
 
-# theme_ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [heading])
+# theme_ui_columns_start(&headings, [width-percent], [noborder], [&tdtags], [title])
 # Returns HTML for a multi-column table, with the given headings
 sub theme_ui_columns_start
 {
-my ($heads, $width, $noborder, $tdtags, $heading) = @_;
+my ($heads, $width, $noborder, $tdtags, $title) = @_;
 my ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 my $rv;
 $theme_ui_columns_row_toggle = 0;
@@ -413,14 +451,14 @@ if (!$noborder && !$WRAPPER_OPEN) {
 	$rv .= "<tr><td>\n";
 	}
 $WRAPPER_OPEN++;
-local @classes;
+my @classes;
 push(@classes, "ui_table") if (!$noborder);
 push(@classes, "sortable") if (!$href);
 $rv .= "<table".(@classes ? " class='".join(" ", @classes)."'" : "").
     (defined($width) ? " width=$width%" : "").">\n";
-if ($heading) {
+if ($title) {
   $rv .= "<thead> <tr $tb><td colspan=".scalar(@$heads).
-         "><b>$heading</b></td></tr> </thead> <tbody>\n";
+         "><b>$title</b></td></tr> </thead> <tbody>\n";
   }
 $rv .= "<thead> <tr $tb>\n";
 my $i;
@@ -477,12 +515,12 @@ my $rv = "<table class='wrapper' "
        . ($width ? " width=$width%" : " width=100%")
        . ($tabletags ? " ".$tabletags : "")
        . "><tr><td>\n";
-$rv .= "<table class='ui_table'"
+$rv .= "<table class='ui_table ui_grid'"
      . ($width ? " width=$width%" : "")
      . ($tabletags ? " ".$tabletags : "")
      . ">\n";
 if ($title) {
-	$rv .= "<thead><tr $tb> <td colspan=$cols><b>$title</b></td> </tr></thead>\n";
+	$rv .= "<thead><tr> <td colspan=$cols><b>$title</b></td> </tr></thead>\n";
 	}
 $rv .= "<tbody>\n";
 my $i;
@@ -538,7 +576,7 @@ if (defined($heading) || defined($rightheading)) {
                 }
 	$rv .= "</tr> </thead>\n";
 	}
-$rv .= "<tbody><tr> <td colspan=$colspan><div class='$defclass' id='$divid'><table width=100%>\n";
+$rv .= "<tbody><tr> <td colspan=$colspan><div class='$defclass' id='$divid'><table>\n";
 $main::ui_table_cols = $cols || 4;
 $main::ui_table_pos = 0;
 $main::ui_table_default_tds = $tds;
@@ -985,6 +1023,161 @@ return false;
 }
 </script>
 EOF
+}
+
+# XXX Temporary until ui-lib.pl valign stuff gets cleaned up
+#
+# theme_ui_columns_table(&headings, width-percent, &data, &types, no-sort, title,
+#		   empty-msg)
+# Returns HTML for a complete table.
+# headings - An array ref of heading HTML
+# width-percent - Preferred total width
+# data - A 2x2 array ref of table contents. Each can either be a simple string,
+#        or a hash ref like :
+#          { 'type' => 'group', 'desc' => 'Some section title' }
+#          { 'type' => 'string', 'value' => 'Foo', 'colums' => 3,
+#	     'nowrap' => 1 }
+#          { 'type' => 'checkbox', 'name' => 'd', 'value' => 'foo',
+#            'label' => 'Yes', 'checked' => 1, 'disabled' => 1 }
+#          { 'type' => 'radio', 'name' => 'd', 'value' => 'foo', ... }
+# types - An array ref of data types, such as 'string', 'number', 'bytes'
+#         or 'date'
+# no-sort - Set to 1 to disable sorting by theme
+# title - Text to appear above the table
+# empty-msg - Message to display if no data
+sub theme_ui_columns_table
+{
+my ($heads, $width, $data, $types, $nosort, $title, $emptymsg) = @_;
+my $rv;
+
+# Just show empty message if no data
+if ($emptymsg && !@$data) {
+	$rv .= &ui_subheading($title) if ($title);
+	$rv .= "<b>$emptymsg</b><p>\n";
+	return $rv;
+	}
+
+# Are there any checkboxes in each column? If so, make those columns narrow
+my @tds;
+my $maxwidth = 0;
+foreach my $r (@$data) {
+	my $cc = 0;
+	foreach my $c (@$r) {
+		if (ref($c) &&
+		    ($c->{'type'} eq 'checkbox' || $c->{'type'} eq 'radio')) {
+			$tds[$cc] .= " width=5" if ($tds[$cc] !~ /width=/);
+			}
+		$cc++;
+		}
+	$maxwidth = $cc if ($cc > $maxwidth);
+	}
+$rv .= &ui_columns_start($heads, $width, 0, \@tds, $title);
+
+# Add the data rows
+foreach my $r (@$data) {
+	my $c0;
+	if (ref($r->[0]) && ($r->[0]->{'type'} eq 'checkbox' ||
+			     $r->[0]->{'type'} eq 'radio')) {
+		# First column is special
+		$c0 = $r->[0];
+		$r = [ @$r[1..(@$r-1)] ];
+		}
+	# Turn data into HTML
+	my @rtds = @tds;
+	my @cols;
+	my $cn = 0;
+	$cn++ if ($c0);
+	foreach my $c (@$r) {
+		if (!ref($c)) {
+			# Plain old string
+			push(@cols, $c);
+			}
+		elsif ($c->{'type'} eq 'checkbox') {
+			# Checkbox in non-first column
+			push(@cols, &ui_checkbox($c->{'name'}, $c->{'value'},
+					         $c->{'label'}, $c->{'checked'},
+						 undef, $c->{'disabled'}));
+			}
+		elsif ($c->{'type'} eq 'radio') {
+			# Radio button in non-first column
+			push(@cols, &ui_oneradio($c->{'name'}, $c->{'value'},
+					         $c->{'label'}, $c->{'checked'},
+						 undef, $c->{'disabled'}));
+			}
+		elsif ($c->{'type'} eq 'group') {
+			# Header row that spans whole table
+			$rv .= &ui_columns_header([ $c->{'desc'} ],
+						  [ "colspan=$width" ]);
+			next;
+			}
+		elsif ($c->{'type'} eq 'string') {
+			# A string, which might be special
+			push(@cols, $c->{'value'});
+			if ($c->{'columns'} > 1) {
+				splice(@rtds, $cn, $c->{'columns'},
+				       "colspan=".$c->{'columns'});
+				}
+			if ($c->{'nowrap'}) {
+				$rtds[$cn] .= " nowrap";
+				}
+			}
+		$cn++;
+		}
+	# Add the row
+	if (!$c0) {
+		$rv .= &ui_columns_row(\@cols, \@rtds);
+		}
+	elsif ($c0->{'type'} eq 'checkbox') {
+		$rv .= &ui_checked_columns_row(\@cols, \@rtds, $c0->{'name'},
+					       $c0->{'value'}, $c0->{'checked'},
+					       $c0->{'disabled'});
+		}
+	elsif ($c0->{'type'} eq 'radio') {
+		$rv .= &ui_radio_columns_row(\@cols, \@rtds, $c0->{'name'},
+					     $c0->{'value'}, $c0->{'checked'},
+					     $c0->{'disabled'});
+		}
+	}
+
+$rv .= &ui_columns_end();
+return $rv;
+}
+
+=yui
+
+Functions for generating YUI CSS grids markup.
+
+=cut
+
+# ui_yui_grid_start(id, type)
+# Return a yui grid opening div.
+# Available types are:
+# g - 1/2,1/2
+# gb - 1/3, 1/3, 1/3
+# gc - 2/3, 1/3
+# gd - 1/3, 2/3
+# ge - 3/4, 1/4
+# gf - 1/4, 3/4
+sub theme_ui_yui_grid_start {
+	my ($id, $type) = @_;
+	return "<div id='grid_$id' class='yui-$type'>\n";
+}
+
+sub theme_ui_yui_grid_end {
+	my ($id) = @_;
+	return "</div> <!-- grid_$id -->\n";
+}
+
+# ui_yui_grid_section_start(id, first?)
+# Return a yui grid markup section opening div.
+sub theme_ui_yui_grid_section_start {
+	my ($id, $first) = @_;
+	if ($first) { return "<div id='grid_$id' class='yui-u first'>\n"; }
+	else { return "<div id='grid_$id' class='yui-u'>\n"; }
+}
+sub theme_ui_yui_grid_section_end {
+	my ($id) = @_;
+	return "</div> <!-- grid_$id -->\n";
 }
 
 1;
