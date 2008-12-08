@@ -347,9 +347,9 @@ if ($level == 0) {		# Master admin
 		      "width=100%", 4, "status", $status_open);
 		#print theme_ui_yui_grid_start('rightstat', 'g'); # 50/50 split
 		#print theme_ui_yui_grid_section_start('rightstat_left', 'first');
-		print "<table class='ui_table'><tr><td width='49%'>\n";
+		print "<table class='ui_table'><tr><td width='49%' valign=top>\n";
 		print status_grid(@ss[0 .. $mid]);
-		print "</td><td width='49%'>\n";
+		print "</td><td width='49%' valign=top>\n";
 		#print theme_ui_yui_grid_section_end('rightstat_left');
 		#print theme_ui_yui_grid_section_start('rightstat_right');
 		print status_grid(@ss[$mid+1 .. $#ss]);
