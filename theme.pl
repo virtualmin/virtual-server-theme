@@ -293,7 +293,7 @@ if (defined($heading) || defined($rightheading)) {
                 }
         $rv .= "</tr></thead>\n";
         }
-$rv .= "<tbody> <tr> <td colspan=$colspan><table>\n";
+$rv .= "<tbody> <tr> <td colspan=$colspan><table width=100%>\n";
 $main::ui_table_cols = $cols || 4;
 $main::ui_table_pos = 0;
 $main::ui_table_default_tds = $tds;
@@ -576,7 +576,7 @@ if (defined($heading) || defined($rightheading)) {
                 }
 	$rv .= "</tr> </thead>\n";
 	}
-$rv .= "<tbody><tr> <td colspan=$colspan><div class='$defclass' id='$divid'><table>\n";
+$rv .= "<tbody><tr> <td colspan=$colspan><div class='$defclass' id='$divid'><table width=100%>\n";
 $main::ui_table_cols = $cols || 4;
 $main::ui_table_pos = 0;
 $main::ui_table_default_tds = $tds;
