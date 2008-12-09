@@ -101,6 +101,9 @@ tr.mainhighsel { background-color: #bbffcc; }
  text-align: center;
  padding: 4px;
 }
+.ui_subheading { font-size: 120%;
+  font-weight: bold;
+}
 hr { border: 0;
   width: 90%;
   height: 1px;
