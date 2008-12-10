@@ -142,6 +142,8 @@ div.wrapper {
 }
 .ui_form_pair td {padding:4px;}
 .ui_form_pair td table tr td {padding:0px;}
+.ui_radio_table tr td {padding:4px;}
+.ui_buttons_table tr td {padding:4px;}
 /* left menu */
 .mode {
   left: auto;
