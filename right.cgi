@@ -365,8 +365,7 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt && !$sects->{'novirtualmin'} && $info->{'fcount'}) {
 		# Show Virtualmin information
 		print ui_hidden_table_start($text{'right_virtheader'},
-              "width=100%", 1,
-              "virtualmin", $open{'virtualmin'});
+		      "width=100%", 1, "virtualmin", $open{'virtualmin'});
 		print "<table>\n";
 		my $i = 0;
 		foreach my $f (@{$info->{'ftypes'}}) {
@@ -417,7 +416,7 @@ if ($level == 0) {		# Master admin
 			show_bandwidth_info(\@doms);
 			}
 		else {
-			print $text{'right_bwnone'},"<br>\n";
+			print ui_table_row(undef, $text{'right_bwnone'}, 2);
 			}
 		print ui_hidden_table_end("bw");
 		}
@@ -572,8 +571,15 @@ elsif ($level == 1) {		# Reseller
 	if (!$sects->{'nobw'} && $virtual_server::config{'bw_active'}) {
 		print ui_hidden_table_start($text{'right_bwheader'},
 		      'width=100%', 1, 'bw', $open{'bw'});
-		show_bandwidth_info(\@doms);
-		print ui_hidden_table_end;
+		my @bwdoms = grep { !$_->{'parent'} &&
+		                    defined($_->{'bw_usage'}) } @doms;
+		if (@bwdoms) {
+			show_bandwidth_info(\@doms);
+			}
+		else {
+			print ui_table_row(undef, $text{'right_bwnone'}, 2);
+			}
+		print ui_hidden_table_end();
 		}
 
 	# New features for reseller
@@ -581,7 +587,6 @@ elsif ($level == 1) {		# Reseller
 	}
 elsif ($level == 2) {		# Domain owner
 	# Show a server owner info about one domain
-	print "<h3>$text{'right_header3'}</h3>\n";
 	$ex = virtual_server::extra_admin();
 	if ($ex) {
 		$d = virtual_server::get_domain($ex);
@@ -591,7 +596,7 @@ elsif ($level == 2) {		# Domain owner
 			"user", $remote_user, "parent", "");
 		}
 
-	print "<table>\n";
+	print ui_table_start($text{'right_header3'}, "width=100%", 4);
 
 	print ui_table_row("<b>$text{'right_login'}</b>",
 	      $remote_user);
@@ -656,7 +661,6 @@ elsif ($level == 2) {		# Domain owner
 	$aliases = virtual_server::count_domain_feature("aliases", @subs);
 	($aleft, $areason, $atotal, $ahide) =
 		virtual_server::count_feature("aliases");
-	print "<tr> <td><b>$text{'right_faliases'}</b></td>\n";
 	if ($aleft < 0 || $ahide) {
 		print ui_table_row("<b>$text{'right_faliases'}</b>",
 		      $aliases);
@@ -687,76 +691,67 @@ elsif ($level == 2) {		# Domain owner
 		($home, $mail, $db) = virtual_server::get_domain_quota($d, 1);
 		$usage = $home*$homesize + $mail*$mailsize + $db;
 		$limit = $d->{'quota'}*$homesize;
-		print "<tr class='ui_form_pair'> <td class='ui_form_label'><b>$text{'right_quota'}</b></td>\n";
 		if ($limit) {
-			print "<td class='ui_form_value'>",text('right_of', nice_size($usage), &nice_size($limit)),"</td> </tr>\n";
-			print "<tr class='ui_form_pair'> <td></td>\n";
-			print "<td class='ui_form_value'>",bar_chart_three($limit, $usage-$db, $db,
-						      $limit-$usage),
-			      "</td> </tr>\n";
+			print &ui_table_row($text{'right_quota'},
+				text('right_of', nice_size($usage),
+				     &nice_size($limit)), 3);
+			print &ui_table_row(" ",
+				bar_chart_three($limit, $usage-$db, $db,
+						$limit-$usage), 3);
 			}
 		else {
-			print "<td class='ui_form_value'>",nice_size($usage),"</td> </tr>\n";
+			print &ui_table_row($text{'right_quota'},
+				nice_size($usage), 3);
 			}
 		}
 
 	if (!$sects->{'nobw'} &&
 	    $virtual_server::config{'bw_active'} && $d->{'bw_limit'}) {
 		# Bandwidth usage and limit
-		print "<tr> <td><b>$text{'right_bw'}</b></td>\n";
-		print "<td>",
+		print &ui_table_row($text{'right_bw'},
 		   &text('right_of', &nice_size($d->{'bw_usage'}),
 			&virtual_server::text(
 			'edit_bwpast_'.$virtual_server::config{'bw_past'},
 			&nice_size($d->{'bw_limit'}),
-			$virtual_server::config{'bw_period'})),
-		      "</td> </tr>\n";
-		print "<tr> <td></td>\n";
-		print "<td>",&bar_chart($d->{'bw_limit'}, $d->{'bw_usage'}, 1),
-		      "</td> </tr>\n";
+			$virtual_server::config{'bw_period'})), 3);
+		print &ui_table_row(" ",
+		   &bar_chart($d->{'bw_limit'}, $d->{'bw_usage'}, 1), 3);
 		}
 
-	print "</table>\n";
+	print ui_table_end();
 
 	# New features for domain owner
-	show_new_features(1);
+	show_new_features(0);
 	}
 elsif ($level == 3) {		# Usermin
 	# Show user's information
-	&show_toggleview("system", "toggler1", $open{'system'},
-			 $text{'right_header5'});
-	print "<table>\n";
+	print ui_hidden_table_start($text{'right_header5'},
+				    "width=100%", 4, "system", $open{'system'});
 
 	# Login name and real name
-	print "<tr> <td><b>$text{'right_login'}</b></td>\n";
-	print "<td>",$remote_user,"</td> </tr>\n";
-
+	print ui_table_row($text{'right_login'}, $remote_user);
 	@uinfo = getpwnam($remote_user);
 	if ($uinfo[6]) {
-		print "<tr> <td><b>$text{'right_realname'}</b></td>\n";
 		$uinfo[6] =~ s/,.*$// if ($uinfo[6] =~ /,.*,/);
-		print "<td>",&html_escape($uinfo[6]),"</td> </tr>\n";
+		print ui_table_row($text{'right_realname'},
+			&html_escape($uinfo[6]));
 		}
 
 	# Host and login info
-	print "<tr> <td><b>$text{'right_host'}</b></td>\n";
-	print "<td>",&get_system_hostname(),"</td> </tr>\n";
+	print ui_table_row($text{'right_host'},
+		&get_display_hostname());
 
-	print "<tr> <td><b>$text{'right_os'}</b></td>\n";
-	if ($gconfig{'os_version'} eq '*') {
-		print "<td>$gconfig{'real_os_type'}</td> </tr>\n";
-		}
-	else {
-		print "<td>$gconfig{'real_os_type'} $gconfig{'real_os_version'}</td> </tr>\n";
-		}
+	print ui_table_row($text{'right_os'},
+		$gconfig{'os_version'} eq '*' ? $gconfig{'real_os_type'} :
+			"$gconfig{'real_os_type'} $gconfig{'real_os_version'}");
 
-	print "<tr> <td><b>$text{'right_usermin'}</b></td>\n";
-	print "<td>",&get_webmin_version(),"</td> </tr>\n";
+	# Usermin version
+	print ui_table_row($text{'right_usermin'},
+		&get_webmin_version());
 
 	# System time
 	$tm = &make_date(time());
-	print "<tr> <td><b>$text{'right_time'}</b></td>\n";
-	print "<td>$tm</td> </tr>\n";
+	print ui_table_row($text{'right_time'}, $tm);
 
 	# Disk quotas
 	if (&foreign_installed("quota")) {
@@ -781,34 +776,31 @@ elsif ($level == 3) {		# Usermin
 				}
 			$bsize ||= $quota::config{'block_size'};
 			$bsize ||= 1024;
-			print "<tr> <td><b>$text{'right_uquota'}</b></td>\n";
-			print "<td>",&text('right_out',
-				&nice_size($usage*$bsize),
-				&nice_size($quota*$bsize)),"</td> </tr>\n";
-			print "<tr> <td></td>\n";
-			print "<td>",&bar_chart($quota, $usage, 1),
-			      "</td> </tr>\n";
+			print ui_table_row($text{'right_uquota'},
+				&text('right_out',
+					&nice_size($usage*$bsize),
+					&nice_size($quota*$bsize)), 3);
+			print ui_table_row(" ",
+				&bar_chart($quota, $usage, 1), 3);
 			}
 		}
-	print "</table>\n";
-	print "</div></p>\n";
+	print ui_hidden_table_end();
 
 	# Common modules
 	@commonmods = grep { &foreign_available($_) }
 			   ( "filter", "changepass", "gnupg", "file", "mysql",
 			     "postgresql", "datastore" );
 	if (@commonmods) {
-		&show_toggleview("common", "toggler2", $open{'common'},
-				 $text{'right_header7'});
-		print "<dl>\n";
+		print ui_hidden_table_start($text{'right_header7'},
+			"width=100%", 2, $open{'common'});
 		foreach $mod (@commonmods) {
 			%minfo = &get_module_info($mod);
-			print "<dt><a href='$mod/'>$minfo{'desc'}</a><br>\n";
-			$desc = $text{'common_'.$mod} || $minfo{'longdesc'};
-			print "<dd>$desc<p>\n";
+			print ui_table_row($minfo{'desc'},
+				"<a href='$mod/'>".
+				($text{'common_'.$mod} || $minfo{'longdesc'}).
+				"</a>");
 			}
-		print "</dl>\n";
-		print "</div></p>\n";
+		print ui_hidden_table_end();
 		}
 	}
 elsif ($level == 4) {
@@ -1241,10 +1233,10 @@ if ($hasvirt && !$sects->{'nonewfeatures'} &&
 		}
 	else {
 		print ui_hidden_table_start($text{'right_newfeaturesheader'},
-		      "width=100%", 1,
+		      "width=100%", 2,
 		      "newfeatures", 1);
 		}
-	print $newhtml;
+	print &ui_table_row(undef, $newhtml, 2);
 	if (!$nosect) {
 		print ui_hidden_table_end("newfeatures");
 		}
@@ -1258,10 +1250,10 @@ if ($hasvm2 && !$sects->{'nonewfeatures'} &&
 		}
 	else {
 		print ui_hidden_table_start($text{'right_newfeaturesheadervm2'},
-		      "width=100%", 1,
+		      "width=100%", 2,
 		      "newfeaturesvm2", 1);
 		}
-	print $newhtml;
+	print &ui_table_row(undef, $newhtml, 2);
 	if (!$nosect) {
 		print ui_hidden_table_end("newfeaturesvm2");
 		}
