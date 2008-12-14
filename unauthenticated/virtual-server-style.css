@@ -78,7 +78,7 @@ title { color: #393939;
 }
 h1,h2,h3,h4,h5 { color: #393939;
 }
-pre { font-size: 77%; }
+/* pre { font-size: 77%; } */
 #main { border-style: solid;
   border:1px solid #FFFFFF;
   margin:0;
