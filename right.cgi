@@ -878,8 +878,8 @@ foreach my $status (@services) {
 	my $action = ($status->{'status'} ? "stop_feature.cgi" :
 	              "start_feature.cgi");
 	my $action_icon = ($status->{'status'} ?
-	   "<img src='/images/stop.png' alt=$status->{'desc'} />" :
-	   "<img src='/images/start.png' alt=$status->{'desc'} />");
+	   "<img src='images/stop.png' alt=$status->{'desc'} />" :
+	   "<img src='images/start.png' alt=$status->{'desc'} />");
 	my $action_link = "<a href='virtual-server/$action?"
 	   . "feature=$status->{'feature'}"
 	   . "&redirect=/right.cgi'"
@@ -892,7 +892,7 @@ foreach my $status (@services) {
 	     . "feature=$status->{'feature'}"
 	     . "&redirect=/right.cgi'"
 	     . " title='$status->{'restartdesc'}'>"
-	     . "<img src='/images/reload.png'"
+	     . "<img src='images/reload.png'"
 	     . "alt='$status->{'restartdesc'}'></a>\n"
 	   : ""); # Nothing, if not running
 
