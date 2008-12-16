@@ -11,18 +11,8 @@ do './ui-lib.pl';
 
 
 $charset = defined($force_charset) ? $force_charset : &get_charset();
-&PrintHeader($charset);
-print <<EOF;
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<title>Virtualmin</title>
-<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/reset-fonts-base.css'>
-<link rel='stylesheet' type='text/css' href='$gconfig{'webprefix'}/unauthenticated/virtual-server-style.css'>
-<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>
-</head>
-<body>
-EOF
+&popup_header("Virtualmin");
+print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
 
 # Find out which modules we have
 $hasvirt = &foreign_available("virtual-server");
@@ -642,11 +632,7 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 	}
 
 print "</form>\n" if ($doneform);
-print <<EOF;
-</td></tr></tbody></table>
-</div>
-</body>
-EOF
+&popup_footer();
 
 # print_category_opener(name, &allcats, label)
 # Prints out an open/close twistie for some category
