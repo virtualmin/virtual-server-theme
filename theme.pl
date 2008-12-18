@@ -927,6 +927,23 @@ return $sects->{'fsize'} ? $sects->{'fsize'} :
        &foreign_available("virtual-server") ? 260 : 240;
 }
 
+# list_virtualmin_theme_overlays()
+# Returns a list of overlay themes suitable for this theme
+sub list_virtualmin_theme_overlays
+{
+&foreign_require("webmin", "webmin-lib.pl");
+local @rv;
+foreach my $tinfo (&webmin::list_themes()) {
+	if ($tinfo->{'overlay'} &&
+	    (!$tinfo->{'overlays'} ||
+	     &indexof($current_theme,
+		      split(/\s+/, $tinfo->{'overlays'})) >= 0)) {
+		push(@rv, $tinfo);
+		}
+	}
+return @rv;
+}
+
 # Don't show virtualmin menu
 sub theme_redirect
 {

@@ -45,6 +45,12 @@ if ($hasvirt || $hasvm2) {
 			push(@links, "<a href='recollect.cgi'>".
 				     "$text{'right_recollect'}</a>");
 			}
+		@overlays = &list_virtualmin_theme_overlays();
+		if (@overlays) {
+			# Change theme overlay
+			push(@links, "<a href='edit_overlay.cgi'>".
+				     "$text{'right_overlay'}</a>");
+			}
 		if ($hasvirt) {
 			# Virtualmin docs
 			$doclink = get_virtualmin_docs($level);

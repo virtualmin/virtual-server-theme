@@ -153,6 +153,7 @@ right_updesc=Description
 right_upver=Version
 right_upok=Install All Updates Now
 right_recollect=Refresh system information
+right_overlay=Change theme
 right_pkgupdesc=Package updates
 right_upall=All <a href='$1'>Virtualmin packages</a> are up to date.
 right_upinst=There are <a href='$2'>$1 optional Virtualmin packages</a> that you can install.
@@ -233,3 +234,13 @@ has_mail=Mail
 has_vm2=VM2
 has_webmin=Webmin
 has_usermin=Usermin
+
+overlay_title=Change Theme
+overlay_desc=This page allows you to select a different theme overlay, which can change the colors, icons and layout of the Virtualmin user interface.
+overlay_msg=Change theme overlay to:
+overlay_ok=Change Now
+overlay_none=None - use default colors and icons
+overlay_refresh=Refreshing Virtualmin user interface ..
+overlay_done=.. done
+overlay_euser=Failed to get details of current user!
+overlay_webmin=Reloading Webmin configuration ..
