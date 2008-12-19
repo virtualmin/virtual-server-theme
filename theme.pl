@@ -57,7 +57,7 @@ my ($i, $need_tr);
 my $cols = $_[3] ? $_[3] : 4;
 my $per = int(100.0 / $cols);
 print "<div class='wrapper'>\n";
-print "<table id='main' width=100% cellpadding=5>\n";
+print "<table id='main' width=100% cellpadding=5 class='icons_table'>\n";
 for($i=0; $i<@{$_[0]}; $i++) {
 	if ($i%$cols == 0) { print "<tr>\n"; }
 	print "<td width=$per% align=center valign=top>\n";
@@ -293,7 +293,8 @@ if (defined($heading) || defined($rightheading)) {
                 }
         $rv .= "</tr></thead>\n";
         }
-$rv .= "<tbody> <tr> <td colspan=$colspan><table width=100%>\n";
+$rv .= "<tbody> <tr class='ui_table_body'> <td colspan=$colspan>".
+       "<table width=100%>\n";
 $main::ui_table_cols = $cols || 4;
 $main::ui_table_pos = 0;
 $main::ui_table_default_tds = $tds;
@@ -378,7 +379,7 @@ $rv .= "</script>\n";
 # Output the tabs
 my $imgdir = "$gconfig{'webprefix'}/images";
 $rv .= &ui_hidden($name, $sel)."\n";
-$rv .= "<table border=0 cellpadding=0 cellspacing=0>\n";
+$rv .= "<table border=0 cellpadding=0 cellspacing=0 class='ui_tabs'>\n";
 $rv .= "<tr><td bgcolor=#ffffff colspan=".(scalar(@$tabs)*2+1).">";
 if ($ENV{'HTTP_USER_AGENT'} !~ /msie/i) {
 	# For some reason, the 1-pixel space above the tabs appears huge on IE!
@@ -390,11 +391,11 @@ $rv .= "<td bgcolor=#ffffff width=1><img src=$imgdir/1x1.gif></td>\n";
 foreach my $t (@$tabs) {
 	if ($t ne $tabs[0]) {
 		# Spacer
-		$rv .= "<td width=2 bgcolor=#ffffff>".
+		$rv .= "<td width=2 bgcolor=#ffffff class='ui_tab_spacer'>".
 		       "<img src=$imgdir/1x1.gif></td>\n";
 		}
 	my $tabid = "tab_".$t->[0];
-	$rv .= "<td id=${tabid}>";
+	$rv .= "<td id=${tabid} class='ui_tab'>";
 	$rv .= "<table cellpadding=0 cellspacing=0 border=0><tr>";
 	if ($t->[0] eq $sel) {
 		# Selected tab
@@ -426,7 +427,8 @@ $rv .= "</table>\n";
 
 if ($border) {
 	# All tabs are within a grey box
-	$rv .= "<table width=100% cellpadding=0 cellspacing=0>\n";
+	$rv .= "<table width=100% cellpadding=0 cellspacing=0 ".
+	       "class='ui_tabs_box'>\n";
 	$rv .= "<tr> <td bgcolor=#ffffff rowspan=3 width=1><img src=$imgdir/1x1.gif></td>\n";
 	$rv .= "<td $cb colspan=3 height=2><img src=$imgdir/1x1.gif></td> </tr>\n";
 	$rv .= "<tr> <td $cb width=2><img src=$imgdir/1x1.gif></td>\n";
@@ -454,13 +456,15 @@ $WRAPPER_OPEN++;
 my @classes;
 push(@classes, "ui_table") if (!$noborder);
 push(@classes, "sortable") if (!$href);
+push(@classes, "ui_columns");
 $rv .= "<table".(@classes ? " class='".join(" ", @classes)."'" : "").
     (defined($width) ? " width=$width%" : "").">\n";
 if ($title) {
-  $rv .= "<thead> <tr $tb><td colspan=".scalar(@$heads).
-         "><b>$title</b></td></tr> </thead> <tbody>\n";
+  $rv .= "<thead> <tr $tb class='ui_columns_heading'>".
+	 "<td colspan=".scalar(@$heads)."><b>$title</b></td>".
+	 "</tr> </thead> <tbody>\n";
   }
-$rv .= "<thead> <tr $tb>\n";
+$rv .= "<thead> <tr $tb class='ui_columns_heads'>\n";
 my $i;
 for($i=0; $i<@$heads; $i++) {
   $rv .= "<td ".$tdtags->[$i]."><b>".
@@ -478,7 +482,7 @@ sub theme_ui_columns_row
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
 local ($cols, $tdtags) = @_;
 my $rv;
-$rv .= "<tr class='ui_columns row$theme_ui_columns_row_toggle' onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody row$theme_ui_columns_row_toggle'\">\n";
+$rv .= "<tr class='ui_columns_row row$theme_ui_columns_row_toggle' onMouseOver=\"this.className='mainhigh'\" onMouseOut=\"this.className='mainbody row$theme_ui_columns_row_toggle'\">\n";
 my $i;
 for($i=0; $i<@$cols; $i++) {
 	$rv .= "<td ".$tdtags->[$i].">".
@@ -515,23 +519,25 @@ my $rv = "<table class='wrapper' "
        . ($width ? " width=$width%" : " width=100%")
        . ($tabletags ? " ".$tabletags : "")
        . "><tr><td>\n";
-$rv .= "<table class='ui_table ui_grid'"
+$rv .= "<table class='ui_table ui_grid_table'"
      . ($width ? " width=$width%" : "")
      . ($tabletags ? " ".$tabletags : "")
      . ">\n";
 if ($title) {
-	$rv .= "<thead><tr> <td colspan=$cols><b>$title</b></td> </tr></thead>\n";
+	$rv .= "<thead><tr class='ui_grid_heading'> ".
+	       "<td colspan=$cols><b>$title</b></td> </tr></thead>\n";
 	}
 $rv .= "<tbody>\n";
 my $i;
 for($i=0; $i<@$elements; $i++) {
-  $rv .= "<tr>" if ($i%$cols == 0);
-  $rv .= "<td ".$tds->[$i%$cols]." valign=top>".$elements->[$i]."</td>\n";
+  $rv .= "<tr class='ui_grid_row'>" if ($i%$cols == 0);
+  $rv .= "<td ".$tds->[$i%$cols]." valign=top class='ui_grid_cell'>".
+	 $elements->[$i]."</td>\n";
   $rv .= "</tr>" if ($i%$cols == $cols-1);
   }
 if ($i%$cols) {
   while($i%$cols) {
-    $rv .= "<td ".$tds->[$i%$cols]."><br></td>\n";
+    $rv .= "<td ".$tds->[$i%$cols]." class='ui_grid_cell'><br></td>\n";
     $i++;
     }
   $rv .= "</tr>\n";
@@ -606,7 +612,7 @@ sub theme_select_all_link
 local ($field, $form, $text) = @_;
 $form = int($form);
 $text ||= $text{'ui_selall'};
-return "<a href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" } } return false'>$text</a>";
+return "<a class='select_all' href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = true; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = \"mainsel\" } } return false'>$text</a>";
 }
 
 # theme_select_invert_link(field, form, text)
@@ -616,7 +622,7 @@ sub theme_select_invert_link
 local ($field, $form, $text) = @_;
 $form = int($form);
 $text ||= $text{'ui_selinv'};
-return "<a href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = !f.$field.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = !ff.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } } return false'>$text</a>";
+return "<a class='select_invert' href='#' onClick='f = document.forms[$form]; ff = f.$field; ff.checked = !f.$field.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody\" }; for(i=0; i<f.$field.length; i++) { ff = f.${field}[i]; ff.checked = !ff.checked; r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } } return false'>$text</a>";
 }
 
 # theme_select_status_link(name, form, &folder, &mails, start, end, status, label)
@@ -642,7 +648,7 @@ my $js = "var sel = [ ".join(",", @sel)." ]; ";
 $js .= "var f = document.forms[$formno]; ";
 $js .= "for(var i=0; i<sel.length; i++) { document.forms[$formno].${name}[i].checked = sel[i]; var ff = f.${name}[i]; var r = document.getElementById(\"row_\"+ff.id); if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } }";
 $js .= "return false;";
-return "<a href='#' onClick='$js'>$label</a>";
+return "<a class='select_status' href='#' onClick='$js'>$label</a>";
 }
 
 sub theme_select_rows_link
@@ -652,7 +658,7 @@ $form = int($form);
 my $js = "var sel = { ".join(",", map { "\"".&quote_escape($_)."\":1" } @$rows)." }; ";
 $js .= "for(var i=0; i<document.forms[$form].${field}.length; i++) { var ff = document.forms[$form].${field}[i]; var r = document.getElementById(\"row_\"+ff.id); ff.checked = sel[ff.value]; if (r) { r.className = ff.checked ? \"mainsel\" : \"mainbody row\"+((i+1)%2) } } ";
 $js .= "return false;";
-return "<a href='#' onClick='$js'>$text</a>";
+return "<a class='select_rows' href='#' onClick='$js'>$text</a>";
 }
 
 sub theme_ui_checked_columns_row
@@ -667,9 +673,9 @@ my $mycb = $cb;
 if ($checked) {
 	$mycb =~ s/mainbody/mainsel/g;
 	}
-$mycb =~ s/class='/class='row$theme_ui_columns_row_toggle /;
+$mycb =~ s/class='/class='row$theme_ui_columns_row_toggle ui_checked_columns /;
 $rv .= "<tr id=\"$ridtr\" $mycb onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody row$theme_ui_columns_row_toggle'\">\n";
-$rv .= "<td ".$tdtags->[0].">".
+$rv .= "<td class='ui_checked_checkbox' ".$tdtags->[0].">".
        &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"", $disabled).
        "</td>\n";
 my $i;
@@ -701,8 +707,9 @@ if ($checked) {
 	$mycb =~ s/mainbody/mainsel/g;
 	}
 
+$mycb =~ s/class='/class='ui_radio_columns /;
 $rv .= "<tr $mycb id=\"$ridtr\" onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody'\">\n";
-$rv .= "<td ".$tdtags->[0].">".
+$rv .= "<td ".$tdtags->[0]." class='ui_radio_radio'>".
        &ui_oneradio($checkname, $checkvalue, undef, $checked, "onClick=\"for(i=0; i<form.$checkname.length; i++) { ff = form.${checkname}[i]; r = document.getElementById('row_'+ff.id); if (r) { r.className = 'mainbody' } } document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"").
        "</td>\n";
 my $i;

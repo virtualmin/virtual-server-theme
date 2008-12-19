@@ -56,7 +56,7 @@ div.ui_form_end_buttons {
 .ui_form_end_buttons input {
   padding: 2px;
 }
-table.ui_grid td { padding: 2px 4px; }
+table.ui_grid_table td { padding: 2px 4px; }
 input {
   padding: 1px;
 }
