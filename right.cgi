@@ -109,7 +109,7 @@ if ($hasvm2) {
 # Show Webmin notifications, if supported
 if (foreign_check("webmin")) {
 	foreign_require("webmin", "webmin-lib.pl");
-	if (defined(webmin::show_webmin_notifications)) {
+	if (defined(&webmin::show_webmin_notifications)) {
 		@notifs = webmin::get_webmin_notifications(1);
 		}
 	if (@notifs) {
