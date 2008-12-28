@@ -475,6 +475,7 @@ if ($mode eq "vm2" && $server) {
 				$url = "server-manager/save_serv.cgi?id=$server->{'id'}&amp;$b->{'id'}=1";
 				}
 			$title = $b->{'title'} || $b->{'desc'};
+			# XXX class=leftlink
 			&print_category_link($url, $title,
 				     undef, undef, $b->{'target'}, !$c);
 			}
@@ -662,7 +663,7 @@ sub category_link
 {
 local ($link, $label, $image, $noimage, $target, $noindent) = @_;
 $target ||= "right";
-return ($noindent ? "<div class='linknotindented'>"
+return ($noindent ? "<div class='leftlink'>"
 		  : "<div class='linkindented'>").
        "<a target='$target' href='$link'>$label</a></div>\n";
 }
