@@ -82,7 +82,7 @@ if ($upperframe =~ /\$LEVEL|\$\{LEVEL/) {
 &PrintHeader();
 $cols = &get_left_frame_width();
 $frame1 = "<frame name=left src='$left' scrolling=auto>";
-$frame2 = "<frame name=right src='$goto' noresize>";
+$frame2 = "<frame name=right src='$goto' noresize scrolling=auto>";
 $fscols = "$cols,*";
 if ($current_lang_info->{'rtl'} || $current_lang eq "ar") {
 	($frame1, $frame2) = ($frame2, $frame1);
