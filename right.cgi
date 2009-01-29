@@ -192,6 +192,9 @@ if ($level == 0) {		# Master admin
 
 		# System time
 		my $tm = make_date(time());
+		if (&foreign_available("time")) {
+			$tm = "<a href=time/>$tm</a>";
+			}
 		print ui_table_row($text{'right_time'}, $tm
 		      , 1, ["width='15%'", "width='35%'"]);
 
