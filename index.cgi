@@ -90,7 +90,6 @@ if ($current_lang_info->{'rtl'} || $current_lang eq "ar") {
 	}
 
 # Page header
-print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 print "<html>\n";
 print "<head> <title>$title</title> </head>\n";
 
