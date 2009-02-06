@@ -138,6 +138,7 @@ right_ip=(Private IP)
 right_reselip=(Reseller $1)
 right_sharedip=(Shared IP)
 right_ips=$1 virtual servers
+right_iprange=$1 addresses, $2 used
 right_time=Time on server
 right_kernel=Kernel and CPU
 right_kernelon=$1 $2 on $3

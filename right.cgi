@@ -454,6 +454,21 @@ if ($level == 0) {		# Master admin
 			print "</tr>\n";
 			}
 		print "</table>\n";
+		if ($info->{'ipranges'}) {
+			# Show IP ranges for allocation
+			print &ui_hr();
+			print "<table>\n";
+			foreach my $r (@{$info->{'ipranges'}}) {
+				print "<tr class='ui_form_pair'>\n";
+				print "<td class='ui_form_label' width=30%>",
+				      $r->[0],"</td>\n";
+				print "<td class='ui_form_value'>",
+				      &text('right_iprange', $r->[1], $r->[2]),
+				      "</td>\n";
+				print "</tr>\n";
+				}
+			print "</table>\n";
+			}
 		print ui_hidden_table_end("ips");
 		}
 
