@@ -1,11 +1,7 @@
 #!/usr/bin/perl
 # Update the theme overlay
 
-do './web-lib.pl';
-&init_config();
-do 'ui-lib.pl';
-%text = &load_language($current_theme);
-&load_theme_library();
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 ($gtheme) = split(/\s+/, $gconfig{'theme'});
 

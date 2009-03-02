@@ -1,9 +1,6 @@
 #!/usr/local/bin/perl
 
-do './web-lib.pl';
-&init_config();
-&load_theme_library();
-%text = &load_language($current_theme);
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 
 # Work out which module to open by default

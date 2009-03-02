@@ -1,11 +1,7 @@
 #!/usr/bin/perl
 # Show a form for configuring what gets dislayed on the right frame
 
-do './web-lib.pl';
-&init_config();
-do 'ui-lib.pl';
-%text = &load_language($current_theme);
-&load_theme_library();
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 $sects = &get_right_frame_sections();
 !$sects->{'global'} || &virtual_server::master_admin() ||

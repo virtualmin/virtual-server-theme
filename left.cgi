@@ -1,14 +1,9 @@
 #!/usr/local/bin/perl
 # Show the left-side menu of Virtualmin domains, plus modules
 
-do './web-lib.pl';
-do './ui-lib.pl';
-&init_config();
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
-&load_theme_library();
-%text = &load_language($current_theme);
 @admincats = ( "tmpl", "create", "backup" );
-
 
 $charset = defined($force_charset) ? $force_charset : &get_charset();
 &popup_header("Virtualmin");

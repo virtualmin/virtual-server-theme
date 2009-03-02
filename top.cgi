@@ -1,9 +1,7 @@
 #!/usr/local/bin/perl
 # Output contents of top frame file
 
-do './web-lib.pl';
-&init_config();
-&load_theme_library();
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 
 $hasvirt = &foreign_available("virtual-server");
 if ($hasvirt) {

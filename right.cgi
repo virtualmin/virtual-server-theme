@@ -1,11 +1,8 @@
 #!/usr/local/bin/perl
 # Show server or domain information
 
-do './web-lib.pl';
-&init_config();
-do 'ui-lib.pl';
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
-&load_theme_library();
 
 # Work out system capabilities. Level 3 = usermin, 2 = domain owner,
 # 1 = reseller, 0 = master, 4 = VM2 system owner

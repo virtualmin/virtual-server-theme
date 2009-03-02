@@ -1,11 +1,7 @@
 #!/usr/bin/perl
 # Show a form for changing the theme overlay
 
-do './web-lib.pl';
-&init_config();
-do 'ui-lib.pl';
-%text = &load_language($current_theme);
-&load_theme_library();
+require "virtual-server-theme/virtual-server-theme-lib.pl";
 
 # Get the user and themes
 &foreign_require("acl", "acl-lib.pl");
