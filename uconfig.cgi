@@ -3,6 +3,7 @@
 # at a time.
 
 require "virtual-server-theme/virtual-server-theme-lib.pl";
+require './config-lib.pl';
 &ReadParse();
 $m = $in{'module'} || $ARGV[0];
 &foreign_available($m) || &error($text{'config_eaccess'});
