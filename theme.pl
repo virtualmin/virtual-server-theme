@@ -160,12 +160,12 @@ if (window.parent && window.parent.frames[0]) {
 EOF
 }
 
-# theme_select_domain(&server)
+# theme_select_domain(&domain)
 # Called by Virtualmin when a page for a server is displayed, to select it on
 # the left menu.
 sub theme_select_domain
 {
-local ($server) = @_;
+local ($d) = @_;
 print <<EOF;
 <script>
 if (window.parent && window.parent.frames[0]) {
