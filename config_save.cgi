@@ -21,8 +21,6 @@ if (-r "$mdir/config_info.pl") {
 	&foreign_require($m, "config_info.pl");
 	local $fn = "${m}::config_form";
 	if (defined(&$fn)) {
-		local $pkg = $m;
-		$pkg =~ s/[^A-Za-z0-9]/_/g;
 		$func++;
 		&foreign_call($m, "config_save", \%newconfig);
 		}
