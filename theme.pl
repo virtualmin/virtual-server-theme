@@ -233,7 +233,7 @@ if ($script_name =~ /session_login.cgi/) {
 	print "</style>\n";
 	print "<![endif]-->\n";
 	}
-if ($module_name eq "virtual-server") {
+if (get_module_name() eq "virtual-server") {
 	# No need for Module Index link, as we have the left-side frame
 	$tconfig{'nomoduleindex'} = 1;
 	}
@@ -750,39 +750,41 @@ sub theme_footer
 {
 my $i;
 my $count = 0;
+my %module_info = get_module_info(get_module_name());
 for($i=0; $i+1<@_; $i+=2) {
 	local $url = $_[$i];
 	if ($url ne '/' || !$tconfig{'noindex'}) {
 		if ($url eq '/') {
 			$url = "/?cat=$module_info{'category'}";
 			}
-		elsif ($url eq '' && $module_name eq 'virtual-server' ||
+		elsif ($url eq '' && get_module_name() eq 'virtual-server' ||
 		       $url eq '/virtual-server/') {
 			# Don't bother with virtualmin menu
 			next;
 			}
-		elsif ($url eq '' && $module_name eq 'server-manager' ||
+		elsif ($url eq '' && get_module_name() eq 'server-manager' ||
 		       $url eq '/server-manager/') {
 			# Don't bother with vm2 menu
 			next;
 			}
 		elsif ($url =~ /(view|edit)_domain.cgi/ &&
-		       $module_name eq 'virtual-server' ||
+		       get_module_name() eq 'virtual-server' ||
 		       $url =~ /^\/virtual-server\/(view|edit)_domain.cgi/) {
 			# Don't bother with link to domain details
 			next;
 			}
 		elsif ($url =~ /edit_serv.cgi/ &&
-		       $module_name eq 'server-manager' ||
+		       get_module_name() eq 'server-manager' ||
 		       $url =~ /^\/virtual-server\/edit_serv.cgi/) {
 			# Don't bother with link to system details
 			next;
 			}
-		elsif ($url eq '' && $module_name) {
-			$url = "/$module_name/$module_info{'index_link'}";
+		elsif ($url eq '' && get_module_name()) {
+			$url = "/".get_module_name()."/".
+			       $module_info{'index_link'};
 			}
-		elsif ($url =~ /^\?/ && $module_name) {
-			$url = "/$module_name/$url";
+		elsif ($url =~ /^\?/ && get_module_name()) {
+			$url = "/".get_module_name()."/$url";
 			}
 		$url = "$gconfig{'webprefix'}$url" if ($url =~ /^\//);
 		if ($count++ == 0) {
@@ -804,7 +806,7 @@ if (!$_[$i]) {
 sub theme_redirect
 {
 local ($orig, $url) = @_;
-if ($module_name eq "virtual-server" && $orig eq "" &&
+if (get_module_name() eq "virtual-server" && $orig eq "" &&
     $url =~ /^((http|https):\/\/([^\/]+))\//) {
 	$url = "$1/right.cgi";
 	}
