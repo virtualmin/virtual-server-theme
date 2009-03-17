@@ -625,6 +625,7 @@ return "<a class='select_invert' href='#' onClick='f = document.forms[$form]; ff
 
 # theme_select_status_link(name, form, &folder, &mails, start, end, status, label)
 # Adds support for row highlighting to read mail module selector
+# XXX can delete after Usermin 1.400
 sub theme_select_status_link
 {
 local ($name, $formno, $folder, $mail, $start, $end, $status, $label) = @_;
