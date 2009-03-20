@@ -64,6 +64,8 @@ function ts_resortTable(lnk,clid) {
     }
     var spantext = ts_getInnerText(span);
     var td = lnk.parentNode;
+    while(td.nodeName.toLowerCase() != 'td')
+        td = td.parentNode;
     var column = typeof(clid) == 'undefined' ? td.cellIndex : clid;
     var table = getParent(td,'TABLE');
     
