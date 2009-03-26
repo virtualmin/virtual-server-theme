@@ -5,7 +5,6 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 @admincats = ( "tmpl", "create", "backup" );
 
-$charset = defined($force_charset) ? $force_charset : &get_charset();
 &popup_header("Virtualmin");
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
 
