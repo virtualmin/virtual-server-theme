@@ -8,6 +8,7 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 # 1 = reseller, 0 = master, 4 = VM2 system owner
 ($hasvirt, $level, $hasvm2) = get_virtualmin_user_level();
 %text = &load_language($current_theme);
+%text = ( &load_language('virtual-server'), %text );
 $bar_width = 100;
 if ($hasvirt && $in{'dom'}) {
 	$defdom = virtual_server::get_domain($in{'dom'});
@@ -91,8 +92,8 @@ if ($hasvirt) {
 	    virtual_server::can_check_config()) {
 		print "<table width=100%><tr bgcolor=#ffee00><td align=center>";
 		print ui_form_start("virtual-server/check.cgi");
-		print "<b>$virtual_server::text{'index_needcheck'}</b><p>\n";
-		print ui_submit($virtual_server::text{'index_srefresh'});
+		print "<b>$text{'index_needcheck'}</b><p>\n";
+		print ui_submit($text{'index_srefresh'});
 		print ui_form_end();
 		print "</td></tr></table>\n";
 		}
@@ -731,7 +732,7 @@ elsif ($level == 2) {		# Domain owner
 		# Bandwidth usage and limit
 		print &ui_table_row($text{'right_bw'},
 		   &text('right_of', &nice_size($d->{'bw_usage'}),
-			&virtual_server::text(
+			&text(
 			'edit_bwpast_'.$virtual_server::config{'bw_past'},
 			&nice_size($d->{'bw_limit'}),
 			$virtual_server::config{'bw_period'})), 3);
@@ -1232,7 +1233,7 @@ local ($stat, $notd) = @_;
 if ($hasvirt &&
     defined(&virtual_server::can_show_history) &&
     &virtual_server::can_show_history()) {
-	local $msg = $virtual_server::text{'history_stat_'.$stat};
+	local $msg = $text{'history_stat_'.$stat};
 	return ($notd ? "" : "<td>").
 	       "<a href='virtual-server/history.cgi?stat=$stat'>".
 	       "<img src=images/graph.png border=0 title='$msg'></a>".
