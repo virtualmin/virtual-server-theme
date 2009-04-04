@@ -2,6 +2,7 @@
 # Update visible right-frame sections
 
 require "virtual-server-theme/virtual-server-theme-lib.pl";
+&ReadParse();
 &error_setup($text{'edright_err'});
 &load_theme_library();
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
