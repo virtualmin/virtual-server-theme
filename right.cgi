@@ -827,9 +827,8 @@ elsif ($level == 3) {		# Usermin
 	}
 elsif ($level == 4) {
 	# Show a VM2 system owner information about his systems
-	&show_toggleview("owner", "toggler11", $open{'owner'},
-			 $text{'right_ownerheader'});
-	print "<table>\n";
+	print ui_hidden_table_start($text{'right_ownerheader'},
+			"width=100%", 4, "owner", $open{'owner'});
 
 	print ui_table_row("<b>$text{'right_login'}</b>", $remote_user);
 	print ui_table_row("<b>$text{'right_from'}</b>", $ENV{'REMOTE_HOST'});
@@ -854,18 +853,17 @@ elsif ($level == 4) {
 			}
 		}
 
-	print "</table>\n";
-	print "</div></p>\n";
+	print ui_hidden_table_end();
 
 	# New features for domain owner
 	show_new_features(0);
 
 	# Show a list of his systems
 	if (@servers > 1) {
-		show_toggleview("vm2servers", "toggler12", $open{'vm2servers'},
-				 $text{'right_vm2serversheader'});
-		show_vm2_servers(\@servers);
-		print "</div></p>\n";
+		print ui_hidden_table_start($text{'right_vm2serversheader'},
+		      "width=100%", 1, "vm2servers", $open{'vm2servers'});
+		show_vm2_servers(\@servers, 1);
+		print ui_hidden_table_end('vm2servers');
 		}
 	}
 
