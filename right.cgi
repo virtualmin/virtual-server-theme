@@ -132,7 +132,7 @@ if ($level == 0) {		# Master admin
 			foreign_require("security-updates",
 					 "security-updates-lib.pl");
 			@poss = security_updates::list_possible_updates();
-			if (defined(security_updates::list_possible_installs)){
+			if (defined(&security_updates::list_possible_installs)){
 				@inst = security_updates::list_possible_installs();
 				}
 			}
@@ -212,7 +212,7 @@ if ($level == 0) {		# Master admin
 				}
 			elsif (foreign_check("proc")) {
 				foreign_require("proc", "proc-lib.pl");
-				if (defined(proc::get_cpu_info)) {
+				if (defined(&proc::get_cpu_info)) {
 					@c = proc::get_cpu_info();
 					}
 				}
@@ -246,7 +246,7 @@ if ($level == 0) {		# Master admin
 			}
 		elsif (foreign_check("proc")) {
 			foreign_require("proc", "proc-lib.pl");
-			if (defined(proc::get_memory_info)) {
+			if (defined(&proc::get_memory_info)) {
 				@m = proc::get_memory_info();
 				}
 			}
@@ -275,7 +275,7 @@ if ($level == 0) {		# Master admin
 			}
 		elsif (foreign_check("mount")) {
 			foreign_require("mount", "mount-lib.pl");
-			if (defined(mount::local_disk_space)) {
+			if (defined(&mount::local_disk_space)) {
 				($total, $free) = mount::local_disk_space();
 				}
 			}
@@ -1245,7 +1245,7 @@ sub show_new_features
 my ($nosect) = @_;
 my $newhtml;
 if ($hasvirt && !$sects->{'nonewfeatures'} &&
-    defined(virtual_server::get_new_features_html) &&
+    defined(&virtual_server::get_new_features_html) &&
     ($newhtml = virtual_server::get_new_features_html($defdom))) {
 	# Show new features HTML for Virtualmin
 	if ($nosect) {
@@ -1262,7 +1262,7 @@ if ($hasvirt && !$sects->{'nonewfeatures'} &&
 		}
 	}
 if ($hasvm2 && !$sects->{'nonewfeatures'} &&
-    defined(server_manager::get_new_features_html) &&
+    defined(&server_manager::get_new_features_html) &&
     ($newhtml = server_manager::get_new_features_html(undef))) {
 	# Show new features HTML for VM2
 	if ($nosect) {
