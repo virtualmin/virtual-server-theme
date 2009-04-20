@@ -14,6 +14,15 @@ if ($hasvirt && $in{'dom'}) {
 	$defdom = virtual_server::get_domain($in{'dom'});
 	}
 
+# Check for wizard redirect
+if ($hasvirt && defined(&virtual_server::wizard_redirect)) {
+	$redir = &virtual_server::wizard_redirect();
+	if ($redir) {
+		&redirect($redir);
+		return;
+		}
+	}
+
 # Work out which sections are open by default
 foreach $o (split(/\0/, $in{'open'})) {
 	push(@open, $o);
