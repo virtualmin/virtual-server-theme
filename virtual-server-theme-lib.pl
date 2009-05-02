@@ -127,7 +127,7 @@ elsif ($level == 1) {
 	push(@rv, 'reseller', 'quotas', 'bw');
 	}
 elsif ($level == 4) {
-	# VM2 system owner
+	# Cloudmin system owner
 	push(@rv, 'owner', 'vm2servers');
 	}
 else {
@@ -146,7 +146,7 @@ return @rv;
 # get_virtualmin_user_level()
 # Returns three numbers - the first being a flag if virtualmin is installed,
 # the second a user type (3=usermin, 2=domain, 1=reseller, 0=master, 4=system
-# owner), the third a flag for VM2
+# owner), the third a flag for Cloudmin
 sub get_virtualmin_user_level
 {
 local ($hasvirt, $hasvm2, $level);

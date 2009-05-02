@@ -64,7 +64,7 @@ if ($hasvirt) {
 	}
 
 if ($hasvm2) {
-	# Default VM2 server
+	# Default Cloudmin server
 	@servers = &server_manager::list_available_managed_servers_sorted();
 	print &ui_table_row($text{'edright_server'},
 	    &ui_select("server", $sects->{'server'},

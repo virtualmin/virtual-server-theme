@@ -5,7 +5,7 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 
 # Work out system capabilities. Level 3 = usermin, 2 = domain owner,
-# 1 = reseller, 0 = master, 4 = VM2 system owner
+# 1 = reseller, 0 = master, 4 = Cloudmin system owner
 ($hasvirt, $level, $hasvm2) = get_virtualmin_user_level();
 %text = &load_language($current_theme);
 %text = ( &load_language('virtual-server'), %text );
@@ -64,7 +64,7 @@ if ($hasvirt || $hasvm2) {
 			push(@links, "<a href='$doclink' target=_new>$text{'right_virtdocs'}</a>");
 			}
 		if ($hasvm2) {
-			# VM2 docs
+			# Cloudmin docs
 			$doclink = get_vm2_docs($level);
 			push(@links, "<a href='$doclink' target=_new>$text{'right_vm2docs'}</a>");
 			}
@@ -109,7 +109,7 @@ if ($hasvirt) {
 	}
 
 if ($hasvm2) {
-	# Check VM2 licence
+	# Check Cloudmin licence
 	print server_manager::licence_error_message();
 	}
 
@@ -177,7 +177,7 @@ if ($level == 0) {		# Master admin
 			      1, ["width='15%'", "width='35%'"]);
 			}
 
-		# Virtualmin / VM2 version
+		# Virtualmin / Cloudmin version
 		if ($hasvirt) {
 			print ui_table_row($text{'right_virtualmin'},
 			      $virtual_server::module_info{'version'} . " " .
@@ -496,7 +496,7 @@ if ($level == 0) {		# Master admin
 		print ui_hidden_table_end("sysinfo");
 		}
 
-	# Show VM2 server summary by status and by type
+	# Show Cloudmin server summary by status and by type
 	if ($hasvm2) {
 		print ui_hidden_table_start($text{'right_vm2serversheader'},
 		      "width=100%", 1, "vm2servers", $open{'vm2servers'});
@@ -835,7 +835,7 @@ elsif ($level == 3) {		# Usermin
 		}
 	}
 elsif ($level == 4) {
-	# Show a VM2 system owner information about his systems
+	# Show a Cloudmin system owner information about his systems
 	print ui_hidden_table_start($text{'right_ownerheader'},
 			"width=100%", 4, "owner", $open{'owner'});
 
@@ -1273,7 +1273,7 @@ if ($hasvirt && !$sects->{'nonewfeatures'} &&
 if ($hasvm2 && !$sects->{'nonewfeatures'} &&
     defined(&server_manager::get_new_features_html) &&
     ($newhtml = server_manager::get_new_features_html(undef))) {
-	# Show new features HTML for VM2
+	# Show new features HTML for Cloudmin
 	if ($nosect) {
 		print "<h3>$text{'right_newfeaturesheadervm2'}</h3>\n";
 		}
@@ -1290,7 +1290,7 @@ if ($hasvm2 && !$sects->{'nonewfeatures'} &&
 }
 
 # show_vm2_servers(&servers, showtypes?)
-# Prints a summary of VM2 systems
+# Prints a summary of Cloudmin systems
 sub show_vm2_servers
 {
 local ($servers, $showtypes) = @_;

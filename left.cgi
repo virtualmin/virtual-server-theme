@@ -201,7 +201,7 @@ if (@doms) {
 	print "$level<br>\n";
 	}
 elsif ($hasvm2) {
-	# Show VM2 login level
+	# Show Cloudmin login level
 	$level = $server_manager::access{'owner'} ? $text{'left_owner'}
 						  : $text{'left_master2'};
 	print "$level<br>\n";
@@ -439,7 +439,7 @@ if ($mode eq "vm2" && $server) {
 	print "<div class='leftlink'>",&text('left_vm2status', $statusmsg),
 	      "</div>\n";
 
-	# Get actions for this system provided by VM2
+	# Get actions for this system provided by Cloudmin
 	@actions = grep { $_ } &server_manager::get_server_actions($server);
 	foreach $b (@actions) {
 		$b->{'desc'} = $text{'leftvm2_'.$b->{'id'}}

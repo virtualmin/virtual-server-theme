@@ -55,7 +55,7 @@ left_vm2shutdown=System herunterfahren
 left_vm2delete=System l&#246;schen
 left_vm2dereg=Systemregistrierung entfernen
 left_vm2refresh=Status auffrischen
-left_vm2global=VM2 Einstellungen
+left_vm2global=Cloudmin Einstellungen
 left_vm2status=Status: $1
 left_vm2ivirt=Virtualmin installieren
 left_vm2iwebmin=Webmin installieren
@@ -152,6 +152,6 @@ edright_first=&lt;Erster in Liste&gt;
 
 has_virtualmin=Virtualmin
 has_mail=Email
-has_vm2=VM2
+has_vm2=Cloudmin
 has_webmin=Webmin
 has_usermin=Usermin

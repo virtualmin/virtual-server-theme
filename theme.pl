@@ -2,9 +2,9 @@
 # Icons copyright David Vignoni, all other theme elements copyright 2005-2007
 # Virtualmin, Inc.
 
-$main::vm2_no_create_links = 1;
-$main::vm2_no_edit_buttons = 1;
-$main::vm2_no_global_links = 1;
+$main::cloudmin_no_create_links = 1;
+$main::cloudmin_no_edit_buttons = 1;
+$main::cloudmin_no_global_links = 1;
 
 $main::mailbox_no_addressbook_button = 1;
 $main::mailbox_no_folder_button = 1;
@@ -123,7 +123,7 @@ print "</script>\n";
 }
 
 # theme_post_save_server(&server, action)
-# Called by VM2 after a server is updated, to refresh the left menu
+# Called by Cloudmin after a server is updated, to refresh the left menu
 sub theme_post_save_server
 {
 local ($s, $action) = @_;
@@ -136,7 +136,7 @@ if ($action eq 'create' || $action eq 'delete' ||
 }
 
 # theme_select_server(&server)
-# Called by VM2 when a page for a server is displayed, to select it on the
+# Called by Cloudmin when a page for a server is displayed, to select it on the
 # left menu.
 sub theme_select_server
 {
@@ -765,7 +765,7 @@ for($i=0; $i+1<@_; $i+=2) {
 			}
 		elsif ($url eq '' && get_module_name() eq 'server-manager' ||
 		       $url eq '/server-manager/') {
-			# Don't bother with vm2 menu
+			# Don't bother with Cloudmin menu
 			next;
 			}
 		elsif ($url =~ /(view|edit)_domain.cgi/ &&

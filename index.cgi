@@ -42,7 +42,7 @@ if ($hasvirt) {
 		&text('vmain_title', $minfo{'version'}, $host, $ostr);
 	}
 elsif ($hasvm2) {
-	# Show VM2 version
+	# Show Cloudmin version
 	%minfo = &get_module_info("server-manager");
 	$title = $gconfig{'nohostname'} ? $text{'mmain_title2'} :
 		&text('mmain_title', $minfo{'version'}, $host, $ostr);
