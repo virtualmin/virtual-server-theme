@@ -3,6 +3,7 @@
 
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
+use Time::Local;
 
 # Work out system capabilities. Level 3 = usermin, 2 = domain owner,
 # 1 = reseller, 0 = master, 4 = Cloudmin system owner
@@ -526,13 +527,26 @@ if ($level == 0) {		# Master admin
 		push(@lics, [ $text{'right_vleft'},
 		      $dleft < 0 ? $text{'right_vunlimited'} : $dleft ]);
 
-		# Add allowed server counts
+		# Add allowed domain counts
 		read_file($virtual_server::licence_status, \%lstatus);
 		if ($lstatus{'used_servers'}) {
 			push(@lics, [ $text{'right_smax'},
 			    $lstatus{'servers'} || $text{'right_vunlimited'} ]);
 			push(@lics, [ $text{'right_sused'},
 			    $lstatus{'used_servers'} ]);
+			}
+
+		# Show license expiry date
+		if ($lstatus{'expiry'}) {
+			push(@lics, [ $text{'right_expiry'},
+				      $lstatus{'expiry'} ]);
+			$ltm = &parse_license_date($lstatus{'expiry'});
+			if ($ltm) {
+				$days = int(($ltm - time()) / (24*60*60));
+				push(@lics, [ $text{'right_expirydays'},
+				    $days < 0 ? &text('right_expiryago', $days)
+			       		      : $days ]);
+				}
 			}
 		}
 	if ($hasvm2 &&
@@ -1327,4 +1341,12 @@ if ($showtypes) {
 		}
 	print ui_grid_table(\@grid, 4, 75, \@tds);
 	}
+}
+
+sub parse_license_date
+{
+if ($_[0] =~ /^(\d{4})-(\d+)-(\d+)$/) {
+	return eval { timelocal(0, 0, 0, $3, $2-1, $1-1900) };
+	}
+return undef;
 }
