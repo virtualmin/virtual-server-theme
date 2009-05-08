@@ -573,21 +573,6 @@ if ($level == 0) {		# Master admin
 			[ map { "<a href='$_->[0]'>$_->[1]</a>" } @lbuts ]), 4);
 		print ui_hidden_table_end('licence');
 		}
-
-	# See if any plugins have defined sections
-	if ($hasvirt) {
-		foreach $s (&list_right_frame_sections()) {
-			next if (!$s->{'plugin'});
-			next if ($sects->{'no'.$s->{'name'}});
-			print ui_hidden_table_start($s->{'title'}, "width=100%",
-			      1, $s->{'name'}, $s->{'status'});
-			#&show_toggleview($s->{'name'}, "toggler".$s->{'name'},
-			#		 $s->{'status'},
-			#		 $s->{'title'});
-			print $s->{'html'};
-			print ui_hidden_table_end($s->{'name'});
-			}
-		}
 	}
 elsif ($level == 1) {		# Reseller
 	# Show a reseller info about his domains
@@ -888,6 +873,18 @@ elsif ($level == 4) {
 		      "width=100%", 1, "vm2servers", $open{'vm2servers'});
 		show_vm2_servers(\@servers, 1);
 		print ui_hidden_table_end('vm2servers');
+		}
+	}
+
+# See if any plugins have defined sections
+if ($hasvirt) {
+	foreach $s (&list_right_frame_sections()) {
+		next if (!$s->{'plugin'});
+		next if ($sects->{'no'.$s->{'name'}});
+		print ui_hidden_table_start($s->{'title'}, "width=100%",
+		      1, $s->{'name'}, $s->{'status'});
+		print $s->{'html'};
+		print ui_hidden_table_end($s->{'name'});
 		}
 	}
 
