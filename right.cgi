@@ -1,6 +1,7 @@
 #!/usr/local/bin/perl
 # Show server or domain information
 
+$trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 use Time::Local;
@@ -76,7 +77,7 @@ if ($hasvirt || $hasvm2) {
 	}
 
 # Check for custom URL
-if ($sects->{'alt'}) {
+if ($sects->{'alt'} && !$in{'noalt'}) {
 	$url = $sects->{'alt'};
 	if ($shown_config_link) {
 		# Show in iframe, so that the config link is visible
