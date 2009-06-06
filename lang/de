@@ -25,7 +25,8 @@ left_reseller=Wiederverk&#228;ufer
 left_single=Emailverwaltung
 left_user=Serverbesitzer
 left_extra=Extra Admin
-left_nodoms=Keine virtuellen Server erstellt. left_noaccess=Sie haben keinen Berechtigung f&#252;r den Zugriff auf irgendeinen Server
+left_nodoms=Keine virtuellen Server erstellt.
+left_noaccess=Sie haben keinen Berechtigung f&#252;r den Zugriff auf irgendeinen Server
 left_add=Virtuellen Server erstellen
 left_addsub=Untergeordneten Server erstellen
 left_addalias=Alias-Server erstellen
