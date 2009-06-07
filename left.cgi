@@ -373,7 +373,7 @@ if ($mode eq "mail") {
 
 	# Show search box
 	print "<div class='leftlink'>$text{'left_search'} ",
-	      &ui_textbox("search", undef, 10),"</div>\n";
+	      &ui_textbox("search", undef, 20),"</div>\n";
 
 	# Show manage folders, mail preferences and change password links
 	%mconfig = %mailbox::config;
@@ -580,7 +580,7 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	# Show module/help search form
 	if (-r "$root_directory/webmin_search.cgi") {
 		print $text{'left_search'},"&nbsp;";
-		print &ui_textbox("search", undef, 10);
+		print &ui_textbox("search", undef, 20);
 		}
 
 	print "<hr>\n";
