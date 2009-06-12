@@ -577,12 +577,6 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 		print "</div>\n";
 		}
 
-	# Show module/help search form
-	if (-r "$root_directory/webmin_search.cgi") {
-		print $text{'left_search'},"&nbsp;";
-		print &ui_textbox("search", undef, 15);
-		}
-
 	print "<hr>\n";
 	}
 
@@ -626,7 +620,35 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 	print "<div class='aftericon'><a target=_top href='$ENV{'HTTP_WEBMIN_SERVERS'}'>$text{'header_servers'}</a></div></div>";
 	}
 
+
+if ($mode eq "webmin" || $mode eq "usermin") {
+	# Show module/help search form
+	print $text{'left_search'},"&nbsp;";
+	print &ui_textbox("search", undef, 15);
+	}
+
 print "</form>\n" if ($doneform);
+
+# Search form for Virtualmin modules only
+if ($mode eq "virtualmin" && $hasvirt || $mode eq "vm2" && $hasvm2) {
+	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
+	print "<div class='leftlink'>$text{'left_search'} ",
+	      &ui_textbox("search", undef, 15),"</div>\n";
+	@searchmods = ( );
+	if ($mode eq "virtualmin") {
+		push(@searchmods, "virtual-server", @virtual_server::plugins);
+		}
+	if ($mode eq "vm2") {
+		push(@searchmods, "server-manager", @server_manager::plugins);
+		}
+	foreach my $m (@searchmods) {
+		print &ui_hidden("mod", $m);
+		}
+	print &ui_hidden("title", $text{'left_vmsearch'});
+	print &ui_hidden("dom", $d->{'id'}) if ($d);
+	print "</form>\n";
+	}
+
 &popup_footer();
 
 # print_category_opener(name, &allcats, label)

@@ -50,6 +50,7 @@ left_backup=Backup/Restore
 left_check=Recheck Config
 left_delete=Delete Server
 left_search=Search:
+left_vmsearch=Search Virtualmin
 left_customlinks=Custom Links
 left_vm2=List Managed Systems
 left_vm2create=Create System
