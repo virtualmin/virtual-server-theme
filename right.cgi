@@ -837,15 +837,16 @@ elsif ($level == 3) {		# Usermin
 elsif ($level == 4) {
 	# Show a Cloudmin system owner information about his systems
 	print ui_hidden_table_start($text{'right_ownerheader'},
-			"width=100%", 4, "owner", $open{'owner'});
+			"width=100%", 4, "owner", $open{'owner'},
+		        [ "width=30%" ]);
 
-	print ui_table_row("<b>$text{'right_login'}</b>", $remote_user);
-	print ui_table_row("<b>$text{'right_from'}</b>", $ENV{'REMOTE_HOST'});
-	print ui_table_row("<b>$text{'right_vm2'}</b>"
+	print ui_table_row($text{'right_login'}, $remote_user);
+	print ui_table_row($text{'right_from'}, $ENV{'REMOTE_HOST'});
+	print ui_table_row($text{'right_vm2'}
 	      , $server_manager::module_info{'version'});
-	print ui_table_row("<b>$text{'right_vm2real'}</b>"
+	print ui_table_row($text{'right_vm2real'}
 	      , $server_manager::access{'real'});
-	print ui_table_row("<b>$text{'right_vm2email'}</b>"
+	print ui_table_row($text{'right_vm2email'}
 	      , $server_manager::access{'email'});
 
 	@servers = &server_manager::list_available_managed_servers_sorted();
@@ -870,7 +871,8 @@ elsif ($level == 4) {
 	# Show a list of his systems
 	if (@servers > 1) {
 		print ui_hidden_table_start($text{'right_vm2serversheader'},
-		      "width=100%", 1, "vm2servers", $open{'vm2servers'});
+		      "width=100%", 1, "vm2servers", $open{'vm2servers'},
+		      [ "width=30%" ]);
 		show_vm2_servers(\@servers, 1);
 		print ui_hidden_table_end('vm2servers');
 		}
@@ -883,7 +885,8 @@ elsif ($level == 4) {
 		if ($limits) {
 			print ui_hidden_table_start(
 			    $text{'right_vm2limitsheader'},
-			    "width=100%", 1, "vm2limits", $open{'vm2limits'});
+			    "width=100%", 4, "vm2limits", $open{'vm2limits'},
+			    [ "width=30%", undef, "width=30%" ]);
 			show_vm2_limits($limits, $plan);
 			print ui_hidden_table_end('vm2servers');
 			}
@@ -1360,8 +1363,6 @@ sub show_vm2_limits
 {
 my ($limits, $plan) = @_;
 
-print ui_table_start(undef, "width=100%", 4);
-
 # Account plan name
 if ($plan) {
 	print ui_table_row($text{'right_vm2plan'},
@@ -1397,8 +1398,6 @@ print ui_table_row($text{'right_vm2ccpu'},
 print ui_table_row($text{'right_vm2mcpu'},
 	$limits->{'max_cpu'} ? $limits->{'max_cpu'}."%"
 			     : $text{'right_vunlimited'});
-
-print ui_table_end();
 }
 
 sub parse_license_date
