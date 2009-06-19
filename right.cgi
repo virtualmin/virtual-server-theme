@@ -874,6 +874,18 @@ elsif ($level == 4) {
 		show_vm2_servers(\@servers, 1);
 		print ui_hidden_table_end('vm2servers');
 		}
+
+	# Show limits and counts
+	if (defined(&server_manager::get_owner_limits)) {
+		$limits = &server_manager::get_owner_limits();
+		if ($limits) {
+			print ui_hidden_table_start(
+			    $text{'right_vm2limitsheader'},
+			    "width=100%", 1, "vm2limits", $open{'vm2limits'});
+			show_vm2_limits($limits);
+			print ui_hidden_table_end('vm2servers');
+			}
+		}
 	}
 
 # See if any plugins have defined sections
@@ -1339,6 +1351,33 @@ if ($showtypes) {
 		}
 	print ui_grid_table(\@grid, 4, 75, \@tds);
 	}
+}
+
+# Output a table of VM2 system owners limits and usage
+sub show_vm2_limits
+{
+my ($limits) = @_;
+
+print ui_table_start(undef, "width=100%", 4);
+
+print ui_table_row($text{'right_vm2cservers'},
+	$limits->{'servers'});
+print ui_table_row($text{'right_vm2mservers'},
+	$limits->{'max_servers'} || $text{'right_vunlimited'});
+
+print ui_table_row($text{'right_vm2cram'},
+	&nice_size($limits->{'ram'}));
+print ui_table_row($text{'right_vm2mram'},
+	$limits->{'max_ram'} ? &nice_size($limits->{'max_ram'})
+			     : $text{'right_vunlimited'});
+
+print ui_table_row($text{'right_vm2cdisk'},
+	&nice_size($limits->{'disk'}));
+print ui_table_row($text{'right_vm2mdisk'},
+	$limits->{'max_disk'} ? &nice_size($limits->{'max_disk'})
+			      : $text{'right_vunlimited'});
+
+print ui_table_end();
 }
 
 sub parse_license_date

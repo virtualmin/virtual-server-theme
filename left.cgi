@@ -316,7 +316,7 @@ elsif ($mode eq "virtualmin") {
 		print "<div class='leftlink'><a href='virtual-server/domain_form.cgi?generic=1' target=right>$text{'left_generic'}</a></div>\n";
 		}
 	}
-elsif ($mode eq "vm2") {
+elsif ($mode eq "vm2" && @servers) {
 	# Show managed servers
 	print "<div class='domainmenu'>\n";
 	print &ui_hidden("mode", $mode);
@@ -583,15 +583,15 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 # Show system information link
 print "<div class='linkwithicon'><img src='images/gohome.png' alt=''>\n";
 if ($mode eq "vm2") {
-	$sparam = $server ? "&amp;id=$server->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=updates&amp;open=owner$sparam'>$text{'left_home'}</a></div></div>\n";
+	$sparam = $server ? "&$server->{'id'}" : "";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=vm2limits&open=updates&open=owner$sparam'>$text{'left_home'}</a></div></div>\n";
 	}
 elsif (&get_product_name() eq 'usermin') {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;open=common'>$text{'left_home2'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";
 	}
 else {
 	$dparam = $d ? "&amp;dom=$d->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&amp;auto=status&amp;open=updates&amp;open=reseller$dparam'>$text{'left_home'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates&open=reseller$dparam'>$text{'left_home'}</a></div></div>\n";
 	}
 
 # Show refresh modules like

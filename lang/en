@@ -190,6 +190,13 @@ right_vm2one=Your virtual system
 right_status_service=Service
 right_status_up=Up?
 right_status_actions=Actions
+right_vm2limitsheader=Cloudmin limits
+right_vm2cservers=Current system count
+right_vm2mservers=Maximum systems
+right_vm2cram=Current RAM assigned
+right_vm2mram=Maximum RAM assignable
+right_vm2cdisk=Current disk used
+right_vm2mdisk=Maximum disk usable
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
