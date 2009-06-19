@@ -876,13 +876,15 @@ elsif ($level == 4) {
 		}
 
 	# Show limits and counts
-	if (defined(&server_manager::get_owner_limits)) {
+	if (defined(&server_manager::get_owner_limits) &&
+	    &server_manager::supports_plans()) {
 		$limits = &server_manager::get_owner_limits();
+		$plan = &server_manager::get_owner_plan();
 		if ($limits) {
 			print ui_hidden_table_start(
 			    $text{'right_vm2limitsheader'},
 			    "width=100%", 1, "vm2limits", $open{'vm2limits'});
-			show_vm2_limits($limits);
+			show_vm2_limits($limits, $plan);
 			print ui_hidden_table_end('vm2servers');
 			}
 		}
@@ -1356,26 +1358,45 @@ if ($showtypes) {
 # Output a table of VM2 system owners limits and usage
 sub show_vm2_limits
 {
-my ($limits) = @_;
+my ($limits, $plan) = @_;
 
 print ui_table_start(undef, "width=100%", 4);
 
+# Account plan name
+if ($plan) {
+	print ui_table_row($text{'right_vm2plan'},
+		$plan->{'desc'}, 3);
+	}
+
+# Number of systems and limit
 print ui_table_row($text{'right_vm2cservers'},
 	$limits->{'servers'});
 print ui_table_row($text{'right_vm2mservers'},
 	$limits->{'max_servers'} || $text{'right_vunlimited'});
 
+# RAM assigned and limit
 print ui_table_row($text{'right_vm2cram'},
-	&nice_size($limits->{'ram'}));
+	$limits->{'ram'} || !$limits->{'ram_unlimited'} ?
+		&nice_size($limits->{'ram'}) : $text{'right_vunlimited'});
 print ui_table_row($text{'right_vm2mram'},
 	$limits->{'max_ram'} ? &nice_size($limits->{'max_ram'})
 			     : $text{'right_vunlimited'});
 
+# Disk space and limit
 print ui_table_row($text{'right_vm2cdisk'},
-	&nice_size($limits->{'disk'}));
+	$limits->{'disk'} || !$limits->{'disk_unlimited'} ?
+		&nice_size($limits->{'disk'}) : $text{'right_vunlimited'});
 print ui_table_row($text{'right_vm2mdisk'},
 	$limits->{'max_disk'} ? &nice_size($limits->{'max_disk'})
 			      : $text{'right_vunlimited'});
+
+# CPU assigned and limit (as percentages)
+print ui_table_row($text{'right_vm2ccpu'},
+	$limits->{'cpu'} || !$limits->{'cpu_unlimited'} ?
+		$limits->{'cpu'}."%" : $text{'right_vunlimited'});
+print ui_table_row($text{'right_vm2mcpu'},
+	$limits->{'max_cpu'} ? $limits->{'max_cpu'}."%"
+			     : $text{'right_vunlimited'});
 
 print ui_table_end();
 }
