@@ -58,7 +58,6 @@ if ($mode eq "virtualmin" && $hasvirt) {
 	# Get and sort the domains
 	@alldoms = &virtual_server::list_domains();
 	@doms = &virtual_server::list_visible_domains();
-	@doms = &virtual_server::sort_indent_domains(\@doms);
 
 	# Work out which domain we are editing
 	if (defined($in{'dom'})) {
@@ -76,6 +75,16 @@ if ($mode eq "virtualmin" && $hasvirt) {
 		$d = &virtual_server::get_domain($sects->{'dom'});
 		$d = undef if (!&virtual_server::can_edit_domain($d));
 		}
+
+	# Make sure the selected domain is in the menu .. may not be for
+	# alias domains if they are hidden
+	if ($d && &virtual_server::can_edit_domain($d)) {
+		my @ids = map { $_->{'id'} } @doms;
+		if (&indexof($d->{'id'}, @ids) < 0) {
+			push(@doms, $d);
+			}
+		}
+	@doms = &virtual_server::sort_indent_domains(\@doms);
 
 	# Fall back to first owned by this user, or first in list
 	$d ||= &virtual_server::get_domain_by("user", $remote_user,
