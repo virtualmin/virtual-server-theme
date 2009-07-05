@@ -193,11 +193,11 @@ right_status_actions=Actions
 right_vm2limitsheader=Cloudmin limits
 right_vm2cservers=Current system count
 right_vm2mservers=Maximum systems
-right_vm2cram=Current total RAM limit
+right_vm2cram=Current total RAM assigned
 right_vm2mram=Maximum RAM limit
-right_vm2cdisk=Current total disk limit
+right_vm2cdisk=Current total disk assigned
 right_vm2mdisk=Maximum disk limit
-right_vm2ccpu=Current total CPU limit
+right_vm2ccpu=Current total CPU assigned
 right_vm2mcpu=Maximum CPU limit
 right_vm2plan=Account plan
 
