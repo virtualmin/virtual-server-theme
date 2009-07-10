@@ -200,6 +200,8 @@ right_vm2mdisk=Maximum disk limit
 right_vm2ccpu=Current total CPU assigned
 right_vm2mcpu=Maximum CPU limit
 right_vm2plan=Account plan
+right_vm2max=Licensed virtual systems
+right_vm2used=Virtual systems managed
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

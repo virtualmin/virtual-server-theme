@@ -513,6 +513,7 @@ if ($level == 0) {		# Master admin
 	    read_env_file($virtual_server::virtualmin_license_file,
 			   \%vserial) &&
 	    $vserial{'SerialNumber'} ne 'GPL') {
+		# Show Virtualmin serial and key
 		push(@lics, [ $text{'right_vserial'},
 			      $vserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_vkey'},
@@ -528,7 +529,8 @@ if ($level == 0) {		# Master admin
 		push(@lics, [ $text{'right_vleft'},
 		      $dleft < 0 ? $text{'right_vunlimited'} : $dleft ]);
 
-		# Add allowed domain counts
+		# Add allowed system counts
+		my %lstatus;
 		read_file($virtual_server::licence_status, \%lstatus);
 		if ($lstatus{'used_servers'}) {
 			push(@lics, [ $text{'right_smax'},
@@ -550,16 +552,31 @@ if ($level == 0) {		# Master admin
 				}
 			}
 		}
+
 	if ($hasvm2 &&
 	    read_env_file($server_manager::licence_file, \%sserial) &&
 	    $sserial{'SerialNumber'} ne 'GPL') {
+		# Show Cloudmin serial 
 		push(@lics, [ $text{'right_sserial'},
 			      $sserial{'SerialNumber'} ]);
 		push(@lics, [ $text{'right_skey'},
 			      $sserial{'LicenseKey'} ]);
 		push(@lbuts, [ "server-manager/licence.cgi",
 			       $text{'right_slcheck'} ]);
+
+		# Add allowed system counts
+		my %lstatus;
+		read_file($server_manager::licence_status, \%lstatus);
+		@allservers = grep { &server_manager::is_virtual_server($_) }
+                                   &server_manager::list_managed_servers();
+		push(@lics, [ $text{'right_vm2max'},
+			      $lstatus{'servers'} > 0 ?
+				$lstatus{'servers'} :
+				$text{'right_vunlimited'} ]);
+		push(@lics, [ $text{'right_vm2used'},
+				scalar(@allservers) ]);
 		}
+
 	if (@lics) {
 		local $tb = undef;
 		local $cb = undef;
