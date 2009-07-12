@@ -161,8 +161,14 @@ right_upinst=There are <a href='$2'>$1 optional Virtualmin packages</a> that you
 right_vm2=Cloudmin version
 right_themever=Theme version
 right_vm2serversheader=Cloudmin Managed Systems
-right_vm2statuses=System Counts By Status
-right_vm2types=System Counts By Type
+right_vm2countall=Managed systems
+right_vm2counthost=Host systems
+right_vm2countvirt=Virtual systems
+right_vm2countreal=Real systems
+right_vm2countup=Up and available
+right_vm2countdown=Down or un-available
+right_vm2countmem=Total memory on virtual systems
+right_vm2countdisk=Total disk space on virtual systems
 right_vserial=Virtualmin serial number
 right_vkey=Virtualmin license key
 right_vlcheck=Re-check Virtualmin license.

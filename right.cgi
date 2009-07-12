@@ -501,7 +501,8 @@ if ($level == 0) {		# Master admin
 	# Show Cloudmin server summary by status and by type
 	if ($hasvm2) {
 		print ui_hidden_table_start($text{'right_vm2serversheader'},
-		      "width=100%", 1, "vm2servers", $open{'vm2servers'});
+		      "width=100%", 4, "vm2servers", $open{'vm2servers'},
+		      [ "width=30%" ]);
 		@servers = server_manager::list_managed_servers();
 		show_vm2_servers(\@servers, 1);
 		print ui_hidden_table_end('vm2servers');
@@ -888,7 +889,7 @@ elsif ($level == 4) {
 	# Show a list of his systems
 	if (@servers > 1) {
 		print ui_hidden_table_start($text{'right_vm2serversheader'},
-		      "width=100%", 1, "vm2servers", $open{'vm2servers'},
+		      "width=100%", 4, "vm2servers", $open{'vm2servers'},
 		      [ "width=30%" ]);
 		show_vm2_servers(\@servers, 1);
 		print ui_hidden_table_end('vm2servers');
@@ -1341,37 +1342,45 @@ sub show_vm2_servers
 {
 local ($servers, $showtypes) = @_;
 
-local %statuscount = ( );
-local %managercount = ( );
-foreach my $s (@servers) {
-	$statuscount{$s->{'status'}}++;
-	$managercount{$s->{'manager'}}++;
-	}
-
-# Status grid
-my @tds = ( "width=40% align=left", "width=10% align=left",
-	    "width=40% align=left", "width=10% align=left" );
-print "<table class='ui_grid'><tr><td><b>$text{'right_vm2statuses'}</td></tr></table>\n";
-my @grid = ( );
-foreach $st (reverse(@server_manager::server_statuses)) {
-	local $fk = { 'status' => $st->[0] };
-	if ($statuscount{$st->[0]}) {
-		push(@grid, &server_manager::describe_status($fk, 1));
-		push(@grid, int($statuscount{$st->[0]}));
+# Count up systems by type and status and usage
+my %c;
+foreach my $s (@$servers) {
+	$c{'all'}++;
+	if (&server_manager::is_parent_server($s)) {
+		$c{'host'}++;
+		}
+	my $virt = &server_manager::is_virtual_server($s);
+	$c{$virt ? 'virt' : 'real'}++;	
+	if ($s->{'status'} eq 'nowebmin' ||
+	    $s->{'status'} eq 'novirt' ||
+	    $s->{'status'} eq 'virt' ||
+	    $s->{'status'} eq 'alive') {
+		$c{'up'}++;
+		}
+	else {
+		$c{'down'}++;
+		}
+	my $mfunc = "server_manager::type_".$s->{'manager'}."_get_memory_size";
+	if (defined(&$mfunc)) {
+		my $mem = &$mfunc($s);
+		if ($mem) {
+			$c{'mem'} += $mem;
+			}
+		}
+	my $dfunc = "server_manager::type_".$s->{'manager'}."_get_disk_size";
+	if (defined(&$dfunc)) {
+		my $disk = &$dfunc($s);
+		if ($disk) {
+			$c{'disk'} += $disk;
+			}
 		}
 	}
-print ui_grid_table(\@grid, 4, 75, \@tds);
 
-# Types grid
-if ($showtypes) {
-	print "<table class='ui_grid'><tr><td><b>$text{'right_vm2types'}</td></tr></table>\n";
-	@grid = ( );
-	foreach $mg (@server_manager::server_management_types) {
-		$tfunc = "server_manager::type_".$mg."_desc";
-		push(@grid, &$tfunc());
-		push(@grid, int($managercount{$mg}));
-		}
-	print ui_grid_table(\@grid, 4, 75, \@tds);
+# Show in a form
+foreach my $f ('all', 'host', 'virt', 'real', 'up', 'down', 'mem', 'disk') {
+	print &ui_table_row($text{'right_vm2count'.$f},
+		$f eq 'mem' || $f eq 'disk' ? &nice_size($c{$f})
+					    : int($c{$f}));
 	}
 }
 
