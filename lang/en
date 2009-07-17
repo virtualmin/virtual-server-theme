@@ -196,7 +196,7 @@ right_vm2one=Your virtual system
 right_status_service=Service
 right_status_up=Up?
 right_status_actions=Actions
-right_vm2limitsheader=Cloudmin limits
+right_vm2limitsheader=Cloudmin Limits
 right_vm2cservers=Current system count
 right_vm2mservers=Maximum systems
 right_vm2cram=Current total RAM assigned
@@ -208,6 +208,8 @@ right_vm2mcpu=Maximum CPU limit
 right_vm2plan=Account plan
 right_vm2max=Licensed virtual systems
 right_vm2used=Virtual systems managed
+right_vm2cbw=Current bandwidth used
+right_vm2mbw=Maximum bandwidth
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin

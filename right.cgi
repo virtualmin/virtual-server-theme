@@ -1424,6 +1424,15 @@ print ui_table_row($text{'right_vm2ccpu'},
 print ui_table_row($text{'right_vm2mcpu'},
 	$limits->{'max_cpu'} ? $limits->{'max_cpu'}."%"
 			     : $text{'right_vunlimited'});
+
+# Bandwidth and limit
+if ($limits->{'bw'}) {
+	print ui_table_row($text{'right_vm2cbw'},
+			&nice_size($limits->{'bw'}));
+	print ui_table_row($text{'right_vm2mbw'},
+		$limits->{'max_bw'} ? &nice_size($limits->{'max_bw'})
+				      : $text{'right_vunlimited'});
+	}
 }
 
 sub parse_license_date
