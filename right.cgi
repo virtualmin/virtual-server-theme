@@ -1395,43 +1395,22 @@ if ($plan) {
 		$plan->{'desc'}, 3);
 	}
 
-# Number of systems and limit
-print ui_table_row($text{'right_vm2cservers'},
-	$limits->{'servers'});
-print ui_table_row($text{'right_vm2mservers'},
-	$limits->{'max_servers'} || $text{'right_vunlimited'});
-
-# RAM assigned and limit
-print ui_table_row($text{'right_vm2cram'},
-	$limits->{'ram'} || !$limits->{'ram_unlimited'} ?
-		&nice_size($limits->{'ram'}) : $text{'right_vunlimited'});
-print ui_table_row($text{'right_vm2mram'},
-	$limits->{'max_ram'} ? &nice_size($limits->{'max_ram'})
-			     : $text{'right_vunlimited'});
-
-# Disk space and limit
-print ui_table_row($text{'right_vm2cdisk'},
-	$limits->{'disk'} || !$limits->{'disk_unlimited'} ?
-		&nice_size($limits->{'disk'}) : $text{'right_vunlimited'});
-print ui_table_row($text{'right_vm2mdisk'},
-	$limits->{'max_disk'} ? &nice_size($limits->{'max_disk'})
-			      : $text{'right_vunlimited'});
-
-# CPU assigned and limit (as percentages)
-print ui_table_row($text{'right_vm2ccpu'},
-	$limits->{'cpu'} || !$limits->{'cpu_unlimited'} ?
-		$limits->{'cpu'}."%" : $text{'right_vunlimited'});
-print ui_table_row($text{'right_vm2mcpu'},
-	$limits->{'max_cpu'} ? $limits->{'max_cpu'}."%"
-			     : $text{'right_vunlimited'});
-
-# Bandwidth and limit
-if ($limits->{'bw'}) {
-	print ui_table_row($text{'right_vm2cbw'},
-			&nice_size($limits->{'bw'}));
-	print ui_table_row($text{'right_vm2mbw'},
-		$limits->{'max_bw'} ? &nice_size($limits->{'max_bw'})
-				      : $text{'right_vunlimited'});
+foreach my $l (@server_manager::plan_limit_types) {
+	$n = &indexof($l, @server_manager::nice_plan_limit_types) >= 0;
+	$nice = $n ? &nice_size($limits->{$l})
+		   : $limits->{$l};
+	$nicemax = $n ? &nice_size($limits->{'max_'.$l})
+		      : $limits->{'max_'.$l};
+	$msg1 = $limits->{$l} || !$limits->{$l.'_unlimited'} ?
+               		$nice : $text{'right_vunlimited'};
+	$msg2 = $limits->{'max_'.$l} ? $nicemax : $text{'right_vunlimited'};
+	if ($limits->{'max_'.$l} &&
+	    $limits->{$l} > $limits->{'max_'.$l}) {
+		$msg1 = "<font color=red>$msg1</font>";
+		$msg2 = "<font color=red>$msg2</font>";
+		}
+	print ui_table_row($text{'right_vm2c'.$l}, $msg1);
+	print ui_table_row($text{'right_vm2m'.$l}, $msg2);
 	}
 }
 

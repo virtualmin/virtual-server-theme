@@ -14,6 +14,7 @@ left_limits=Edit Owner Limits
 left_bw=Bandwidth Usage
 left_home=System Information
 left_home2=Account Information
+left_home3=Cloudmin Information
 left_pass=Change Password
 left_filter=Email Filters
 left_autoreply=Automatic Reply
