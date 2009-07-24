@@ -1398,9 +1398,11 @@ if ($plan) {
 foreach my $l (@server_manager::plan_limit_types) {
 	$n = &indexof($l, @server_manager::nice_plan_limit_types) >= 0;
 	$nice = $n ? &nice_size($limits->{$l})
-		   : $limits->{$l};
+		$l eq "cpu" ? $limits->{$l}."%"
+			    : $limits->{$l};
 	$nicemax = $n ? &nice_size($limits->{'max_'.$l})
-		      : $limits->{'max_'.$l};
+		   $l eq "cpu" ? $limits->{'max_'.$l}."%"
+		      	       : $limits->{'max_'.$l};
 	$msg1 = $limits->{$l} || !$limits->{$l.'_unlimited'} ?
                		$nice : $text{'right_vunlimited'};
 	$msg2 = $limits->{'max_'.$l} ? $nicemax : $text{'right_vunlimited'};
