@@ -213,6 +213,8 @@ right_vm2max=Licensed virtual systems
 right_vm2used=Virtual systems managed
 right_vm2cbw=Current bandwidth used
 right_vm2mbw=Maximum bandwidth
+right_vm2cspace=Current backup space used
+right_vm2mspace=Maximum backup space
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
