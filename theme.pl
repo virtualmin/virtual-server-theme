@@ -148,9 +148,12 @@ if (window.parent && window.parent.frames[0]) {
 	var leftform = leftdoc.forms[0];
 	if (leftform) {
 		var serversel = leftform['sid'];
-		if (serversel && serversel.value != '$server->{'id'}') {
-			// Need to change value
-			serversel.value = '$server->{'id'}';
+		if (serversel && serversel.value != '$server->{'id'}' ||
+		    !serversel) {
+			if (serversel) {
+				// Need to change value of selector
+				serversel.value = '$server->{'id'}';
+				}
 			window.parent.frames[0].location =
 				'$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
 			}
