@@ -135,6 +135,7 @@ if ($level == 0) {		# Master admin
 	if ($hasvirt) {
 		$info = virtual_server::get_collected_info();
 		@poss = $info ? @{$info->{'poss'}} : ( );
+		@allposs = $info ? @{$info->{'allposs'}} : ( );
 		@inst = $info ? @{$info->{'inst'}} : ( );
 		}
 	else {
@@ -146,6 +147,7 @@ if ($level == 0) {		# Master admin
 			if (defined(&security_updates::list_possible_installs)){
 				@inst = security_updates::list_possible_installs();
 				}
+			@allposs = security_updates::list_possible_updates(0, 1);
 			}
 		}
 
@@ -310,13 +312,15 @@ if ($level == 0) {		# Master admin
 			push(@pkgmsgs, text('right_upinst', scalar(@inst),
 				     "security-updates/index.cgi?mode=new"));
 			}
+		if (!$sects->{'noupdates'} && $hasposs && @allposs &&
+		    scalar(@allposs) != scalar(@poss) && $canposs) {
+			# Tell the user about non-virtualmin packages
+			push(@pkgmsgs, &text('right_upsys', scalar(@allposs),
+			     "security-updates/index.cgi?mode=updates&all=1"));
+			}
 		if (@pkgmsgs) {
 			print ui_table_row($text{'right_pkgupdesc'},
-			      join("<br>\n", @pkgmsgs));
-			#print "<tr> <td valign=top><b>",
-			#      "$text{'right_pkgupdesc'}</b></td>\n";
-			#print "<td valign=top>",
-			#      join("<br>\n", @pkgmsgs),"</td> </tr>\n";
+			      join("<br>\n", @pkgmsgs), 3);
 			}
 
 		print ui_hidden_table_end("system");
