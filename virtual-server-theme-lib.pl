@@ -42,16 +42,16 @@ return @rv;
 sub get_virtualmin_docs
 {
 local ($level) = @_;
-return $level == 0 ? "http://www.virtualmin.com/documentation/id,virtualmin_administrators_guide/" :
-       $level == 1 ? "http://www.virtualmin.com/documentation/id,virtualmin_resellers_guide/" :
-       $level == 2 ? "http://www.virtualmin.com/documentation/id,virtualmin_virtual_server_owners_guide/" :
-		     "http://www.virtualmin.com/documentation/";
+return $level == 0 ? "http://www.virtualmin.com/documentation" :
+       $level == 1 ? "http://www.virtualmin.com/documentation/users/reseller" :
+       $level == 2 ? "http://www.virtualmin.com/documentation/users/server-owner" :
+		     "http://www.virtualmin.com/documentation";
 }
 
 sub get_vm2_docs
 {
 local ($level) = @_;
-return "http://www.virtualmin.com/documentation/id,vm2_manual/";
+return "http://www.virtualmin.com/documentation/cloudmin";
 }
 
 # get_right_frame_sections()
