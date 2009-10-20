@@ -133,21 +133,18 @@ if ($level == 0) {		# Master admin
 	$hasposs = foreign_check("security-updates");
 	$canposs = foreign_available("security-updates");
 	if ($hasvirt) {
+		# Get from Virtualmin's collected info
 		$info = virtual_server::get_collected_info();
 		@poss = $info ? @{$info->{'poss'}} : ( );
 		@allposs = $info ? @{$info->{'allposs'}} : ( );
 		@inst = $info ? @{$info->{'inst'}} : ( );
 		}
-	else {
+	elsif ($hasposs) {
 		# Get possible updates directly from security-updates module
-		if ($hasposs) {
-			foreign_require("security-updates",
-					 "security-updates-lib.pl");
-			@poss = security_updates::list_possible_updates();
-			if (defined(&security_updates::list_possible_installs)){
-				@inst = security_updates::list_possible_installs();
-				}
-			@allposs = security_updates::list_possible_updates(0, 1);
+		foreign_require("security-updates", "security-updates-lib.pl");
+		@poss = security_updates::list_possible_updates();
+		if (defined(&security_updates::list_possible_installs)){
+			@inst = security_updates::list_possible_installs();
 			}
 		}
 
