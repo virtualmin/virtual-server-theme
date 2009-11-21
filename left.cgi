@@ -1,6 +1,7 @@
 #!/usr/local/bin/perl
 # Show the left-side menu of Virtualmin domains, plus modules
 
+$trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 @admincats = ( "tmpl", "create", "backup" );
