@@ -38,22 +38,34 @@ $host = &get_display_hostname();
 if ($hasvirt) {
 	# Show Virtualmin version
 	%minfo = &get_module_info("virtual-server");
+	$ver = $minfo{'version'};
 	$title = $gconfig{'nohostname'} ? $text{'vmain_title2'} :
-		&text('vmain_title', $minfo{'version'}, $host, $ostr);
+		 $gconfig{'showhost'} ?
+			&text('vmain_title3', $ver, $ostr) :
+			&text('vmain_title', $ver, $host, $ostr);
 	}
 elsif ($hasvm2) {
 	# Show Cloudmin version
 	%minfo = &get_module_info("server-manager");
+	$ver = $minfo{'version'};
 	$title = $gconfig{'nohostname'} ? $text{'mmain_title2'} :
-		&text('mmain_title', $minfo{'version'}, $host, $ostr);
+		 $gconfig{'showhost'} ?
+			&text('mmain_title3', $ver, $ostr) :
+			&text('mmain_title', $ver, $host, $ostr);
 	}
 else {
 	# Show Webmin version
+	$ver = &get_webmin_version();
 	$title = $gconfig{'nohostname'} ? $text{'main_title2'} :
-		&text('main_title', &get_webmin_version(), $host, $ostr);
+	 	 $gconfig{'showhost'} ?
+			&text('main_title3', $ver, $ostr) :
+			&text('main_title', $ver, $host, $ostr);
 	}
 if ($gconfig{'showlogin'}) {
 	$title = $remote_user." : ".$title;
+	}
+if ($gconfig{'showhost'}) {
+	$title = $host." : ".$title;
 	}
 
 # Work out if we have a top frame
