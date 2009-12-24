@@ -132,12 +132,25 @@ if ($level == 0) {		# Master admin
 	# Show Virtualmin master admin info
 	$hasposs = foreign_check("security-updates");
 	$canposs = foreign_available("security-updates");
+	if ($hasvm2) {
+		# Check if Cloudmin has collected own info
+		my $me = &server_manager::get_managed_server(0);
+		if ($me) {
+			$meinfo = &server_manager::get_server_collected($me);
+			}
+		}
 	if ($hasvirt) {
 		# Get from Virtualmin's collected info
 		$info = virtual_server::get_collected_info();
 		@poss = $info ? @{$info->{'poss'}} : ( );
 		@allposs = $info ? @{$info->{'allposs'}} : ( );
 		@inst = $info ? @{$info->{'inst'}} : ( );
+		}
+	elsif ($meinfo && $meinfo->{'poss'}) {
+		# Use own collected info
+		@poss = @{$meinfo->{'poss'}};
+		@allposs = @{$meinfo->{'allposs'}};
+		@inst = @{$meinfo->{'inst'}};
 		}
 	elsif ($hasposs) {
 		# Get possible updates directly from security-updates module
