@@ -5,6 +5,7 @@ $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 @admincats = ( "tmpl", "create", "backup" );
+%gaccess = &get_module_acl(undef, "");
 
 &popup_header("Virtualmin");
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
@@ -147,7 +148,8 @@ if (@has > 1) {
 
 print "<div class='wrapper'>\n";
 print "<table id='main' width='100%'><tbody><tr><td>\n";
-if ($mode eq "webmin" || $mode eq "usermin") {
+if (($mode eq "webmin" || $mode eq "usermin") &&
+    $gaccess{'webminsearch'} ne '0') {
 	# Left form is for searching Webmin
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
 	$doneform = 1;
@@ -631,7 +633,8 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 	}
 
 
-if ($mode eq "webmin" || $mode eq "usermin") {
+if (($mode eq "webmin" || $mode eq "usermin") &&
+    $gaccess{'webminsearch'} ne '0') {
 	# Show module/help search form
 	print $text{'left_search'},"&nbsp;";
 	print &ui_textbox("search", undef, 15);
@@ -640,7 +643,8 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 print "</form>\n" if ($doneform);
 
 # Search form for Virtualmin modules only
-if ($mode eq "virtualmin" && $hasvirt || $mode eq "vm2" && $hasvm2) {
+if (($mode eq "virtualmin" && $hasvirt ||
+     $mode eq "vm2" && $hasvm2) && $gaccess{'webminsearch'} ne '0') {
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
 	print "<div class='leftlink'>$text{'left_search'} ",
 	      &ui_textbox("search", undef, 15),"</div>\n";
