@@ -1059,7 +1059,7 @@ foreach my $d (@doms) {
 	}
 
 # Show counts for features, including maxes
-print "<table>\n";
+print "<table width=100%>\n";
 my $i = 0;
 foreach my $f ("doms", "dns", "web", "ssl", "mail",
 	       "dbs", "users", "aliases") {
@@ -1108,7 +1108,7 @@ if (@quota) {
 		}
 
 	# Show message about number of domains being displayed
-	print "<table>\n";
+	print "<table width=100%>\n";
 	if (@quota > $max) {
 		@quota = @quota[0..($max-1)];
 		$qmsg = &text('right_quotamax', $max);
@@ -1203,7 +1203,7 @@ return if (!$maxbw);	# No bandwidth yet
 
 # Show message about number of domains being displayed
 local $max = $sects->{'max'} || $default_domains_to_show;
-print "<table>\n";
+print "<table width=100%>\n";
 if (@doms > $max) {
 	@doms = @doms[0..($max-1)];
 	$qmsg = &text('right_quotamax', $max);
