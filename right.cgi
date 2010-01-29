@@ -444,7 +444,8 @@ if ($level == 0) {		# Master admin
 		                    defined($_->{'bw_usage'}) } @doms;
 
 		print ui_hidden_table_start($text{'right_bwheader'},
-		      "width=100%", 1, "bw", $open{'bw'});
+		      "width=100%", 1, "bw",
+		      $open{'bw'} || &any_over_bandwidth(\@doms));
 		if (@bwdoms) {
 			show_bandwidth_info(\@doms);
 			}
@@ -634,10 +635,11 @@ elsif ($level == 1) {		# Reseller
 
 	# Show bandwidth across reseller-owned domains
 	if (!$sects->{'nobw'} && $virtual_server::config{'bw_active'}) {
-		print ui_hidden_table_start($text{'right_bwheader'},
-		      'width=100%', 1, 'bw', $open{'bw'});
 		my @bwdoms = grep { !$_->{'parent'} &&
 		                    defined($_->{'bw_usage'}) } @doms;
+		print ui_hidden_table_start($text{'right_bwheader'},
+		      'width=100%', 1, 'bw',
+		      $open{'bw'} || &any_over_bandwidth(\@bwdoms));
 		if (@bwdoms) {
 			show_bandwidth_info(\@doms);
 			}
@@ -1183,6 +1185,17 @@ if (@quota) {
 		}
 	print "</table>\n";
 	}
+}
+
+sub any_over_bandwidth
+{
+local ($doms) = @_;
+foreach my $d (@$doms) {
+	if ($d->{'bw_limit'} && $d->{'bw_usage'} >= $d->{'bw_limit'}) {
+		return 1;
+		}
+	}
+return 0;
 }
 
 # show_bandwidth_info(&domains)
