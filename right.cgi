@@ -430,7 +430,8 @@ if ($level == 0) {		# Master admin
 		# Show quota graphs
 		print ui_hidden_table_start($text{'right_quotasheader'},
 		      "width=100%", 1,
-		      "quotas", $open{'quotas'});
+		      "quotas",
+		      $open{'quotas'} || &any_over_quota($info->{'quota'}));
 		show_quotas_info($info->{'quota'}, $info->{'maxquota'});
 		print ui_hidden_table_end("quotas");
 		}
@@ -625,7 +626,8 @@ elsif ($level == 1) {		# Reseller
 	# Show quotas across reseller-owned domains
 	if (!$sects->{'noquotas'} && @qdoms) {
 		print ui_hidden_table_start($text{'right_quotasheader'},
-		      'width=100%', 1, 'quotas', $open{'quotas'});
+		      'width=100%', 1, 'quotas',
+		      $open{'quotas'} || &any_over_quota(\@qdoms));
 		show_quotas_info(\@qdoms, $info->{'maxquota'});
 		print ui_hidden_table_end('quotas');
 		}
@@ -1081,6 +1083,15 @@ foreach my $f ("doms", "dns", "web", "ssl", "mail",
 	$i++;
 	}
 print "</table>\n";
+}
+
+sub any_over_quota
+{
+local ($quota) = @_;
+foreach my $q (@$quota) {
+	return 1 if ($q->[2] && $q->[1]+$q->[3] >= $q->[2]);
+	}
+return 0;
 }
 
 # show_quotas_info(&quotas, maxquota)
