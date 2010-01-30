@@ -18,14 +18,25 @@ if ($in{'dom'} && $hasvirt) {
 		}
 	}
 if (!$goto) {
-	# Default is determined by Webmin config, defaults to system info page
+	# Default is determined by theme or Webmin config,
+	# defaults to system info page
+	local $sects = &get_right_frame_sections();
 	$minfo = &get_goto_module();
-	$goto = $minfo &&
-		$minfo->{'dir'} ne 'virtual-server' ?
-		$minfo->{'dir'} ne 'server-manager' ?
-		  "$minfo->{'dir'}/" :
-		  "right.cgi?open=system&auto=status&open=updates&".
-		  "open=common&open=owner&open=reseller";
+	if ($sects->{'list'} == 1 && $hasvirt) {
+		$goto = "virtual-server/";
+		}
+	elsif ($sects->{'list'} == 2 && $hasvm2) {
+		$goto = "server-manager/";
+		}
+	elsif ($minfo &&
+               $minfo->{'dir'} ne 'virtual-server' &&
+               $minfo->{'dir'} ne 'server-manager') {
+		$goto = "$minfo->{'dir'}/";
+		}
+	else {
+		$goto = "right.cgi?open=system&auto=status&open=updates&".
+		  	"open=common&open=owner&open=reseller";
+		}
 	$left = "left.cgi";
 	if ($minfo) {
 		$left .= "?$minfo->{'category'}=1";

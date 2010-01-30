@@ -17,6 +17,15 @@ print &ui_table_row($text{'edright_sects'},
     join("<br>\n", map { &ui_checkbox($_->{'name'}, 1, $_->{'title'},
 			!$sects->{'no'.$_->{'name'}}) }
 		       &list_right_frame_sections()));
+
+# Show list by default
+print &ui_table_row($text{'edright_list'},
+	&ui_radio("list", $sects->{'list'} || 0,
+		  [ [ 0, $text{'edright_list0'} ],
+		    $hasvirt ? ( [ 1, $text{'edright_list1'} ] ) : ( ),
+		    $hasvm2 ? ( [ 2, $text{'edright_list2'} ] ) : ( ),
+		  ]));
+
 # Alternate page
 print &ui_table_row($text{'edright_alt'},
     &ui_opt_textbox("alt", $sects->{'alt'}, 40, $text{'edright_altdef'}."<br>",
