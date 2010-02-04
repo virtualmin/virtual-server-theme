@@ -111,8 +111,13 @@ if ($hasvirt) {
 	}
 
 if ($hasvm2) {
-	# Check Cloudmin licence
-	print server_manager::licence_error_message();
+	# Check Cloudmin licence or other warnings
+	if (defined(&server_manager::warning_messages)) {
+		print server_manager::warning_messages();
+		}
+	else {
+		print server_manager::licence_error_message();
+		}
 	}
 
 # Show Webmin notifications, if supported
