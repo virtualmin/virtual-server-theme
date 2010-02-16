@@ -562,7 +562,6 @@ if ($mode eq "vm2") {
 			}
 		}
 
-
 	# Show list of all systems
 	print "<div class='linkwithicon'><img src='images/vm2-small.png' alt=''><b><div class='aftericon'><a href='server-manager/index.cgi' target=right>$text{'left_vm2'}</a></b></div></div>\n";
 	}
