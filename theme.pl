@@ -150,10 +150,10 @@ if (window.parent && window.parent.frames[0]) {
 		var serversel = leftform['sid'];
 		if (serversel && serversel.value != '$server->{'id'}' ||
 		    !serversel) {
-			if (serversel) {
-				// Need to change value of selector
-				serversel.value = '$server->{'id'}';
-				}
+			//if (serversel) {
+			//	// Need to change value of selector
+			//	serversel.value = '$server->{'id'}';
+			//	}
 			window.parent.frames[0].location =
 				'$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
 			}
@@ -178,7 +178,7 @@ if (window.parent && window.parent.frames[0]) {
 		var domsel = leftform['dom'];
 		if (domsel && domsel.value != '$d->{'id'}') {
 			// Need to change value
-			domsel.value = '$d->{'id'}';
+			// domsel.value = '$d->{'id'}';
 			window.parent.frames[0].location =
 				'$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
 			}
