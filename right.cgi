@@ -70,6 +70,22 @@ if ($hasvirt || $hasvm2) {
 			$doclink = get_vm2_docs($level);
 			push(@links, "<a href='$doclink' target=_new>$text{'right_vm2docs'}</a>");
 			}
+		if ($hasvirt && $virtual_server::config{'docs_link'}) {
+			# Custom Virtualmin docs
+			push(@links, "<a href='".
+				$virtual_server::config{'docs_link'}.
+				"' target=_new>".
+				($virtual_server::config{'docs_text'} ||
+				 $text{'right_virtdocs2'})."</a>");
+			}
+		if ($hasvm2 && $server_manager::config{'docs_link'}) {
+			# Custom Cloudmin docs
+			push(@links, "<a href='".
+				$server_manager::config{'docs_link'}.
+				"' target=_new>".
+				($server_manager::config{'docs_text'} ||
+				 $text{'right_virtdocs2'})."</a>");
+			}
 		print ui_links_row(\@links);
 		print "</div>\n";
 		$shown_config_link = 1;
