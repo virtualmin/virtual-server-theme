@@ -501,7 +501,7 @@ if ($mode eq "vm2") {
 	$gcats = [ map { $_ || "settings" } @$gcats ];
 	if (!$server_manager::access{'noconfig'}) {
 		push(@$glinks, "config.cgi?server-manager");
-		push(@$gtitles, $text{'header_config'});
+		push(@$gtitles, $text{'left_vm2config'});
 		push(@$gicons, undef);
 		push(@$gcats, 'settings');
 		}
