@@ -154,8 +154,7 @@ if (window.parent && window.parent.frames[0]) {
 			//	// Need to change value of selector
 			//	serversel.value = '$server->{'id'}';
 			//	}
-			window.parent.frames[0].location =
-				'$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
 			}
 		}
 	}
@@ -179,8 +178,7 @@ if (window.parent && window.parent.frames[0]) {
 		if (domsel && domsel.value != '$d->{'id'}') {
 			// Need to change value
 			// domsel.value = '$d->{'id'}';
-			window.parent.frames[0].location =
-				'$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
 			}
 		}
 	}
