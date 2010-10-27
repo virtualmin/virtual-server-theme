@@ -1070,41 +1070,41 @@ sub show_domains_info
 local @doms = @{$_[0]};
 local %fcount = map { $_, 0 } @virtual_server::features;
 $fcount{'doms'} = 0;
-foreach my $d (@doms) {
-	$fcount{'doms'}++;
-	foreach my $f (@virtual_server::features) {
-		$fcount{$f}++ if ($d->{$f});
-		}
-	my @dbs = &virtual_server::domain_databases($d);
-	$fcount{'dbs'} += scalar(@dbs);
-	my @users = &virtual_server::list_domain_users($d, 0, 1, 1, 1);
-	$fcount{'users'} += scalar(@users);
-	my @aliases = &virtual_server::list_domain_aliases($d, 1);
-	$fcount{'aliases'} += scalar(@aliases);
+foreach my $f (@virtual_server::features,
+	       'dbs', 'mailboxes', 'aliases', 'quota', 'bw') {
+	$fcount{$f} = &virtual_server::count_domain_feature($f, @doms);
 	}
 
 # Show counts for features, including maxes
 print "<table width=100%>\n";
 my $i = 0;
 foreach my $f ("doms", "dns", "web", "ssl", "mail",
-	       "dbs", "users", "aliases") {
+	       "dbs", "mailboxes", "aliases", "quota", "bw") {
 	local $cur = int($fcount{$f});
+	next if ($cur < 0);
 	local ($extra, $reason, $max, $hide) =
 		&virtual_server::count_feature($f);
 	print "<tr class='ui_form_pair'>\n" if ($i%2 == 0);
-	print "<td class='ui_form_label' width=25%>",$text{'right_f'.$f},"</td>\n";
+	print "<td class='ui_form_label' width=25%>",
+	      $text{'right_f'.$f},"</td>\n";
 	local $hlink = $f eq "doms" || $f eq "users" || $f eq "aliases" ?
 		&history_link($f, 1) : "";
+	if ($f eq "quota" || $f eq "bw") {
+		$cur = &nice_size($cur);
+		$max = &nice_size($max);
+		}
 	if ($extra < 0 || $hide) {
-		print "<td class='ui_form_value' width=25%>",$cur," ",$hlink,"</td>\n";
+		print "<td class='ui_form_value' width=25%>",
+		      $cur," ",$hlink,"</td>\n";
 		}
 	else {
-		print "<td class='ui_form_value' width=25%>",&text('right_out', $cur, $max),
-				       " ",$hlink,"</td>\n";
+		print "<td class='ui_form_value' width=25%>",
+		      &text('right_out', $cur, $max)," ",$hlink,"</td>\n";
 		}
 	print "</tr>\n" if ($i%2 == 1);
 	$i++;
 	}
+
 print "</table>\n";
 }
 
