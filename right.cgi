@@ -589,11 +589,16 @@ if ($level == 0) {		# Master admin
 			       		      : $days ]);
 				}
 			}
+		$hasvirt_lic = 1;
 		}
 
 	if ($hasvm2 &&
 	    read_env_file($server_manager::licence_file, \%sserial) &&
 	    $sserial{'SerialNumber'} ne 'GPL') {
+		if ($hasvirt_lic) {
+			push(@lics, [ undef, &ui_hr(), 4 ]);
+			}
+
 		# Show Cloudmin serial 
 		push(@lics, [ $text{'right_sserial'},
 			      $sserial{'SerialNumber'} ]);
@@ -613,13 +618,32 @@ if ($level == 0) {		# Master admin
 				$text{'right_vunlimited'} ]);
 		push(@lics, [ $text{'right_vm2used'},
 				scalar(@allservers) ]);
+
+		# Show license expiry date
+		if ($lstatus{'expiry'}) {
+			push(@lics, [ $text{'right_expiry'},
+				      $lstatus{'expiry'} ]);
+			$ltm = &parse_license_date($lstatus{'expiry'});
+			if ($ltm) {
+				$days = int(($ltm - time()) / (24*60*60));
+				push(@lics, [ $text{'right_expirydays'},
+				    $days < 0 ? &text('right_expiryago', $days)
+			       		      : $days ]);
+				}
+			}
+		$hasvm2_lic = 1;
 		}
 
 	if (@lics) {
 		local $tb = undef;
 		local $cb = undef;
-		print ui_hidden_table_start($text{'right_licenceheader'},
-		      "width=100%", 4, "licence", $open{'licence'});
+		$h = $hasvirt_lic && $hasvm2_lic ?
+			$text{'right_licenceheader_virt_vm2'} :
+		     $hasvirt_lic ?
+			$text{'right_licenceheader'} :
+		        $text{'right_licenceheader_vm2'};
+		print ui_hidden_table_start(
+		      $h, "width=100%", 4, "licence", $open{'licence'});
 		foreach my $l (@lics) {
 			print ui_table_row(@$l);
 			}
