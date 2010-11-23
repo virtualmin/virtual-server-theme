@@ -452,7 +452,9 @@ if (!$noborder && !$WRAPPER_OPEN) {
 	     . "%>\n";
 	$rv .= "<tr><td>\n";
 	}
-$WRAPPER_OPEN++;
+if (!$noborder) {
+	$WRAPPER_OPEN++;
+	}
 my @classes;
 push(@classes, "ui_table") if (!$noborder);
 push(@classes, "sortable") if (!$href);
