@@ -367,20 +367,48 @@ if ($mode eq "virtualmin") {
 	}
 
 if ($mode eq "mail") {
+	# Work out possible folder heirarchies
+	foreach $f (@folders) {
+		$sep = $f->{'name'} =~ /\// ? "/" : ".";
+		@w = split($sep, $f->{'name'});
+		if (@w > 1) {
+			$f->{'heir'} = join($sep, @w[0..$#w-1]);
+			$heir{$f->{'heir'}} = 1;
+			$heircount{$f->{'heir'}}++;
+			}
+		}
+
 	# Show mail folders
 	foreach $f (@folders) {
 		$fid = &mailbox::folder_name($f);
+
+		# Work out if a star is needed
 		$star = $f->{'type'} == 6 &&
 			$mailbox::special_folder_id &&
 			$f->{'id'} == $mailbox::special_folder_id ?
-			  "<img src='mailbox/images/special.gif' alt='special'>" : "";
+			  "<img src='mailbox/images/special.gif' alt=special>" :
+			  "";
+
+		# Add unread message count
 		$umsg = "";
 		if (defined(&mailbox::should_show_unread) &&
 		    &mailbox::should_show_unread($f)) {
 			local ($c, $u) = &mailbox::mailbox_folder_unread($f);
 			$umsg = " ($u)" if ($u);
 			}
-		print "<div class='leftlink'><a href='mailbox/index.cgi?id=$fid' target=right>$star$f->{'name'}$umsg</a></div>\n";
+
+		# Check if folder name is hierarchial
+		if ($heir{$f->{'heir'}} == 1 && $heircount{$f->{'heir'}} > 1) {
+			print "<div class='leftlink'>$f->{'heir'}</div>\n";
+			$heir{$f->{'heir'}} = 2;
+			}
+		$fname = $f->{'name'};
+		$indent = "";
+		if ($heir{$f->{'heir'}} && $heircount{$f->{'heir'}} > 1) {
+			$fname =~ s/^\Q$f->{'heir'}\E.//;
+			$indent = "&nbsp;&nbsp;&nbsp;";
+			}
+		print "<div class='leftlink'>$indent<a href='mailbox/index.cgi?id=$fid' target=right>$star$fname$umsg</a></div>\n";
 		}
 
 	# Show search box
