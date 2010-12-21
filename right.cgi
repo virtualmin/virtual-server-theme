@@ -1100,6 +1100,8 @@ foreach my $f (@virtual_server::features,
 	}
 
 # Show counts for features, including maxes
+$bsize = &virtual_server::has_home_quotas() ?
+		&virtual_server::quota_bsize("home") : undef;
 print "<table width=100%>\n";
 my $i = 0;
 foreach my $f ("doms", "dns", "web", "ssl", "mail",
@@ -1113,9 +1115,13 @@ foreach my $f ("doms", "dns", "web", "ssl", "mail",
 	      $text{'right_f'.$f},"</td>\n";
 	local $hlink = $f eq "doms" || $f eq "users" || $f eq "aliases" ?
 		&history_link($f, 1) : "";
-	if ($f eq "quota" || $f eq "bw") {
+	if ($f eq "bw") {
 		$cur = &nice_size($cur);
 		$max = &nice_size($max);
+		}
+	elsif ($f eq "quota" && $bsize) {
+		$cur = &nice_size($cur * $bsize);
+		$max = &nice_size($max * $bsize);
 		}
 	if ($extra < 0 || $hide) {
 		print "<td class='ui_form_value' width=25%>",
