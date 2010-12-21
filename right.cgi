@@ -1095,7 +1095,7 @@ local @doms = @{$_[0]};
 local %fcount = map { $_, 0 } @virtual_server::features;
 $fcount{'doms'} = 0;
 foreach my $f (@virtual_server::features,
-	       'dbs', 'mailboxes', 'aliases', 'quota', 'bw') {
+	       'doms', 'dbs', 'mailboxes', 'aliases', 'quota', 'bw') {
 	$fcount{$f} = &virtual_server::count_domain_feature($f, @doms);
 	}
 
