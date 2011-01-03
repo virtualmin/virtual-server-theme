@@ -599,21 +599,35 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 	@cats = &get_visible_modules_categories();
 	@catnames = map { $_->{'code'} } @cats;
 
-	# Show all modules under categories
-	foreach $c (@cats) {
-		# Show category opener, plus modules under it
-		&print_category_opener($c->{'code'}, \@catnames,
-		  $c->{'unused'} ? "<font color=#888888>$c->{'desc'}</font>"
-				 : $c->{'desc'});
-		print "<div class='itemhidden' id='$c->{'code'}'>";
-		foreach $minfo (@{$c->{'modules'}}) {
+	if ($gconfig{"notabs_${base_remote_user}"} == 2 ||
+	    $gconfig{"notabs_${base_remote_user}"} == 0 && $gconfig{'notabs'}) {
+		# Show modules in one list
+		foreach $minfo (map { @{$_->{'modules'}} } @cats) {
 			&print_category_link("$minfo->{'dir'}/",
+				     $minfo->{'desc'},
+				     undef,
+				     undef,
+				     $minfo->{'noframe'} ? "_top" : "", 1);
+			}
+		}
+	else {
+		# Show all modules under categories
+		foreach $c (@cats) {
+			# Show category opener, plus modules under it
+			&print_category_opener($c->{'code'}, \@catnames,
+				$c->{'unused'} ?
+				"<font color=#888888>$c->{'desc'}</font>" :
+				$c->{'desc'});
+			print "<div class='itemhidden' id='$c->{'code'}'>";
+			foreach $minfo (@{$c->{'modules'}}) {
+				&print_category_link("$minfo->{'dir'}/",
 					     $minfo->{'desc'},
 					     undef,
 					     undef,
 					     $minfo->{'noframe'} ? "_top" : "");
+				}
+			print "</div>\n";
 			}
-		print "</div>\n";
 		}
 
 	print "<hr>\n";
