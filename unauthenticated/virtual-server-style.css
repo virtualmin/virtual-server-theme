@@ -30,7 +30,6 @@ table.sortable tbody td {
 }
 table.ui_table td * {
   line-height:1.5em;
-  /*margin: 0 2px;*/
 }
 table.ui_table td textarea {line-height:normal; font-family:monospace;}
 table.ui_table td div.barchart * {
@@ -40,9 +39,6 @@ table.ui_table thead td * {
   vertical-align:middle;
   margin: 0;
   padding: 0 0 0 1px; 
-}
-table.ui_table tbody td img {
-  margin-bottom: -4px;
 }
 table.ui_table dt, table.ui_table dd {
   padding: 0 2px;
