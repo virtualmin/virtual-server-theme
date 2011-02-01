@@ -152,7 +152,6 @@ right_return=Systeminformationen
 right_sharedip=(Gemeinsame IP)
 right_skey=Cloudmin-Lizenz-Schl&#252;ssel
 right_sserial=Cloudmin-Seriennummer
-
 right_status_actions=Aktionen
 right_status_service=Prozessname
 right_status_up=gestartet?
@@ -164,13 +163,13 @@ right_themever=Theme Version
 right_time=Zeit auf Server
 right_up=Gestartet
 right_upall=Alle <a href='$1'>Virtualmin Pakete</a> sind auf dem neuesten Stand
-right_upcount=$1 Updates f&#252;r Virtualmin Pakete sind verf&#252;gbar. Benutzen Sie das <a href='$2'>Virtualmin Paketupdates</a> Module, um diese selektiv zu installieren.
-right_upcount1=Ein update f&#252;r Virtualmin Pakete ist verf&#252;gbar. Benutzen Sie das <a href='$2'>Virtualmin Paketupdates</a> Module, um alle verwalteten Pakete einzusehen.
+right_upcount=$1 Updates f&#252;r Virtualmin Pakete sind verf&#252;gbar. Benutzen Sie das <a href='$2'>Virtualmin Paketupdates</a> Modul, um diese selektiv zu installieren.
+right_upcount1=Ein update f&#252;r Virtualmin Pakete ist verf&#252;gbar. Benutzen Sie das <a href='$2'>Virtualmin Paketupdates</a> Modul, um alle verwalteten Pakete einzusehen.
 right_updatesheader=Paketupdates
 right_updesc=Beschreibung
 right_upname=Paket
-right_upok=Alle Update jetzt installieren
-right_upsys=$1 Updates f&#252;r System-Pakete sind verf&#252;gbar. Benutzen Sie <a href='$2'>Virtualmin  Paketupdates </a> Modul, um diese selektiv zu installieren.
+right_upok=Alle Updates jetzt installieren
+right_upsys=$1 Updates f&#252;r System-Pakete sind verf&#252;gbar. Benutzen Sie das <a href='$2'>Virtualmin  Paketupdates </a> Modul, um diese selektiv zu installieren.
 right_upver=Version
 right_uquota=Festplattenlimits und -benutzung
 right_used=$1 gesamt, $2 benutzt
