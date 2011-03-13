@@ -100,16 +100,8 @@ $did = $d ? $d->{'id'} : undef;
 
 if ($mode eq "vm2" && $hasvm2) {
 	# Get and sort managed servers
-	if (defined(&server_manager::list_available_managed_servers_sorted)) {
-		@servers = &server_manager::list_available_managed_servers_sorted();
-		}
-	elsif (defined(&server_manager::list_managed_servers_sorted)) {
-		@servers = &server_manager::list_managed_servers_sorted();
-		}
-	else {
-		@servers = &server_manager::list_managed_servers();
-		@servers = sort { $a->{'host'} cmp $b->{'host'} } @servers;
-		}
+	@servers = &server_manager::list_available_managed_servers_sorted();
+	@allservers = &server_manager::list_managed_servers();
 	($server) = grep { $_->{'id'} eq $in{'sid'} } @servers;
 	if (!$server && $sects && $sects->{'server'} ne '') {
 		($server) = grep { $_->{'id'} eq $sects->{'server'} } @servers;
@@ -338,6 +330,17 @@ elsif ($mode eq "vm2" && @servers) {
 		1, 0, 0, 0,
 		"onChange='form.submit()' style='width:$selwidth'");
 	print "<input type='image' src='images/ok.gif' alt='' class='goArrow'>\n";
+	print "</div>\n";
+	}
+elsif ($mode eq "vm2") {
+	# No servers
+	print "<div class='leftlink'>";
+	if (@allservers) {
+		print $text{'left_novm2access'};
+		}
+	else {
+		print $text{'left_novm2'};
+		}
 	print "</div>\n";
 	}
 
