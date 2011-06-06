@@ -232,11 +232,24 @@ if ($level == 0) {		# Master admin
 		      $current_theme_info{'version'}
 		      , 1, ["width='15%'", "width='35%'"]);
 
-		# System time
+		# System time and uptime
 		my $tm = make_date(time());
 		if (&foreign_available("time")) {
 			$tm = "<a href=time/>$tm</a>";
 			}
+		&foreign_require("proc");
+		my $uptime;
+		my ($d, $h, $m) = &proc::get_system_uptime();
+		if ($d) {
+			$uptime = &text('right_updays', $d, $h, $m);
+			}
+		elsif ($m) {
+			$uptime = &text('right_uphours', $h, $m);
+			}
+		elsif ($m) {
+			$uptime = &text('right_upmins', $m);
+			}
+		$tm .= " , ".$uptime if ($uptime);
 		print ui_table_row($text{'right_time'}, $tm
 		      , 1, ["width='15%'", "width='35%'"]);
 
