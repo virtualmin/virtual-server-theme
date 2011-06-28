@@ -1335,7 +1335,7 @@ foreach my $d (@doms) {
 	print "</td>\n";
 
 	# Percent used, if available
-	if ($d->{'bw_usage'}) {
+	if ($d->{'bw_limit'}) {
 		$pc = "&nbsp;$pc" if ($pc < 10);
 		print "<td class='ui_form_value' nowrap>",$pc,"% - ",
 			     &text('right_out',
