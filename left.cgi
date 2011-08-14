@@ -36,7 +36,7 @@ if (!$image && defined(&server_manager::get_provider_link)) {
 	}
 if ($image) {
 	print "<a href='$link' target='_new'>" if ($link);
-	print "<img src='$image' alt=''>";
+	print "<center><img src='$image' alt=''></center>";
 	print "</a><br>\n" if ($link);
 	}
 
