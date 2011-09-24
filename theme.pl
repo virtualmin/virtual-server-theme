@@ -672,7 +672,7 @@ return "<a class='select_rows' href='#' onClick='$js'>$text</a>";
 sub theme_ui_checked_columns_row
 {
 $theme_ui_columns_row_toggle = $theme_ui_columns_row_toggle ? '0' : '1';
-local ($cols, $tdtags, $checkname, $checkvalue, $checked, $disabled) = @_;
+local ($cols, $tdtags, $checkname, $checkvalue, $checked, $disabled, $tags) = @_;
 my $rv;
 my $cbid = &quote_escape(quotemeta("${checkname}_${checkvalue}"));
 my $rid = &quote_escape(quotemeta("row_${checkname}_${checkvalue}"));
@@ -684,7 +684,7 @@ if ($checked) {
 $mycb =~ s/class='/class='row$theme_ui_columns_row_toggle ui_checked_columns /;
 $rv .= "<tr id=\"$ridtr\" $mycb onMouseOver=\"this.className = document.getElementById('$cbid').checked ? 'mainhighsel' : 'mainhigh'\" onMouseOut=\"this.className = document.getElementById('$cbid').checked ? 'mainsel' : 'mainbody row$theme_ui_columns_row_toggle'\">\n";
 $rv .= "<td class='ui_checked_checkbox' ".$tdtags->[0].">".
-       &ui_checkbox($checkname, $checkvalue, undef, $checked, "onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"", $disabled).
+       &ui_checkbox($checkname, $checkvalue, undef, $checked, $tags." "."onClick=\"document.getElementById('$rid').className = this.checked ? 'mainhighsel' : 'mainhigh';\"", $disabled).
        "</td>\n";
 my $i;
 for($i=0; $i<@$cols; $i++) {
@@ -965,13 +965,15 @@ foreach my $r (@$data) {
 			# Checkbox in non-first column
 			push(@cols, &ui_checkbox($c->{'name'}, $c->{'value'},
 					         $c->{'label'}, $c->{'checked'},
-						 undef, $c->{'disabled'}));
+						 $c->{'tags'},
+						 $c->{'disabled'}));
 			}
 		elsif ($c->{'type'} eq 'radio') {
 			# Radio button in non-first column
 			push(@cols, &ui_oneradio($c->{'name'}, $c->{'value'},
 					         $c->{'label'}, $c->{'checked'},
-						 undef, $c->{'disabled'}));
+						 $c->{'tags'},
+						 $c->{'disabled'}));
 			}
 		elsif ($c->{'type'} eq 'group') {
 			# Header row that spans whole table
@@ -999,12 +1001,14 @@ foreach my $r (@$data) {
 	elsif ($c0->{'type'} eq 'checkbox') {
 		$rv .= &ui_checked_columns_row(\@cols, \@rtds, $c0->{'name'},
 					       $c0->{'value'}, $c0->{'checked'},
-					       $c0->{'disabled'});
+					       $c0->{'disabled'},
+					       $c0->{'tags'});
 		}
 	elsif ($c0->{'type'} eq 'radio') {
 		$rv .= &ui_radio_columns_row(\@cols, \@rtds, $c0->{'name'},
 					     $c0->{'value'}, $c0->{'checked'},
-					     $c0->{'disabled'});
+					     $c0->{'disabled'},
+					     $c0->{'tags'});
 		}
 	}
 
