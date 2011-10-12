@@ -189,7 +189,11 @@ if ($level == 0) {		# Master admin
 			  "system", $open{'system'});
 
 		# Host and login info
-		print ui_table_row($text{'right_host'}, get_system_hostname(), 1,
+		$ip = $info && $info->{'ips'} ? $info->{'ips'}->[0]->[0] :
+					&to_ipaddress(get_system_hostname());
+		$ip = " ($ip)" if ($ip);
+		print ui_table_row($text{'right_host'},
+				   get_system_hostname().$ip, 1,
 		      ["width='15%'", "width='35%'"]);
 
 		if ($gconfig{'os_version'} eq '*') {
