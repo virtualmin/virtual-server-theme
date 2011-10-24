@@ -372,7 +372,7 @@ if ($mode eq "virtualmin") {
 if ($mode eq "mail") {
 	# Work out possible folder heirarchies
 	foreach $f (@folders) {
-		$sep = $f->{'name'} =~ /\// ? "/" : ".";
+		$sep = $f->{'name'} =~ /\// ? "/" : "\\.";
 		@w = split($sep, $f->{'name'});
 		if (@w > 1) {
 			$f->{'heir'} = join($sep, @w[0..$#w-1]);
