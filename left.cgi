@@ -378,9 +378,12 @@ if ($mode eq "mail") {
 		if (@w > 1) {
 			$f->{'heir'} = join($sepchar, @w[0..$#w-1]);
 			$heir{$f->{'heir'}} = 1;
+			$heirdepth{$f->{'heir'}} = scalar(@w);
 			$heircount{$f->{'heir'}}++;
 			}
 		}
+	%heiropen = map { $_, 1 } split(/\0/, $in{'heiropen'});
+	$heiropen{""} = 1;
 
 	# Show mail folders
 	foreach $f (@folders) {
@@ -403,16 +406,54 @@ if ($mode eq "mail") {
 
 		# Check if folder name is hierarchial
 		if ($heir{$f->{'heir'}} == 1 && $heircount{$f->{'heir'}} > 1) {
-			print "<div class='leftlink'>$f->{'heir'}</div>\n";
+			# Find parent category, skip if not open
+			$pheir = $f->{'heir'};
+			if ($pheir =~ /\//) {
+				$pheir =~ s/\/[^\/]+$//;
+				}
+			elsif ($pheir =~ /\./) {
+				$pheir =~ s/\.[^\.]+$//;
+				}
+			else {
+				$pheir = undef;
+				}
+			next if ($pheir && !$heiropen{$pheir});
+
+			print "<div class='leftlink'>";
+			%copyopen = %heiropen;
+			if ($heiropen{$f->{'heir'}}) {
+				$img = "open.gif";
+				delete($copyopen{$f->{'heir'}});
+				}
+			else {
+				$img = "closed.gif";
+				$copyopen{$f->{'heir'}} = 1;
+				}
+			$heirstr = join("&", map { "heiropen=".&urlize($_) }
+						 keys %copyopen);
+			$indent = "&nbsp;&nbsp;&nbsp;" x
+				  ($heirdepth{$f->{'heir'}} - 2);
+			print $indent.
+			      "<a href='left.cgi?$heirstr'>",
+			      "<img src=images/$img></a>",
+			      &html_escape($f->{'heir'});
+			print "</div>\n";
 			$heir{$f->{'heir'}} = 2;
 			}
+
+		next if ($f->{'heir'} && !$heiropen{$f->{'heir'}});
+
+		# Show actual folder name
 		$fname = $f->{'name'};
 		$indent = "";
 		if ($heir{$f->{'heir'}} && $heircount{$f->{'heir'}} > 1) {
 			$fname =~ s/^\Q$f->{'heir'}\E.//;
-			$indent = "&nbsp;&nbsp;&nbsp;";
+			$indent = "&nbsp;&nbsp;&nbsp;" x
+				  $heirdepth{$f->{'heir'}};
 			}
-		print "<div class='leftlink'>$indent<a href='mailbox/index.cgi?id=$fid' target=right>$star$fname$umsg</a></div>\n";
+		print "<div class='leftlink'>$indent",
+		      "<a href='mailbox/index.cgi?id=$fid' target=right>",
+		      "$star$fname$umsg</a></div>\n";
 		}
 
 	# Show search box
