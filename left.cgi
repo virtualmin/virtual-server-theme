@@ -373,9 +373,10 @@ if ($mode eq "mail") {
 	# Work out possible folder heirarchies
 	foreach $f (@folders) {
 		$sep = $f->{'name'} =~ /\// ? "/" : "\\.";
+		$sepchar = $f->{'name'} =~ /\// ? "/" : ".";
 		@w = split($sep, $f->{'name'});
 		if (@w > 1) {
-			$f->{'heir'} = join($sep, @w[0..$#w-1]);
+			$f->{'heir'} = join($sepchar, @w[0..$#w-1]);
 			$heir{$f->{'heir'}} = 1;
 			$heircount{$f->{'heir'}}++;
 			}
