@@ -35,7 +35,7 @@ if (!$goto) {
 		}
 	else {
 		$goto = "right.cgi?open=system&auto=status&open=updates&".
-		  	"open=common&open=owner&open=reseller";
+		  	"open=common&open=owner&open=reseller&open=vm2limits";
 		}
 	$left = "left.cgi";
 	if ($minfo) {

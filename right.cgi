@@ -34,7 +34,8 @@ foreach $o (split(/\0/, $in{'auto'})) {
 	push(@auto, $o);
 	}
 if (!defined($in{'open'})) {
-	@open = ( 'system', 'reseller', 'status', 'updates', 'common' );
+	@open = ( 'system', 'reseller', 'status', 'updates', 'common',
+		  'vm2limits' );
 	@auto = ( 'status' );
 	}
 %open = map { $_, indexof($_, @auto) >= 0 ? 2 : 1 } @open;
