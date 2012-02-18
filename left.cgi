@@ -538,7 +538,8 @@ if ($mode eq "vm2" && $server) {
 		if ($c) {
 			# Start of opener
 			&print_category_opener("cat_$c", \@cats,
-				$server_manager::text{'cat_'.$c});
+				$server_manager::text{'cat_'.$c} ||
+				$incat[0]->{'catname'});
 			print "<div class='itemhidden' id='cat_$c'>\n";
 			}
 		foreach my $b (sort { $b->{'priority'} <=> $a->{'priority'} ||
