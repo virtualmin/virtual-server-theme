@@ -226,6 +226,11 @@ if ($mode eq "virtualmin" && @doms) {
 		}
 	else {
 		# Show menu of domains
+		my $sel;
+		if (-r "$root_directory/virtual-server/summary_domain.cgi") {
+			$sel = "; window.parent.frames[1].location = ".
+			       "\"virtual-server/summary_domain.cgi?dom=\"+this.value";
+			}
 		print &ui_select("dom", $did,
 			[ map { [ $_->{'id'},
 				  ("&nbsp;&nbsp;" x $_->{'indent'}).
@@ -234,7 +239,8 @@ if ($mode eq "virtualmin" && @doms) {
 					"style='font-style:italic'" : "" ] }
 			      @doms ],
 			1, 0, 0, 0,
-			"onChange='form.submit()' style='width:$selwidth'");
+			"onChange='form.submit() $sel'".
+			"style='width:$selwidth'");
 		}
 	print "<input type='image' src='images/ok.gif' alt='' class='goArrow'>\n";
 	foreach $a (@admincats) {
