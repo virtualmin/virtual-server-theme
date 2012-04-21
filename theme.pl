@@ -17,6 +17,7 @@ $main::nosingledomain_virtualmin_mode = 1;
 # if 0, wrapper isn't on, add one and open it, if 1 close it, if 2+, subtract
 # but don't close
 $WRAPPER_OPEN = 0;
+$COLUMNS_WRAPPER_OPEN = 0;
 
 # theme_ui_post_header([subtext])
 # Returns HTML to appear directly after a standard header() call
@@ -451,14 +452,14 @@ my ($heads, $width, $noborder, $tdtags, $title) = @_;
 my ($href) = grep { $_ =~ /<a\s+href/i } @$heads;
 my $rv;
 $theme_ui_columns_row_toggle = 0;
-if (!$noborder && !$WRAPPER_OPEN) {
+if (!$noborder && !$COLUMNS_WRAPPER_OPEN) {
 	$rv .= "<table class='wrapper' width="
 	     . ($width ? $width : "100")
 	     . "%>\n";
 	$rv .= "<tr><td>\n";
 	}
 if (!$noborder) {
-	$WRAPPER_OPEN++;
+	$COLUMNS_WRAPPER_OPEN++;
 	}
 my @classes;
 push(@classes, "ui_table") if (!$noborder);
@@ -505,10 +506,10 @@ sub theme_ui_columns_end
 {
 my $rv;
 $rv = "</tbody> </table>\n";
-if ($WRAPPER_OPEN == 1) { # Last wrapper
+if ($COLUMNS_WRAPPER_OPEN == 1) { # Last wrapper
 	$rv .= "</td> </tr> </table>\n";
 	}
-$WRAPPER_OPEN--;
+$COLUMNS_WRAPPER_OPEN--;
 return $rv;
 }
 
