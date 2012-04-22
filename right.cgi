@@ -750,6 +750,7 @@ elsif ($level == 2) {		# Domain owner
 
 	@subs = ( $d, virtual_server::get_domain_by("parent", $d->{'id'}) );
 	@reals = grep { !$_->{'alias'} } @subs;
+	@mails = grep { $_->{'mail'} } @subs;
 	($sleft, $sreason, $stotal, $shide) =
 		virtual_server::count_domains("realdoms");
 	if ($sleft < 0 || $shide) {
@@ -779,25 +780,29 @@ elsif ($level == 2) {		# Domain owner
 	$users = virtual_server::count_domain_feature("mailboxes", @subs);
 	($uleft, $ureason, $utotal, $uhide) =
 		virtual_server::count_feature("mailboxes");
+	$msg = @mails ? $text{'right_fusers'} : $text{'right_fusers2'};
 	if ($uleft < 0 || $uhide) {
-		print ui_table_row("<b>$text{'right_fusers'}</b>",
+		print ui_table_row("<b>$msg</b>",
 		      $users);
 		}
 	else {
-		print ui_table_row("<b>$text{'right_fusers'}</b>",
+		print ui_table_row("<b>$msg</b>",
 		      text('right_of', $users, $utotal));
 		}
 
-	$aliases = virtual_server::count_domain_feature("aliases", @subs);
-	($aleft, $areason, $atotal, $ahide) =
-		virtual_server::count_feature("aliases");
-	if ($aleft < 0 || $ahide) {
-		print ui_table_row("<b>$text{'right_faliases'}</b>",
-		      $aliases);
-		}
-	else {
-		print ui_table_row("<b>$text{'right_faliases'}</b>",
-		      text('right_of', $aliases, $atotal));
+	if (@mails) {
+		$aliases = virtual_server::count_domain_feature("aliases",
+								@subs);
+		($aleft, $areason, $atotal, $ahide) =
+			virtual_server::count_feature("aliases");
+		if ($aleft < 0 || $ahide) {
+			print ui_table_row("<b>$text{'right_faliases'}</b>",
+			      $aliases);
+			}
+		else {
+			print ui_table_row("<b>$text{'right_faliases'}</b>",
+			      text('right_of', $aliases, $atotal));
+			}
 		}
 
 	# Databases

@@ -111,6 +111,7 @@ right_fdns=DNS domains
 right_fmail=Mail domains
 right_fdbs=Databases
 right_fusers=Mail/FTP users
+right_fusers2=FTP users
 right_fmailboxes=Mail/FTP users
 right_faliases=Mail aliases
 right_fquota=Disk quota assigned
