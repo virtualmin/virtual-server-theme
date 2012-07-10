@@ -458,8 +458,8 @@ if ($mode eq "mail") {
 				  $heirdepth{$f->{'heir'}};
 			}
 		print "<div class='leftlink'>$indent",
-		      "<a href='mailbox/index.cgi?id=$fid' target=right>",
-		      "$star$fname$umsg</a></div>\n";
+		      "<a href='mailbox/index.cgi?id=".&urlize($fid)."'".
+		      " target=right>$star$fname$umsg</a></div>\n";
 		}
 
 	# Show search box
