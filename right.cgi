@@ -596,7 +596,11 @@ if ($level == 0) {		# Master admin
 			}
 
 		# Show license expiry date
-		if ($lstatus{'expiry'}) {
+		if ($lstatus{'expiry'} =~ /^2038-/) {
+			push(@lics, [ $text{'right_expiry'},
+				      $text{'right_expirynever'} ]);
+			}
+		elsif ($lstatus{'expiry'}) {
 			push(@lics, [ $text{'right_expiry'},
 				      $lstatus{'expiry'} ]);
 			$ltm = &parse_license_date($lstatus{'expiry'});
@@ -638,7 +642,11 @@ if ($level == 0) {		# Master admin
 				scalar(@allservers) ]);
 
 		# Show license expiry date
-		if ($lstatus{'expiry'}) {
+		if ($lstatus{'expiry'} =~ /^2038-/) {
+			push(@lics, [ $text{'right_expiry'},
+				      $text{'right_expirynever'} ]);
+			}
+		elsif ($lstatus{'expiry'}) {
 			push(@lics, [ $text{'right_expiry'},
 				      $lstatus{'expiry'} ]);
 			$ltm = &parse_license_date($lstatus{'expiry'});

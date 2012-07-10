@@ -196,6 +196,7 @@ right_vleft=Domains left
 right_smax=Licensed Virtualmin systems
 right_sused=Systems installed on
 right_expiry=Expiry date
+right_expirynever=Lifetime license
 right_expirydays=Days until expiry
 right_expiryago=$1 days ago!
 right_vunlimited=Unlimited
