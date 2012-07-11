@@ -7,3 +7,4 @@ right_vmax=Licenced domains
 right_vm2max=Licenced virtual systems
 right_licenceheader_virt_vm2=Virtualmin and Cloudmin Licences
 right_licenceheader_vm2=Cloudmin Licences
+right_expirynever=Lifetime licence
