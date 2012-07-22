@@ -531,7 +531,8 @@ if ($mode eq "vm2" && $server) {
 	      "</div>\n";
 
 	# Get actions for this system provided by Cloudmin
-	@actions = grep { $_ } &server_manager::get_server_actions($server);
+	@actions = grep { $_ && keys(%$_) > 0 }
+			&server_manager::get_server_actions($server);
 	foreach $b (@actions) {
 		$b->{'desc'} = $text{'leftvm2_'.$b->{'id'}}
 			if ($text{'leftvm2_'.$b->{'id'}});
