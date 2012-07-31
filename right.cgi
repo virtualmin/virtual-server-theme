@@ -607,7 +607,7 @@ if ($level == 0) {		# Master admin
 			if ($ltm) {
 				$days = int(($ltm - time()) / (24*60*60));
 				push(@lics, [ $text{'right_expirydays'},
-				    $days < 0 ? &text('right_expiryago', $days)
+				    $days < 0 ? &text('right_expiryago', -$days)
 			       		      : $days ]);
 				}
 			}
@@ -653,7 +653,7 @@ if ($level == 0) {		# Master admin
 			if ($ltm) {
 				$days = int(($ltm - time()) / (24*60*60));
 				push(@lics, [ $text{'right_expirydays'},
-				    $days < 0 ? &text('right_expiryago', $days)
+				    $days < 0 ? &text('right_expiryago', -$days)
 			       		      : $days ]);
 				}
 			}
