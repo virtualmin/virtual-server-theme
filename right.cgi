@@ -113,7 +113,12 @@ if ($sects->{'alt'} && !$in{'noalt'}) {
 
 if ($hasvirt) {
 	# Check Virtualmin licence
-	print virtual_server::licence_warning_message();
+	if (defined(&virtual_server::warning_messages)) {
+		print virtual_server::warning_messages();
+		}
+	else {
+		print virtual_server::licence_warning_message();
+		}
 
 	# See if module config needs to be checked
 	if (virtual_server::need_config_check() &&
