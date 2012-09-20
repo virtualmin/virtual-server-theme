@@ -757,6 +757,8 @@ if (($mode eq "virtualmin" && $hasvirt ||
 	print "</form>\n";
 	}
 
+print "</td></tr></tbody></table>\n";
+print "</div>\n";
 &popup_footer();
 
 # print_category_opener(name, &allcats, label)
