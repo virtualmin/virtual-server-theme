@@ -1109,9 +1109,9 @@ sub bar_chart_three
 {
 local ($total, $used1, $used2, $used3) = @_;
 local $rv;
-local $w1 = int($bar_width*$used1/$total)+1;
-local $w2 = int($bar_width*$used2/$total);
-local $w3 = int($bar_width*$used3/$total);
+local $w1 = $total ? int($bar_width*$used1/$total)+1 : 0;
+local $w2 = $total ? int($bar_width*$used2/$total) : 0;
+local $w3 = $total ? int($bar_width*$used3/$total) : 0;
 local $w4 = int($bar_width - $w1 - $w2 - $w3);
 $rv .= "<div class='barchart' nowrap='nowrap'>";
 if ($w1) {$rv .= sprintf "<img src=images/red.gif width=%s%% height=12px>", $w1;}
