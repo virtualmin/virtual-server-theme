@@ -504,7 +504,9 @@ if ($level == 0) {		# Master admin
 		print ui_hidden_table_start($text{'right_ipsheader'},
 		      "width=100%", 1, "ips", $open{'ips'});
 		print "<table>\n";
-		foreach my $ipi (@{$info->{'ips'}}) {
+		@allips = @{$info->{'ips'}};
+		push(@allips, @{$info->{'ips6'}}) if ($info->{'ips6'});
+		foreach my $ipi (@allips) {
 			print "<tr class='ui_form_pair'>\n";
 			print "<td class='ui_form_label' width=30%>$ipi->[0]</td>\n";
 			print "<td>",$ipi->[1] eq 'def' ? $text{'right_defip'} :
@@ -529,7 +531,7 @@ if ($level == 0) {		# Master admin
 			print "<table>\n";
 			foreach my $r (@{$info->{'ipranges'}}) {
 				print "<tr class='ui_form_pair'>\n";
-				print "<td class='ui_form_label' width=30%>",
+				print "<td class='ui_form_label' nowrap width=30%>",
 				      $r->[0],"</td>\n";
 				print "<td class='ui_form_value'>",
 				      &text('right_iprange', $r->[1], $r->[2]),
