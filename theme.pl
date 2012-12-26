@@ -334,6 +334,19 @@ if ($main::ui_table_pos%$main::ui_table_cols == 0) {
 return $rv;
 }
 
+sub theme_ui_table_hr
+{
+my $rv;
+if ($main::ui_table_pos) {
+	$rv .= "</tr>\n";
+	$main::ui_table_pos = 0;
+	}
+$rv .= "<tr class='ui_form_pair'>\n";
+$rv .= "<td class='ui_form_label' colspan=$main::ui_table_cols><hr></td>\n";
+$rv .= "</tr>\n";
+return $rv;
+}
+
 # ui_table_end()
 # The end of a table started by ui_table_start
 sub theme_ui_table_end
