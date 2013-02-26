@@ -1,6 +1,6 @@
 desc=Virtualmin Framed Theme
 webmin=1
-version=8.6
+version=8.7
 usermin=1
 depends=1.460
 usermin_depends=1.390
