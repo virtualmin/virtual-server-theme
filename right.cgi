@@ -1013,7 +1013,7 @@ elsif ($level == 4) {
 	}
 
 # See if any plugins have defined sections
-if ($hasvirt) {
+if ($hasvirt || $hasvm2) {
 	foreach $s (&list_right_frame_sections()) {
 		next if (!$s->{'plugin'});
 		next if ($sects->{'no'.$s->{'name'}});

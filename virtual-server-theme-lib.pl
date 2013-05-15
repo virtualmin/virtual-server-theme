@@ -135,11 +135,17 @@ else {
 	push(@rv, 'system');
 	}
 @rv = map { { 'name' => $_, 'title' => $text{'right_'.$_.'header'} } } @rv;
+
 # Add plugin-defined sections
 if (($level == 0 || $level == 1 || $level == 2) && $hasvirt &&
     defined(&virtual_server::list_plugin_sections)) {
 	push(@rv, &virtual_server::list_plugin_sections($level));
 	}
+if (($level == 0 || $level == 4) && $hasvm2 &&
+    defined(&server_manager::list_plugin_sections)) {
+	push(@rv, &server_manager::list_plugin_sections($level));
+	}
+
 return @rv;
 }
 
