@@ -317,7 +317,20 @@ if ($level == 0) {		# Master admin
 				@m = proc::get_memory_info();
 				}
 			}
-		if (@m && $m[0]) {
+		if (@m && $m[0] && $m[5]) {
+			# Has burstable limit
+			print ui_table_row($text{'right_real'},
+			      text('right_used2',
+			           nice_size($m[0]*1024),
+				   nice_size(($m[0]-$m[1])*1024),
+				   nice_size($m[5]*1024))
+			      . " " . history_link("memused", 1)
+			      . "<br>" . bar_chart_three($m[5], $m[1],
+						$m[0]-$m[1], $m[5]-$m[0])
+			      , 1, ["width='15%'", "width='35%'"]);
+			}
+		elsif (@m && $m[0] && !$m[5]) {
+			# Just regular RAM limit
 			print ui_table_row($text{'right_real'},
 			      text('right_used',
 			           nice_size($m[0]*1024), nice_size(($m[0]-$m[1])*1024))
