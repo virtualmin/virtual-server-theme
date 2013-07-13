@@ -27,6 +27,7 @@ if ($hasvirt) {
 	}
 if ($hasvm2) {
 	&foreign_require("server-manager", "server-manager-lib.pl");
+	$is_master = &server_manager::can_action(undef, "global");
 	}
 if (defined(&virtual_server::get_provider_link)) {
 	(undef, $image, $link) = &virtual_server::get_provider_link();

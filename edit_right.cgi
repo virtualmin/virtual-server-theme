@@ -81,7 +81,8 @@ if ($hasvm2) {
 			 map { [ $_->{'id'}, $_->{'host'} ] } @servers ]));
 	}
 
-if ($hasvirt && &virtual_server::master_admin()) {
+if ($hasvirt && &virtual_server::master_admin() ||
+     $hasvm2 && &server_manager::can_action(undef, "global")) {
 	# Allow changing
 	print &ui_table_row($text{'edright_global'},
 		&ui_yesno_radio("global", int($sects->{'global'})));

@@ -45,7 +45,8 @@ if ($hasvirt) {
 if ($hasvm2) {
 	$sect->{'server'} = $in{'server'};
 	}
-if ($hasvirt && &virtual_server::master_admin()) {
+if ($hasvirt && &virtual_server::master_admin() ||
+     $hasvm2 && &server_manager::can_action(undef, "global")) {
 	$sect->{'global'} = $in{'global'};
 	$sect->{'nowebmin'} = $in{'nowebmin'};
 	}
