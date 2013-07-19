@@ -30,6 +30,7 @@ else {
 	$in{'fsize'} =~ /^\d+$/ || &error($text{'edright_efsize'});
 	$sect->{'fsize'} = $in{'fsize'};
 	}
+$sect->{'nosearch'} = !$in{'search'};
 if ($hasvirt) {
 	$sect->{'dom'} = $in{'dom'};
 	$sect->{'qsort'} = $in{'qsort'};

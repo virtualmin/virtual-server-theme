@@ -50,6 +50,7 @@ if ($hasmail) {
 
 # Work out current mode
 $sects = &get_right_frame_sections();
+$cansearch = $gaccess{'webminsearch'} ne '0' && !$sects->{'nosearch'};
 $product = &get_product_name();
 $mode = $in{'mode'} ? $in{'mode'} :
 	$sects->{'tab'} ? $sects->{'tab'} :
@@ -141,8 +142,7 @@ if (@has > 1) {
 
 print "<div class='wrapper'>\n";
 print "<table id='main' width='100%'><tbody><tr><td>\n";
-if (($mode eq "webmin" || $mode eq "usermin") &&
-    $gaccess{'webminsearch'} ne '0') {
+if (($mode eq "webmin" || $mode eq "usermin") && $cansearch) {
 	# Left form is for searching Webmin
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
 	$doneform = 1;
@@ -728,8 +728,7 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 	}
 
 
-if (($mode eq "webmin" || $mode eq "usermin") &&
-    $gaccess{'webminsearch'} ne '0') {
+if (($mode eq "webmin" || $mode eq "usermin") && $cansearch) {
 	# Show module/help search form
 	print $text{'left_search'},"&nbsp;";
 	print &ui_textbox("search", undef, 15);
@@ -739,7 +738,7 @@ print "</form>\n" if ($doneform);
 
 # Search form for Virtualmin modules only
 if (($mode eq "virtualmin" && $hasvirt ||
-     $mode eq "vm2" && $hasvm2) && $gaccess{'webminsearch'} ne '0') {
+     $mode eq "vm2" && $hasvm2) && $cansearch) {
 	print "<form action=webmin_search.cgi target=right style='display:inline'>\n";
 	print "<div class='leftlink'>$text{'left_search'} ",
 	      &ui_textbox("search", undef, 15),"</div>\n";

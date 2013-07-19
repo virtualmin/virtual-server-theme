@@ -277,6 +277,7 @@ edright_virtualmin=Virtualmin
 edright_vm2=Cloudmin
 edright_webmin=Webmin
 edright_fsize=Left frame width
+edright_search=Show search box?
 edright_fsizedef=Decide automatically
 edright_pixels=pixels
 edright_efsize=Missing or invalid left frame width in pixels

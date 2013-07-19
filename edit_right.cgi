@@ -44,6 +44,10 @@ print &ui_table_row($text{'edright_fsize'},
     &ui_opt_textbox("fsize", $sects->{'fsize'}, 6, $text{'edright_fsizedef'}).
     " ".$text{'edright_pixels'});
 
+# Show search box
+print &ui_table_row($text{'edright_search'},
+    &ui_yesno_radio("search", !$sects->{'nosearch'}));
+
 if ($hasvirt) {
 	# Default domain
 	print &ui_table_row($text{'edright_dom'},
