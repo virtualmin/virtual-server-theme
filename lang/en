@@ -215,6 +215,7 @@ right_status_service=Service
 right_status_up=Up?
 right_status_actions=Actions
 right_vm2limitsheader=Cloudmin Limits
+right_vm2usageheader=Usage By Owned Systems
 right_vm2cservers=Current system count
 right_vm2mservers=Maximum systems
 right_vm2cram=Current total RAM assigned

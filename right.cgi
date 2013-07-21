@@ -35,7 +35,7 @@ foreach $o (split(/\0/, $in{'auto'})) {
 	}
 if (!defined($in{'open'})) {
 	@open = ( 'system', 'reseller', 'status', 'updates', 'common',
-		  'vm2limits' );
+		  'vm2limits', 'vm2usage' );
 	@auto = ( 'status' );
 	}
 %open = map { $_, indexof($_, @auto) >= 0 ? 2 : 1 } @open;
@@ -1023,6 +1023,21 @@ elsif ($level == 4) {
 			print ui_hidden_table_end('vm2servers');
 			}
 		}
+
+	# Show usage
+	if (defined(&server_manager::get_owner_usage)) {
+		$owner = &server_manager::get_system_owner($base_remote_user);
+		@allusage = &server_manager::get_owner_usage($owner);
+		@allusage = sort { $a->{'start'} cmp $b->{'start'} } @allusage;
+		if (@allusage) {
+			print ui_hidden_table_start(
+			    $text{'right_vm2usageheader'},
+			    "width=100%", 2, "vm2usage", $open{'vm2usage'},
+			    [ "width=30%", undef ]);
+			show_vm2_usage(\@allusage);
+			print ui_hidden_table_end('vm2servers');
+			}
+		}
 	}
 
 # See if any plugins have defined sections
@@ -1553,6 +1568,87 @@ foreach my $l (@server_manager::plan_limit_types) {
 		}
 	print ui_table_row($text{'right_vm2c'.$l}, $msg1);
 	print ui_table_row($text{'right_vm2m'.$l}, $msg2);
+	}
+}
+
+# show_vm2_usage(&usage)
+# Print usage of various types over the last period
+sub show_vm2_usage
+{
+my ($allusage) = @_;
+my @usageids = &unique(map { $_->{'server'} } @$allusage);
+
+# Period range
+my ($start, $end) = &server_manager::usage_period_start_end($allusage, 0);
+print &ui_table_row($server_manager::text{'edit_ustart'}, &make_date($start));
+
+# Total uptime over usage period
+my $up = &server_manager::sum_usage_over_period($allusage, $start, $end, 'up');
+print &ui_table_row($server_manager::text{'edit_uup'},
+	&server_manager::nice_hour_mins_secs($up));
+
+# Cross-module calls to &text don't work
+$text{'edit_ugbh'} = $server_manager::text{'edit_ugbh'};
+$text{'edit_ucpuh'} = $server_manager::text{'edit_ucpuh'};
+$text{'edit_ugbh2'} = $server_manager::text{'edit_ugbh2'};
+$text{'owner_del'} = $server_manager::text{'owner_del'};
+
+# Memory over accounting period
+$mem = &server_manager::sum_usage_over_period(\@allusage, $start, $end, 'mem');
+if ($mem) {
+	$gbh = sprintf("%.2f", ($mem / (3600*1024*1024*1024)));
+	$avgmem = &nice_size(int($mem / ($end - $start)));
+	$upmem = &nice_size(int($mem / $up));
+	print &ui_table_row($server_manager::text{'edit_umem'},
+			    &text('edit_ugbh', $gbh, $avgmem, $upmem));
+	}
+
+# CPU allocation, in percent hours
+$cpu = &server_manager::sum_usage_over_period(\@allusage, $start, $end, 'cpu');
+if ($cpu) {
+	$cpuh = sprintf("%.2f", ($cpu / 3600));
+	$avgcpu = int($cpu / ($end - $start));
+	$upcpu = int($cpu / $up);
+	print &ui_table_row($server_manager::text{'edit_ucpu'},
+		    &text('edit_ucpuh', $cpuh, $avgcpu, $upcpu));
+	}
+
+# CPU load, in percent hours
+$load = &server_manager::sum_usage_over_period(\@allusage, $start, $end, 'load');
+if ($load) {
+	$cpuh = sprintf("%.2f", ($load / 3600));
+	$avgcpu = int($load / ($end - $start));
+	$upcpu = int($load / $up);
+	print &ui_table_row($server_manager::text{'edit_uload'},
+		    &text('edit_ucpuh', $cpuh, $avgcpu, $upcpu));
+	}
+
+# Disk assigned and used over period
+$disk = &server_manager::sum_usage_over_period(\@allusage, $start, $end, 'disk');
+$space = &server_manager::sum_usage_over_period(\@allusage, $start, $end, 'space');
+if ($disk && $disk != $space) {
+	$gbh = sprintf("%.2f", ($disk / (3600*1024*1024*1024)));
+	$avgdisk = &nice_size(int($disk / ($end - $start)));
+	print &ui_table_row($server_manager::text{'edit_udisk'},
+			    &text('edit_ugbh2', $gbh, $avgdisk));
+	}
+if ($space) {
+	$gbh = sprintf("%.2f", ($space / (3600*1024*1024*1024)));
+	$avgspace = &nice_size(int($space / ($end - $start)));
+	print &ui_table_row($server_manager::text{'edit_uspace'},
+			    &text('edit_ugbh2', $gbh, $avgspace));
+	}
+
+# Systems included
+if (@usageids) {
+	my @usagenames;
+	foreach my $id (@usageids) {
+		my $us = &server_manager::get_managed_server($id);
+		push(@usagenames, $us ? $us->{'host'} :
+			&text('owner_del', $id));
+		}
+	print &ui_table_row($server_manager::text{'owner_usagesystems'},
+		&ui_links_row(\@usagenames));
 	}
 }
 

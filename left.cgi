@@ -691,7 +691,7 @@ if ($mode eq "webmin" || $mode eq "usermin") {
 print "<div class='linkwithicon'><img src='images/gohome.png' alt=''>\n";
 if ($mode eq "vm2") {
 	$sparam = $server ? "&$server->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=vm2limits&open=updates&open=owner$sparam'>$text{'left_home3'}</a></div></div>\n";
+	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=vm2limits&open=vm2usage&open=updates&open=owner$sparam'>$text{'left_home3'}</a></div></div>\n";
 	}
 elsif (&get_product_name() eq 'usermin') {
 	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";
