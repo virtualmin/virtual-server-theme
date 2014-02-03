@@ -790,12 +790,12 @@ for($i=0; $i+1<@_; $i+=2) {
 			# Don't bother with Cloudmin menu
 			next;
 			}
-		elsif ($url =~ /(view|edit)_domain.cgi/ &&
-		       get_module_name() eq 'virtual-server' ||
-		       $url =~ /^\/virtual-server\/(view|edit)_domain.cgi/) {
-			# Don't bother with link to domain details
-			next;
-			}
+		#elsif ($url =~ /(view|edit)_domain.cgi/ &&
+		#       get_module_name() eq 'virtual-server' ||
+		#       $url =~ /^\/virtual-server\/(view|edit)_domain.cgi/) {
+		#	# Don't bother with link to domain details
+		#	next;
+		#	}
 		elsif ($url =~ /edit_serv.cgi/ &&
 		       get_module_name() eq 'server-manager' ||
 		       $url =~ /^\/virtual-server\/edit_serv.cgi/) {
