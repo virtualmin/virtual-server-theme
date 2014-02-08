@@ -1221,12 +1221,19 @@ local ($quota, $maxquota) = @_;
 local @quota = @$quota;
 local $max = $sects->{'max'} || $default_domains_to_show;
 if (@quota) {
-	# If showing by percent used, limit to those with a limit
-	if ($sects->{'qshow'}) {
+	# Work out if showing by percent makes sense
+	my $qshow = $sects->{'qshow'};
+	if ($qshow) {
+		my @quotawithlimit = grep { $_->[2] } @quota;
+		$qshow = 0 if (!@quotawithlimit);
+		}
+
+	# Limit to those with a quota limit, if showing a percent
+	if ($qshow) {
 		@quota = grep { $_->[2] } @quota;
 		}
 	
-	if ($sects->{'qsort'}) {
+	if ($qsort) {
 		# Sort by percent used
 		@quota = grep { $_->[2] } @quota;
 		@quota = sort { ($b->[1]+$b->[3])/$b->[2] <=>
@@ -1264,7 +1271,7 @@ if (@quota) {
 		print "<td class='ui_form_label' width=20%><a href='virtual-server/$ed?",
 		      "dom=$q->[0]->{'id'}'>$dname</a></td>\n";
 		print "<td class='ui_form_value' width=50% nowrap>";
-		if ($sects->{'qshow'}) {
+		if ($qshow) {
 			# By percent used
 			$qpc = int($q->[1]*100 / $q->[2]);
 			$dpc = int($q->[3]*100 / $q->[2]);
@@ -1354,6 +1361,13 @@ else {
 	}
 print "<tr class='ui_form_pair'> <td class='ui_form_value' colspan=2>$qmsg</td> </tr>\n";
 
+# Work out if showing by percent makes sense
+my $qshow = $sects->{'qshow'};
+if ($qshow) {
+	my @domswithlimit = grep { $_->{'bw_limit'} } @doms;
+	$qshow = 0 if (!@domswithlimit);
+	}
+
 # The table of domains
 foreach my $d (@doms) {
 	print "<tr class='ui_form_pair'>\n";
@@ -1365,7 +1379,7 @@ foreach my $d (@doms) {
 	print "<td class='ui_form_value' width=50% nowrap>";
 	$pc = $d->{'bw_limit'} ? int($d->{'bw_usage'}*100 / $d->{'bw_limit'})
 			       : undef;
-	if ($sects->{'qshow'}) {
+	if ($qshow) {
 		# By percent used
 		print bar_chart_three(
 		    100,
