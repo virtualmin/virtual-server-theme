@@ -1120,14 +1120,14 @@ sub bar_chart
 {
 local ($total, $used, $blue) = @_;
 my $rv;
-$rv .= sprintf "<div class='barchart'><img src=images/red.gif width=%s%% height=12px>",
+$rv .= sprintf "<div class='barchart'><img src=images/red.gif alt='' width=%s%% height=12px>",
   int($bar_width*$used/$total)+1;
 if ($blue) {
-  $rv .= sprintf "<img src=images/blue.gif width=%s%% height=12px></div>",
+  $rv .= sprintf "<img src=images/blue.gif alt='' width=%s%% height=12px></div>",
     $bar_width - int($bar_width*$used/$total)-1;
   }
 else {
-  $rv .= sprintf "<img src=images/white.gif width=%s%% height=12px></div>",
+  $rv .= sprintf "<img src=images/white.gif alt='' width=%s%% height=12px></div>",
     $bar_width - int($bar_width*$used/$total)-1;
   }
 return $rv;
