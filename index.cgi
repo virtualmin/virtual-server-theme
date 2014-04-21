@@ -106,8 +106,8 @@ if ($upperframe =~ /\$LEVEL|\$\{LEVEL/) {
 # Show frameset
 &PrintHeader();
 $cols = &get_left_frame_width();
-$frame1 = "<frame name=left src='$left' scrolling=auto>";
-$frame2 = "<frame name=right src='$goto' noresize scrolling=auto>";
+$frame1 = "<frame name=left title=Navigation src='$left' scrolling=auto>";
+$frame2 = "<frame name=right title=Content src='$goto' noresize scrolling=auto>";
 $fscols = "$cols,*";
 if ($current_lang_info->{'rtl'} || $current_lang eq "ar") {
 	($frame1, $frame2) = ($frame2, $frame1);
