@@ -16,6 +16,7 @@ left_home=System Information
 left_home2=Account Information
 left_home3=Cloudmin Information
 left_pass=Change Password
+left_sig=Edit Signature
 left_filter=Email Filters
 left_autoreply=Automatic Reply
 left_forward=Forward Email

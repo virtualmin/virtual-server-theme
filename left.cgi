@@ -520,6 +520,12 @@ if ($mode eq "mail") {
 		print "<div class='linkwithicon'><img src='images/pass.gif' alt=''>\n";
 		print "<div class='aftericon'><a target=right href='changepass/'>$text{'left_pass'}</a></div></div>\n";
 		}
+
+	# Edit signature link
+	if (&foreign_available("mailbox")) {
+		print "<div class='linkwithicon'><img src='images/sig.gif' alt=''>\n";
+		print "<div class='aftericon'><a target=right href='mailbox/edit_sig.cgi'>$text{'left_sig'}</a></div></div>\n";
+		}
 	}
 
 if ($mode eq "vm2" && $server) {
