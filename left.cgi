@@ -30,14 +30,15 @@ if ($hasvm2) {
 	$is_master = &server_manager::can_action(undef, "global");
 	}
 if (defined(&virtual_server::get_provider_link)) {
-	(undef, $image, $link) = &virtual_server::get_provider_link();
+	(undef, $image, $link, $alt) = &virtual_server::get_provider_link();
 	}
 if (!$image && defined(&server_manager::get_provider_link)) {
-	(undef, $image, $link) = &server_manager::get_provider_link();
+	(undef, $image, $link, $alt) = &server_manager::get_provider_link();
 	}
 if ($image) {
 	print "<a href='".&html_escape($link)."' target='_new'>" if ($link);
-	print "<center><img src='".&html_escape($image)."' alt=''></center>";
+	print "<center><img src='".&html_escape($image)."' ".
+	      "alt='".&html_escape($alt)."'></center>";
 	print "</a><br>\n" if ($link);
 	}
 
