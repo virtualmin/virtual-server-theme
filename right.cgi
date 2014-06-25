@@ -528,11 +528,15 @@ if ($level == 0) {		# Master admin
 				     $ipi->[1] eq 'shared' ?
 					$text{'right_sharedip'} :
 					$text{'right_ip'},"</td>\n";
+			$slink = "../virtual-server/search.cgi?field=ip&what=$ipi->[0]";
 			if ($ipi->[3] == 1) {
-				print "<td class='ui_form_value'><tt>$ipi->[4]</tt></td>\n";
+				print "<td class='ui_form_value'>".
+				      "<tt>$ipi->[4]</tt></td>\n";
 				}
 			else {
-				print "<td class='ui_form_value'>",text('right_ips', $ipi->[3]),	
+				print "<td class='ui_form_value'>",
+				      "<a href='$slink'>".
+					&text('right_ips', $ipi->[3])."</a>",
 				      "</td>\n";
 				}
 			print "</tr>\n";
