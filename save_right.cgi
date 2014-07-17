@@ -7,7 +7,9 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 &load_theme_library();
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 $sects = &get_right_frame_sections();
-!$sects->{'global'} || &virtual_server::master_admin() ||
+!$sects->{'global'} ||
+   ($hasvirt && &virtual_server::master_admin()) ||
+   ($hasvm2 && !$server_manager::access{'owner'}) ||
 	&error($text{'edright_ecannot'});
 
 # Validate and store
