@@ -283,6 +283,7 @@ edright_search=Show search box below left menu?
 edright_fsizedef=Decide automatically
 edright_pixels=pixels
 edright_efsize=Missing or invalid left frame width in pixels
+edright_ecannot=You are not allowed to customize this page
 
 has_virtualmin=Virtualmin
 has_mail=Mail
