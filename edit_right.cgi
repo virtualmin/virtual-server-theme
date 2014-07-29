@@ -5,8 +5,8 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 $sects = &get_right_frame_sections();
 !$sects->{'global'} ||
-   ($hasvirt && &virtual_server::master_admin()) ||
-   ($hasvm2 && !$server_manager::access{'owner'}) ||
+   $hasvirt && &virtual_server::master_admin() ||
+   $hasvm2 && !$server_manager::access{'owner'} ||
 	&error($text{'edright_ecannot'});
 
 &ui_print_header(undef, $text{'edright_title'}, "", undef, 0, 1, 1);

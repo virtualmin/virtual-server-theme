@@ -47,7 +47,7 @@ if ($hasvirt || $hasvm2) {
 	$sects = get_right_frame_sections();
 	if (!$sects->{'global'} ||
 	    $hasvirt && virtual_server::master_admin() ||
-	    $hasvm2) {
+	    $hasvm2 && !$server_manager::access{'owner'}) {
 		print "<div align=right>";
 		@links = ( "<a href='edit_right.cgi'>$text{'right_edit'}</a>" );
 		if ($hasvirt && virtual_server::master_admin()) {
