@@ -14,7 +14,7 @@ if ($in{'dom'} && $hasvirt) {
 		$goto = &virtual_server::can_config_domain($d) ?
 			"virtual-server/edit_domain.cgi?dom=$d->{'id'}" :
 			"virtual-server/view_domain.cgi?dom=$d->{'id'}";
-		$left = "left.cgi?dom=$d->{'id'}";
+		$left = &left_page_cgi()."?dom=$d->{'id'}";
 		}
 	}
 if (!$goto) {

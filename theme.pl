@@ -105,7 +105,8 @@ local ($d, $action) = @_;
 print "<script>\n";
 if ($action eq 'create') {
 	# Select the new domain
-	print "top.left.location = '$gconfig{'webprefix'}/left.cgi?dom=$d->{'id'}';\n";
+	my $left = &left_page_cgi();
+	print "top.left.location = '$gconfig{'webprefix'}/$left?dom=$d->{'id'}';\n";
 	}
 else {
 	# Just refresh left
@@ -142,6 +143,7 @@ if ($action eq 'create' || $action eq 'delete' ||
 sub theme_select_server
 {
 local ($server) = @_;
+my $left = &left_page_cgi();
 print <<EOF;
 <script>
 if (window.parent && window.parent.frames[0]) {
@@ -155,7 +157,7 @@ if (window.parent && window.parent.frames[0]) {
 			//	// Need to change value of selector
 			//	serversel.value = '$server->{'id'}';
 			//	}
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/$left?mode=vm2&sid=$server->{'id'}';
 			}
 		}
 	}
@@ -169,6 +171,7 @@ EOF
 sub theme_select_domain
 {
 local ($d) = @_;
+my $left = &left_page_cgi();
 print <<EOF;
 <script>
 if (window.parent && window.parent.frames[0]) {
@@ -179,7 +182,7 @@ if (window.parent && window.parent.frames[0]) {
 		if (domsel && domsel.value != '$d->{'id'}') {
 			// Need to change value
 			// domsel.value = '$d->{'id'}';
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/$left?mode=virtualmin&dom=$d->{'id'}';
 			}
 		}
 	}
