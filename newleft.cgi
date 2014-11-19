@@ -118,38 +118,31 @@ elsif ($mode eq "modules") {
 	if ($gconfig{"notabs_${base_remote_user}"} == 2 ||
 	    $gconfig{"notabs_${base_remote_user}"} == 0 && $gconfig{'notabs'}) {
 		# Show modules in one list
-		foreach $minfo (map { @{$_->{'modules'}} } @cats) {
-			&print_category_link("$minfo->{'dir'}/",
-				     $minfo->{'desc'},
-				     undef,
-				     undef,
-				     $minfo->{'noframe'} ? "_top" : "", 1);
-			}
+		@leftitems = map { &module_to_menu_item($_) }
+				 (map { @{$_->{'modules'}} } @cats);
+		&show_menu_items_list(\@leftitems, 0);
 		}
 	else {
 		# Show all modules under categories
+		@leftitems = ( );
 		foreach $c (@cats) {
-			# Show category opener, plus modules under it
-			&print_category_opener($c->{'code'}, \@catnames,
-				$c->{'unused'} ?
-				"<font color=#888888>$c->{'desc'}</font>" :
-				$c->{'desc'});
-			print "<div class='itemhidden' id='$c->{'code'}'>";
-			foreach $minfo (@{$c->{'modules'}}) {
-				&print_category_link("$minfo->{'dir'}/",
-					     $minfo->{'desc'},
-					     undef,
-					     undef,
-					     $minfo->{'noframe'} ? "_top" : "");
+			my $citem = { 'type' => 'cat',
+				      'id' => $c->{'code'},
+				      'desc' => $c->{'desc'},
+				      'members' => [ ] };
+			foreach my $minfo (@{$c->{'modules'}}) {
+				push(@{$citem->{'members'}},
+				     &module_to_menu_item($minfo));
 				}
-			print "</div>\n";
+			push(@leftitems, $citem);
 			}
+		&show_menu_items_list(\@leftitems, 0);
 		}
-
 	print "<hr>\n";
 	}
 
 # Show system information link
+# XXX add to menu items
 print "<div class='linkwithicon'><img src='images/gohome.png' alt=''>\n";
 if ($mode eq "vm2") {
 	$sparam = $server ? "&$server->{'id'}" : "";
@@ -265,15 +258,15 @@ foreach my $item (@$items) {
 		# Start of a new category
 		my $c = $item->{'id'};
 		print "<div class='linkwithicon'>";
-		print "<a href=\"javascript:toggleview('$c','toggle$c')\" ".
+		print "<a href=\"javascript:toggleview('cat$c','toggle$c')\" ".
 		      "id='toggle$c'><img border='0' src='images/closed.gif' ".
 		      "alt='[+]'></a>\n";
 		print "<div class='aftericon'>".
-		      "<a href=\"javascript:toggleview('$c','toggle$c')\" ".
+		      "<a href=\"javascript:toggleview('cat$c','toggle$c')\" ".
 		      "id='toggletext$c'>".
 		      "<font color='#000000'>$item->{'desc'}</font></a></div>";
 		print "</div>\n";
-		print "<div class='itemhidden' id='cat_$c'>\n";
+		print "<div class='itemhidden' id='cat$c'>\n";
 		&show_menu_items_list($item->{'members'}, $indent+1);
 		print "</div>\n";
 		}
@@ -315,3 +308,13 @@ foreach my $item (@$items) {
 	}
 }
 
+# module_to_menu_item(&module)
+# Converts a module to the hash ref format expected by show_menu_items_list
+sub module_to_menu_item
+{
+my ($minfo) = @_;
+return { 'type' => 'item',
+	 'id' => $minfo->{'dir'},
+	 'desc' => $minfo->{'desc'},
+	 'link' => '/'.$minfo->{'dir'}.'/' };
+}
