@@ -180,6 +180,11 @@ else {
 return ($hasvirt, $level, $hasvm2);
 }
 
+sub left_page_cgi
+{
+local %tconfig = &foreign_config("virtual-server-theme");
+return $tconfig{'newleft'} ? 'newleft.cgi' : 'left.cgi';
+}
 
 
 1;

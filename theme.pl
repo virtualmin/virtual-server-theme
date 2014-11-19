@@ -1079,5 +1079,11 @@ sub theme_ui_yui_grid_section_end {
 	return "</div> <!-- grid_$id -->\n";
 }
 
+sub left_page_cgi
+{
+local %tconfig = &foreign_config("virtual-server-theme");
+return $tconfig{'newleft'} ? 'newleft.cgi' : 'left.cgi';
+}
+
 1;
 

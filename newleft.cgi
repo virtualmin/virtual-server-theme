@@ -12,6 +12,7 @@ print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated
 
 # Find all left-side items from Webmin
 @leftitems = &list_combined_webmin_menu();
+($lefttitle) = grep { $_->{'type'} eq 'title' } @leftitems;
 
 # Default left-side mode
 $mode = $in{'mode'} ? $in{'mode'} :
@@ -21,27 +22,33 @@ $mode = $in{'mode'} ? $in{'mode'} :
 # Show mode selector
 @has = ( );
 if (@leftitems) {
-	push(@has, "items");
+	push(@has, { 'id' => 'items',
+		     'desc' => $lefttitle->{'desc'},
+		     'icon' => $lefttitle->{'icon'} });
 	}
 if ($sects->{'nowebmin'} == 0 ||
     $sects->{'nowebmin'} == 2 && $is_master) {
-	push(@has, "modules");
+	$p = &get_product_name();
+	push(@has, { 'id' => 'modules',
+		     'desc' => $text{'has_'.$p},
+		     'icon' => '/images/'.$p.'-small.png' });
 	}
-if (&indexof($mode, @has) < 0) {
-	$mode = $has[0];
+if (&indexof($mode, (map { $_->{'id'} } @has)) < 0) {
+	$mode = $has[0]->{'id'};
 	}
 if (@has > 1) {
-	# XXX use correct title
 	print "<div class='mode'>";
 	foreach $m (@has) {
-		if ($m ne $mode) {
-			print "<a href='newleft.cgi?mode=$m&amp;dom=$did'>";
+		if ($m->{'id'} ne $mode) {
+			print "<a href='newleft.cgi?mode=$m->{'id'}&dom=$did'>";
 			}
 		else {
 			print "<b>";
 			}
-		print "<img src='images/$m-small.png' alt='$m'> ".
-		      $text{'has_'.$m};
+		if ($m->{'icon'}) {
+			print "<img src='$m->{'icon'}' alt='$m->{'id'}'> ";
+			}
+		print $m->{'desc'};
 		if ($m ne $mode) {
 			print "</a>\n";
 			}
@@ -101,36 +108,7 @@ elsif ($mode eq "mail") {
 $selwidth = (&get_left_frame_width() - 70)."px";
 if ($mode eq "items") {
 	# Show left menu items recursively
-	&show_menu_items_list(\@leftitems);
-
-	# Show 'objects' category actions at top level
-	my @incat = grep { $_->{'cat'} eq 'objects' } @buts;
-	foreach my $b (@incat) {
-		&print_virtualmin_link($b, 'leftlink');
-		}
-
-	# Show others by category (except those for creation, which appear
-	# at the top)
-	my @cats = &unique(map { $_->{'cat'} } @buts);
-	foreach my $c (@cats) {
-		next if ($c eq 'objects' || $c eq 'create');
-		my @incat = grep { $_->{'cat'} eq $c } @buts;
-		&print_category_opener("cat_$c", \@cats,
-				       $incat[0]->{'catname'});
-		print "<div class='itemhidden' id='cat_$c'>\n";
-		my @incatsort = grep { !$_->{'nosort'} } @incat;
-		if (@incatsort) {
-			@incat = sort { ($a->{'title'} || $a->{'desc'}) cmp
-                                        ($b->{'title'} || $b->{'desc'})} @incat;
-			}
-		foreach my $b (@incat) {
-			&print_virtualmin_link($b, "linkindented");
-			}
-		print "</div>\n";
-		}
-
-	print "<hr>\n";
-	nodomain:
+	&show_menu_items_list(\@leftitems, 0);
 	}
 elsif ($mode eq "modules") {
 	# Work out what modules and categories we have
@@ -272,10 +250,11 @@ foreach my $item (@$items) {
 			print "<div class='linkwithicon'>".
 			      "<img src='$item->{'icon'}' alt=''>\n";
 			}
-		my $cls = $indent ? 'linkindented' : 'leftlink';
+		my $cls = $item->{'icon'} ? 'aftericon' :
+		          $indent ? 'linkindented' : 'leftlink';
 		print "<div class='$cls'>";
-		print "<a href='$item->{'url'}' target=right>".
-		      "$item->{'desc'}</a>\n";
+		print "<a href='$item->{'link'}' target=right>".
+		      "$item->{'desc'}</a>";
 		print "</div>";
 		if ($item->{'icon'}) {
 			print "</div>";

@@ -38,7 +38,7 @@ if (!$goto) {
 		  	"open=common&open=owner&open=reseller&open=vm2limits&".
 			"open=vm2usage";
 		}
-	$left = "left.cgi";
+	$left = &left_page_cgi();
 	if ($minfo) {
 		$left .= "?$minfo->{'category'}=1";
 		}
