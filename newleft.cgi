@@ -106,11 +106,7 @@ elsif ($mode eq "mail") {
 	}
 
 $selwidth = (&get_left_frame_width() - 70)."px";
-if ($mode eq "items") {
-	# Show left menu items recursively
-	&show_menu_items_list(\@leftitems, 0);
-	}
-elsif ($mode eq "modules") {
+if ($mode eq "modules") {
 	# Work out what modules and categories we have
 	@cats = &get_visible_modules_categories();
 	@catnames = map { $_->{'code'} } @cats;
@@ -136,45 +132,45 @@ elsif ($mode eq "modules") {
 				}
 			push(@leftitems, $citem);
 			}
-		&show_menu_items_list(\@leftitems, 0);
 		}
-	print "<hr>\n";
+	push(@leftitems, { 'type' => 'hr' });
 	}
 
 # Show system information link
-# XXX add to menu items
-print "<div class='linkwithicon'><img src='images/gohome.png' alt=''>\n";
-if ($mode eq "vm2") {
-	$sparam = $server ? "&$server->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=vm2servers&open=vm2limits&open=vm2usage&open=updates&open=owner$sparam'>$text{'left_home3'}</a></div></div>\n";
-	}
-elsif (&get_product_name() eq 'usermin') {
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=common'>$text{'left_home2'}</a></div></div>\n";
-	}
-else {
-	$dparam = $d ? "&amp;dom=$d->{'id'}" : "";
-	print "<div class='aftericon'><a target=right href='right.cgi?open=system&auto=status&open=updates&open=reseller$dparam'>$text{'left_home'}</a></div></div>\n";
-	}
+push(@leftitems, { 'type' => 'item',
+		   'id' => 'home',
+		   'desc' => $text{'left_home'},
+		   'link' => '/right.cgi',
+		   'icon' => '/images/gohome.png' });
 
 # Show refresh modules link
-if ($mode eq "webmin" && &foreign_available("webmin")) {
-        print "<div class='linkwithicon'><img src='images/reload.png' alt=''>\n";
-        print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
+if ($mode eq "modules" && &foreign_available("webmin")) {
+	push(@leftitems, { 'type' => 'item',
+			   'id' => 'refresh',
+			   'desc' => $text{'main_refreshmods'},
+			   'link' => '/webmin/refresh_modules.cgi',
+			   'icon' => '/images/reload.png' });
 	}
 
 # Show logout link
 &get_miniserv_config(\%miniserv);
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
-	print "<div class='linkwithicon'><img src='images/stock_quit.png' alt=''>\n";
+	my $logout = { 'type' => 'item',
+		       'id' => 'logout',
+		       'icon' => '/images/stock_quit.png' };
 	if ($main::session_id) {
-		print "<div class='aftericon'><a target=_top href='session_login.cgi?logout=1'>$text{'main_logout'}</a></div>";
+		$logout->{'desc'} = $text{'main_logout'};
+		$logout->{'link'} = '/session_login.cgi?logout=1';
 		}
 	else {
-		print "<div class='aftericon'><a target=_top href='switch_user.cgi'>$text{'main_switch'}</a></div>";
+		$logout->{'desc'} = $text{'main_switch'};
+		$logout->{'link'} = '/switch_user.cgi';
 		}
-	print "</div>\n";
+	push(@leftitems, $logout);
 	}
+
+&show_menu_items_list(\@leftitems, 0);
 
 print "</td></tr></tbody></table>\n";
 print "</div>\n";
