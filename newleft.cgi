@@ -280,7 +280,7 @@ foreach my $item (@$items) {
 		}
 	elsif ($item->{'type'} eq 'menu' || $item->{'type'} eq 'input') {
 		# For with an input of some kind
-		print "<form action='$item->{'cgi'}'>\n";
+		print "<form action='$item->{'cgi'}' target=right>\n";
 		foreach my $h (@{$item->{'hidden'}}) {
 			print &ui_hidden(@$h);
 			}
