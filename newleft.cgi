@@ -4,14 +4,13 @@
 $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
-@admincats = ( "tmpl", "create", "backup" );
-%gaccess = &get_module_acl(undef, "");
 
 &popup_header("Virtualmin");
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
 
 # Find all left-side items from Webmin
-@leftitems = &list_combined_webmin_menu();
+$sects = &get_right_frame_sections();
+@leftitems = &list_combined_webmin_menu($sects, \%in);
 ($lefttitle) = grep { $_->{'type'} eq 'title' } @leftitems;
 
 # Default left-side mode
@@ -280,14 +279,21 @@ foreach my $item (@$items) {
 		}
 	elsif ($item->{'type'} eq 'menu' || $item->{'type'} eq 'input') {
 		# For with an input of some kind
-		print "<form action='$item->{'cgi'}' target=right>\n";
+		if ($item->{'cgi'}) {
+			print "<form action='$item->{'cgi'}' target=right>\n";
+			}
+		else {
+			print "<form>\n";
+			}
 		foreach my $h (@{$item->{'hidden'}}) {
 			print &ui_hidden(@$h);
 			}
 		print $item->{'desc'},"\n";
 		if ($item->{'type'} eq 'menu') {
 			print &ui_select($item->{'name'}, $item->{'value'},
-					 $item->{'menu'});
+					 $item->{'menu'}, 1, 0, 0, 0,
+					 "onChange='form.submit()' ".
+					 "style='width:$selwidth'");
 			}
 		elsif ($item->{'type'} eq 'input') {
 			print &ui_textbox($item->{'name'}, $item->{'value'},
