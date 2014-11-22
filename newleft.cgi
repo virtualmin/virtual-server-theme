@@ -300,7 +300,8 @@ foreach my $item (@$items) {
 					  $item->{'size'});
 			}
 		if ($item->{'icon'}) {
-			print "<input type=image src='$item->{'icon'}' border=0>\n";
+			print "<input type=image src='$item->{'icon'}' ".
+			      "border=0 class=goArrow>\n";
 			}
 		print "</form>\n";
 		}
