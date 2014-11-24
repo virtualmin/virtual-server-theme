@@ -290,9 +290,14 @@ foreach my $item (@$items) {
 			}
 		print $item->{'desc'},"\n";
 		if ($item->{'type'} eq 'menu') {
+			my $sel = "";
+			if ($item->{'onchange'}) {
+				$sel = "window.parent.frames[1].location = ".
+				       "\"$item->{'onchange'}\" + this.value";
+				}
 			print &ui_select($item->{'name'}, $item->{'value'},
 					 $item->{'menu'}, 1, 0, 0, 0,
-					 "onChange='form.submit()' ".
+					 "onChange='form.submit(); $sel' ".
 					 "style='width:$selwidth'");
 			}
 		elsif ($item->{'type'} eq 'input') {
