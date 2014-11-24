@@ -126,6 +126,15 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 	push(@leftitems, $logout);
 	}
 
+# Show Webmin search form
+my $cansearch = $gaccess{'webminsearch'} ne '0' && !$sects->{'nosearch'};
+if ($mode eq "modules" && $cansearch) {
+	push(@leftitems, { 'type' => 'input',
+			   'desc' => $text{'left_search'},
+			   'name' => 'search',
+			   'cgi' => '/webmin_search.cgi', });
+	}
+
 &show_menu_items_list(\@leftitems, 0);
 
 print "</td></tr></tbody></table>\n";
