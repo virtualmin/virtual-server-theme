@@ -38,22 +38,18 @@ if (&indexof($mode, (map { $_->{'id'} } @has)) < 0) {
 if (@has > 1) {
 	print "<div class='mode'>";
 	foreach $m (@has) {
+		print "<b>";
 		if ($m->{'id'} ne $mode) {
 			print "<a href='newleft.cgi?mode=$m->{'id'}&dom=$did'>";
-			}
-		else {
-			print "<b>";
 			}
 		if ($m->{'icon'}) {
 			print "<img src='$m->{'icon'}' alt='$m->{'id'}'> ";
 			}
 		print $m->{'desc'};
-		if ($m ne $mode) {
+		if ($m->{'id'} ne $mode) {
 			print "</a>\n";
 			}
-		else {
-			print "</b>\n";
-			}
+		print "</b>\n";
 		}
 	print "</div>";
 	}
