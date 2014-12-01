@@ -8,6 +8,16 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 &popup_header("Virtualmin");
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
 
+# Is this user root?
+if (&foreign_available("virtual-server")) {
+	&foreign_require("virtual-server");
+	$is_master = &virtual_server::master_admin();
+	}
+elsif (&foreign_available("server-manager")) {
+	&foreign_require("server-manager");
+	$is_master = &server_manager::can_action(undef, "global");
+	}
+
 # Find all left-side items from Webmin
 $sects = &get_right_frame_sections();
 @leftitems = &list_combined_webmin_menu($sects, \%in);
