@@ -155,6 +155,8 @@ my ($items, $indent) = @_;
 foreach my $item (@$items) {
 	if ($item->{'type'} eq 'item') {
 		# Link to some page
+		my $t = $item->{'target'} eq 'new' ? '_blank' :
+			$item->{'target'} eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
 			print "<div class='linkwithicon'>".
 			      "<img src='$item->{'icon'}' alt=''>\n";
@@ -162,7 +164,7 @@ foreach my $item (@$items) {
 		my $cls = $item->{'icon'} ? 'aftericon' :
 		          $indent ? 'linkindented' : 'leftlink';
 		print "<div class='$cls'>";
-		print "<a href='$item->{'link'}' target=right>".
+		print "<a href='$item->{'link'}' target=$t>".
 		      "$item->{'desc'}</a>";
 		print "</div>";
 		if ($item->{'icon'}) {
