@@ -190,11 +190,12 @@ foreach my $item (@$items) {
 		}
 	elsif ($item->{'type'} eq 'html') {
 		# Some HTML block
-		print $item->{'html'};
+		print "<div class='leftlink'>",$item->{'html'},"</div>\n";
 		}
 	elsif ($item->{'type'} eq 'text') {
 		# A line of text
-		print &html_escape($item->{'desc'}),"<br>\n";
+		print "<div class='leftlink'>",
+		      &html_escape($item->{'desc'}),"</div>\n";
 		}
 	elsif ($item->{'type'} eq 'hr') {
 		# Separator line
@@ -211,6 +212,7 @@ foreach my $item (@$items) {
 		foreach my $h (@{$item->{'hidden'}}) {
 			print &ui_hidden(@$h);
 			}
+		print "<div class='leftlink'>";
 		print $item->{'desc'},"\n";
 		if ($item->{'type'} eq 'menu') {
 			my $sel = "";
@@ -231,6 +233,7 @@ foreach my $item (@$items) {
 			print "<input type=image src='$item->{'icon'}' ".
 			      "border=0 class=goArrow>\n";
 			}
+		print "</div>";
 		print "</form>\n";
 		}
 	elsif ($item->{'type'} eq 'title') {
