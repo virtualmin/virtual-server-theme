@@ -1079,10 +1079,26 @@ sub theme_ui_yui_grid_section_end {
 	return "</div> <!-- grid_$id -->\n";
 }
 
+# This hack is needed until Virtualmin and Cloudmin releases with webmin_menu.pl
+# are commonly available
 sub left_page_cgi
 {
 local %tconfig = &foreign_config("virtual-server-theme");
-return $tconfig{'newleft'} ? 'newleft.cgi' : 'left.cgi';
+if ($tconfig{'newleft'} eq '1') {
+	return 'newleft.cgi';
+	}
+elsif ($tconfig{'newleft'} eq '0') {
+	return 'left.cgi';
+	}
+elsif (&get_product_name() eq 'usermin') {
+	return &get_webmin_version() >= 1.630 ? "newleft.cgi" : "left.cgi";
+	}
+else {
+	local $vdir = &module_root_directory("virtual-server");
+	local $sdir = &module_root_directory("server-manager");
+	return (!-d $vdir || -r "$vdir/webmin_menu.pl") &&
+	       (!-d $sdir || -r "$sdir/webmin_menu.pl") ? "newleft.cgi" : "left.cgi";
+	}
 }
 
 1;
