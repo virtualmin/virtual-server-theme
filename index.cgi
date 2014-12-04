@@ -1,6 +1,7 @@
 #!/usr/local/bin/perl
 
 require "virtual-server-theme/virtual-server-theme-lib.pl";
+require "virtual-server-theme/theme.pl";
 &ReadParse();
 
 # Work out which module to open by default
