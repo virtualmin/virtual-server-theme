@@ -53,7 +53,8 @@ if (@has > 1) {
 			print "<a href='newleft.cgi?mode=$m->{'id'}&dom=$did'>";
 			}
 		if ($m->{'icon'}) {
-			print "<img src='$m->{'icon'}' alt='$m->{'id'}'> ";
+			my $icon = &add_webprefix($m->{'icon'});
+			print "<img src='$icon' alt='$m->{'id'}'> ";
 			}
 		print $m->{'desc'};
 		if ($m->{'id'} ne $mode) {
@@ -157,13 +158,15 @@ foreach my $item (@$items) {
 		my $t = $item->{'target'} eq 'new' ? '_blank' :
 			$item->{'target'} eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
+			my $icon = &add_webprefix($item->{'icon'});
 			print "<div class='linkwithicon'>".
-			      "<img src='$item->{'icon'}' alt=''>\n";
+			      "<img src='$icon' alt=''>\n";
 			}
 		my $cls = $item->{'icon'} ? 'aftericon' :
 		          $indent ? 'linkindented' : 'leftlink';
 		print "<div class='$cls'>";
-		print "<a href='$item->{'link'}' target=$t>".
+		my $link = &add_webprefix($item->{'link'});
+		print "<a href='$link' target=$t>".
 		      "$item->{'desc'}</a>";
 		print "</div>";
 		if ($item->{'icon'}) {
@@ -229,7 +232,8 @@ foreach my $item (@$items) {
 					  $item->{'size'});
 			}
 		if ($item->{'icon'}) {
-			print "<input type=image src='$item->{'icon'}' ".
+			my $icon = &add_webprefix($item->{'icon'});
+			print "<input type=image src='$icon' ".
 			      "border=0 class=goArrow>\n";
 			}
 		print "</div>";
@@ -250,4 +254,12 @@ return { 'type' => 'item',
 	 'id' => $minfo->{'dir'},
 	 'desc' => $minfo->{'desc'},
 	 'link' => '/'.$minfo->{'dir'}.'/' };
+}
+
+# add_webprefix(link)
+# If a URL starts with a / , add webprefix
+sub add_webprefix
+{
+my ($link) = @_;
+return $link =~ /^\// ? $gconfig{'webprefix'}.$link : $link;
 }
