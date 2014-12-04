@@ -1,35 +1,48 @@
 #!/usr/local/bin/perl
 # Show the left-side menu of Virtualmin domains, plus modules
+use warnings;
+use strict;
 
-$trust_unknown_referers = 1;
+# Globals
+our %gconfig;
+our %in;
+our %text;
+our $did;
+our $base_remote_user;
+our %miniserv;
+our %gaccess;
+our $session_id;
+
+our $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
-&ReadParse();
+ReadParse();
 
-&popup_header("Virtualmin");
+popup_header("Virtualmin");
 print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
 
+my $is_master;
 # Is this user root?
-if (&foreign_available("virtual-server")) {
-	&foreign_require("virtual-server");
-	$is_master = &virtual_server::master_admin();
+if (foreign_available("virtual-server")) {
+	foreign_require("virtual-server");
+	$is_master = virtual_server::master_admin();
 	}
-elsif (&foreign_available("server-manager")) {
-	&foreign_require("server-manager");
-	$is_master = &server_manager::can_action(undef, "global");
+elsif (foreign_available("server-manager")) {
+	foreign_require("server-manager");
+	$is_master = server_manager::can_action(undef, "global");
 	}
 
 # Find all left-side items from Webmin
-$sects = &get_right_frame_sections();
-@leftitems = &list_combined_webmin_menu($sects, \%in);
-($lefttitle) = grep { $_->{'type'} eq 'title' } @leftitems;
+my $sects = get_right_frame_sections();
+my @leftitems = list_combined_webmin_menu($sects, \%in);
+my ($lefttitle) = grep { $_->{'type'} eq 'title' } @leftitems;
 
 # Default left-side mode
-$mode = $in{'mode'} ? $in{'mode'} :
+my $mode = $in{'mode'} ? $in{'mode'} :
 	$sects->{'tab'} =~ /vm2|virtualmin|mail/ ? "items" :
 	@leftitems ? "items" : "modules";
 
 # Show mode selector
-@has = ( );
+my @has = ( );
 if (@leftitems) {
 	push(@has, { 'id' => 'items',
 		     'desc' => $lefttitle->{'desc'},
@@ -37,23 +50,23 @@ if (@leftitems) {
 	}
 if ($sects->{'nowebmin'} == 0 ||
     $sects->{'nowebmin'} == 2 && $is_master) {
-	$p = &get_product_name();
+	my $p = get_product_name();
 	push(@has, { 'id' => 'modules',
 		     'desc' => $text{'has_'.$p},
 		     'icon' => '/images/'.$p.'-small.png' });
 	}
-if (&indexof($mode, (map { $_->{'id'} } @has)) < 0) {
+if (indexof($mode, (map { $_->{'id'} } @has)) < 0) {
 	$mode = $has[0]->{'id'};
 	}
 if (@has > 1) {
 	print "<div class='mode'>";
-	foreach $m (@has) {
+	foreach my $m (@has) {
 		print "<b>";
 		if ($m->{'id'} ne $mode) {
 			print "<a href='newleft.cgi?mode=$m->{'id'}&dom=$did'>";
 			}
 		if ($m->{'icon'}) {
-			my $icon = &add_webprefix($m->{'icon'});
+			my $icon = add_webprefix($m->{'icon'});
 			print "<img src='$icon' alt='$m->{'id'}'> ";
 			}
 		print $m->{'desc'};
@@ -68,29 +81,29 @@ if (@has > 1) {
 print "<div class='wrapper'>\n";
 print "<table id='main' width='100%'><tbody><tr><td>\n";
 
-$selwidth = (&get_left_frame_width() - 70)."px";
+my $selwidth = (get_left_frame_width() - 70)."px";
 if ($mode eq "modules") {
 	# Work out what modules and categories we have
-	@cats = &get_visible_modules_categories();
-	@catnames = map { $_->{'code'} } @cats;
+	my @cats = get_visible_modules_categories();
+	my @catnames = map { $_->{'code'} } @cats;
 
 	if ($gconfig{"notabs_${base_remote_user}"} == 2 ||
 	    $gconfig{"notabs_${base_remote_user}"} == 0 && $gconfig{'notabs'}) {
 		# Show modules in one list
-		@leftitems = map { &module_to_menu_item($_) }
+		@leftitems = map { module_to_menu_item($_) }
 				 (map { @{$_->{'modules'}} } @cats);
 		}
 	else {
 		# Show all modules under categories
 		@leftitems = ( );
-		foreach $c (@cats) {
+		foreach my $c (@cats) {
 			my $citem = { 'type' => 'cat',
 				      'id' => $c->{'code'},
 				      'desc' => $c->{'desc'},
 				      'members' => [ ] };
 			foreach my $minfo (@{$c->{'modules'}}) {
 				push(@{$citem->{'members'}},
-				     &module_to_menu_item($minfo));
+				     module_to_menu_item($minfo));
 				}
 			push(@leftitems, $citem);
 			}
@@ -106,7 +119,7 @@ push(@leftitems, { 'type' => 'item',
 		   'icon' => '/images/gohome.png' });
 
 # Show refresh modules link
-if ($mode eq "modules" && &foreign_available("webmin")) {
+if ($mode eq "modules" && foreign_available("webmin")) {
 	push(@leftitems, { 'type' => 'item',
 			   'id' => 'refresh',
 			   'desc' => $text{'main_refreshmods'},
@@ -115,7 +128,7 @@ if ($mode eq "modules" && &foreign_available("webmin")) {
 	}
 
 # Show logout link
-&get_miniserv_config(\%miniserv);
+get_miniserv_config(\%miniserv);
 if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
 	my $logout = { 'type' => 'item',
@@ -141,11 +154,11 @@ if ($mode eq "modules" && $cansearch) {
 			   'cgi' => '/webmin_search.cgi', });
 	}
 
-&show_menu_items_list(\@leftitems, 0);
+show_menu_items_list(\@leftitems, 0);
 
 print "</td></tr></tbody></table>\n";
 print "</div>\n";
-&popup_footer();
+popup_footer();
 
 # show_menu_items_list(&list, indent)
 # Actually prints the HTML for menu items
@@ -158,14 +171,14 @@ foreach my $item (@$items) {
 		my $t = $item->{'target'} eq 'new' ? '_blank' :
 			$item->{'target'} eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
-			my $icon = &add_webprefix($item->{'icon'});
+			my $icon = add_webprefix($item->{'icon'});
 			print "<div class='linkwithicon'>".
 			      "<img src='$icon' alt=''>\n";
 			}
 		my $cls = $item->{'icon'} ? 'aftericon' :
 		          $indent ? 'linkindented' : 'leftlink';
 		print "<div class='$cls'>";
-		my $link = &add_webprefix($item->{'link'});
+		my $link = add_webprefix($item->{'link'});
 		print "<a href='$link' target=$t>".
 		      "$item->{'desc'}</a>";
 		print "</div>";
@@ -187,7 +200,7 @@ foreach my $item (@$items) {
 		      "<font color='#000000'>$item->{'desc'}</font></a></div>";
 		print "</div>\n";
 		print "<div class='itemhidden' id='cat$c'>\n";
-		&show_menu_items_list($item->{'members'}, $indent+1);
+		show_menu_items_list($item->{'members'}, $indent+1);
 		print "</div>\n";
 		}
 	elsif ($item->{'type'} eq 'html') {
@@ -197,7 +210,7 @@ foreach my $item (@$items) {
 	elsif ($item->{'type'} eq 'text') {
 		# A line of text
 		print "<div class='leftlink'>",
-		      &html_escape($item->{'desc'}),"</div>\n";
+		      html_escape($item->{'desc'}),"</div>\n";
 		}
 	elsif ($item->{'type'} eq 'hr') {
 		# Separator line
@@ -212,7 +225,7 @@ foreach my $item (@$items) {
 			print "<form>\n";
 			}
 		foreach my $h (@{$item->{'hidden'}}) {
-			print &ui_hidden(@$h);
+			print ui_hidden(@$h);
 			}
 		print "<div class='leftlink'>";
 		print $item->{'desc'},"\n";
@@ -222,17 +235,17 @@ foreach my $item (@$items) {
 				$sel = "window.parent.frames[1].location = ".
 				       "\"$item->{'onchange'}\" + this.value";
 				}
-			print &ui_select($item->{'name'}, $item->{'value'},
+			print ui_select($item->{'name'}, $item->{'value'},
 					 $item->{'menu'}, 1, 0, 0, 0,
 					 "onChange='form.submit(); $sel' ".
 					 "style='width:$selwidth'");
 			}
 		elsif ($item->{'type'} eq 'input') {
-			print &ui_textbox($item->{'name'}, $item->{'value'},
+			print ui_textbox($item->{'name'}, $item->{'value'},
 					  $item->{'size'});
 			}
 		if ($item->{'icon'}) {
-			my $icon = &add_webprefix($item->{'icon'});
+			my $icon = add_webprefix($item->{'icon'});
 			print "<input type=image src='$icon' ".
 			      "border=0 class=goArrow>\n";
 			}
