@@ -78,7 +78,6 @@ if ($mode eq "modules") {
 		# Show modules in one list
 		@leftitems = map { &module_to_menu_item($_) }
 				 (map { @{$_->{'modules'}} } @cats);
-		&show_menu_items_list(\@leftitems, 0);
 		}
 	else {
 		# Show all modules under categories
