@@ -7,7 +7,6 @@ use strict;
 our %gconfig;
 our %in;
 our %text;
-our $did;
 our $base_remote_user;
 our %miniserv;
 our %gaccess;
@@ -63,7 +62,7 @@ if (@has > 1) {
 	foreach my $m (@has) {
 		print "<b>";
 		if ($m->{'id'} ne $mode) {
-			print "<a href='newleft.cgi?mode=$m->{'id'}&dom=$did'>";
+			print "<a href='newleft.cgi?mode=$m->{'id'}'>";
 			}
 		if ($m->{'icon'}) {
 			my $icon = add_webprefix($m->{'icon'});
