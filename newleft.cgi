@@ -83,6 +83,7 @@ print "<table id='main' width='100%'><tbody><tr><td>\n";
 my $selwidth = (get_left_frame_width() - 70)."px";
 if ($mode eq "modules") {
 	# Work out what modules and categories we have
+	# XXX call list_modules_webmin_menu once Webmin 1.730 is out
 	my @cats = get_visible_modules_categories();
 	my @catnames = map { $_->{'code'} } @cats;
 
@@ -114,7 +115,7 @@ if ($mode eq "modules") {
 push(@leftitems, { 'type' => 'item',
 		   'id' => 'home',
 		   'desc' => $text{'left_home'},
-		   'link' => '/right.cgi',
+		   'link' => '/'.&right_page_cgi(),
 		   'icon' => '/images/gohome.png' });
 
 # Show refresh modules link

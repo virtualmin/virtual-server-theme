@@ -7,5 +7,5 @@ $info = &virtual_server::collect_system_info();
 if ($info) {
 	&virtual_server::save_collected_info($info);
 	}
-&redirect("right.cgi");
+&redirect(&right_page_cgi());
 

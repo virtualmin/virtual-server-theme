@@ -35,7 +35,8 @@ if (!$goto) {
 		$goto = "$minfo->{'dir'}/";
 		}
 	else {
-		$goto = "right.cgi?open=system&auto=status&open=updates&".
+		$goto = &right_page_cgi().
+			"?open=system&auto=status&open=updates&".
 		  	"open=common&open=owner&open=reseller&open=vm2limits&".
 			"open=vm2usage";
 		}

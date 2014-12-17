@@ -20,5 +20,5 @@ print &ui_select("overlay", $overlay,
 	   map { [ $_->{'dir'}, $_->{'desc'} ] } @overlays ]),"<br>\n";
 print &ui_form_end([ [ undef, $text{'overlay_ok'} ] ]);
 
-&ui_print_footer("right.cgi", $text{'right_return'});
+&ui_print_footer(&right_page_cgi(), $text{'right_return'});
 

@@ -30,4 +30,4 @@ print $text{'overlay_refresh'},"<br>\n";
 print &js_redirect("/", "top");
 print $text{'overlay_done'},"<p>\n";
 
-&ui_print_footer("right.cgi", $text{'right_return'});
+&ui_print_footer(&right_page_cgi(), $text{'right_return'});

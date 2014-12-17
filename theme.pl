@@ -843,7 +843,7 @@ sub theme_redirect
 local ($orig, $url) = @_;
 if (get_module_name() eq "virtual-server" && $orig eq "" &&
     $url =~ /^((http|https):\/\/([^\/]+))\//) {
-	$url = "$1/right.cgi";
+	$url = "$1/".&right_page_cgi();
 	}
 print "Location: $url\n\n";
 }
@@ -1098,6 +1098,28 @@ else {
 	local $sdir = &module_root_directory("server-manager");
 	return (!-d $vdir || -r "$vdir/webmin_menu.pl") &&
 	       (!-d $sdir || -r "$sdir/webmin_menu.pl") ? "newleft.cgi" : "left.cgi";
+	}
+}
+
+# This hack is needed until Virtualmin and Cloudmin releases with
+# system_info.pl are commonly available
+sub right_page_cgi
+{
+local %tconfig = &foreign_config("virtual-server-theme");
+if ($tconfig{'newright'} eq '1') {
+	return 'newright.cgi';
+	}
+elsif ($tconfig{'newright'} eq '0') {
+	return 'right.cgi';
+	}
+elsif (&get_product_name() eq 'usermin') {
+	return &get_webmin_version() >= 1.631 ? "newright.cgi" : "right.cgi";
+	}
+else {
+	local $vdir = &module_root_directory("virtual-server");
+	local $sdir = &module_root_directory("server-manager");
+	return (!-d $vdir || -r "$vdir/system_info.pl") &&
+	       (!-d $sdir || -r "$sdir/system_info.pl") ? "newright.cgi" : "right.cgi";
 	}
 }
 
