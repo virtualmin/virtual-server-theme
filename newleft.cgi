@@ -14,6 +14,7 @@ our $session_id;
 
 our $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
+require "virtual-server-theme/theme.pl";
 ReadParse();
 
 popup_header("Virtualmin");
