@@ -25,8 +25,8 @@ my $prehead = defined(&WebminCore::theme_prehead) ?
 # Links appear at the top of the page
 my @links = grep { $_->{'type'} eq 'link' } @info;
 @info = grep { $_->{'type'} ne 'link' } @info;
-push(@links, { 'link' => 'edit_right.cgi',
-	       'desc' => $text{'right_edit'} });
+unshift(@links, { 'link' => 'edit_right.cgi',
+	          'desc' => $text{'right_edit'} });
 my @linkshtml = map {
 	&ui_link($_->{'link'}, $_->{'desc'}, undef,
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
@@ -82,7 +82,6 @@ foreach my $info (@info) {
 			print &ui_table_row(undef, $info->{'html'}, 4);
 			}
                 print &ui_hidden_table_end();
-		print "<p>\n";
 		}
 	}
 
