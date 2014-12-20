@@ -22,6 +22,16 @@ my $prehead = defined(&WebminCore::theme_prehead) ?
 		&capture_function_output(\&WebminCore::theme_prehead) : "";
 &popup_header(undef, $prehead);
 
+# Links appear at the top of the page
+my @links = grep { $_->{'type'} eq 'link' } @info;
+@info = grep { $_->{'type'} ne 'link' } @info;
+push(@links, { 'link' => 'edit_right.cgi',
+	       'desc' => $text{'right_edit'} });
+my @linkshtml = map { &ui_link($_->{'link'}, $_->{'desc'}) } @links;
+print "<div align=right>\n";
+print &ui_links_row(\@linkshtml);
+print "</div>\n";
+
 # Show notifications first
 @info = sort { ($b->{'type'} eq 'warning') <=> ($a->{'type'} eq 'warning') }
 	     @info;
