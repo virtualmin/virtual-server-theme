@@ -43,11 +43,12 @@ foreach my $info (@info) {
 		}
 	else {
                 my $open = defined($info->{'open'}) ? $info->{'open'} : 1;
-                print &ui_hidden_table_start($info->{'desc'}, "width=100%", 2,
+                print &ui_hidden_table_start($info->{'desc'}, "width=100%", 4,
                                              $info->{'id'} || $info->{'module'},
                                              $open);
 		if ($info->{'type'} eq 'table') {
 			# A table of various labels and values
+			# XXX wide rows
 			foreach my $t (@{$info->{'table'}}) {
 				my $chart = "";
 				if ($t->{'chart'}) {
@@ -56,7 +57,8 @@ foreach my $info (@info) {
 					$chart = "<br>".$chart;
 					}
 				print &ui_table_row($t->{'desc'},
-						    $t->{'value'}.$chart);
+						    $t->{'value'}.$chart,
+						    $t->{'wide'} ? 3 : 1);
 				}
 			}
 		elsif ($info->{'type'} eq 'chart') {
@@ -70,11 +72,11 @@ foreach my $info (@info) {
 					]);
 				}
 			$ctable .= &ui_columns_end();
-			print &ui_table_row(undef, $ctable, 2);
+			print &ui_table_row(undef, $ctable, 4);
 			}
 		elsif ($info->{'type'} eq 'html') {
 			# A chunk of HTML
-			print &ui_table_row(undef, $info->{'html'}, 2);
+			print &ui_table_row(undef, $info->{'html'}, 4);
 			}
                 print &ui_hidden_table_end();
 		print "<p>\n";
