@@ -8,7 +8,7 @@ require "virtual-server-theme/virtual-server-theme-lib.pl";
 &load_theme_library();
 our ($current_theme);
 our %text = &load_language($current_theme);
-my $bar_width = 300;
+my $bar_width = 500;
 
 # Get system info to show
 my @info = &list_combined_system_info();
@@ -51,7 +51,10 @@ foreach my $info (@info) {
                                              $open);
 		if ($info->{'type'} eq 'table') {
 			# A table of various labels and values
-			# XXX wide rows
+			if ($info->{'header'}) {
+				print &ui_table_row(
+					undef, $info->{'header'}, 4);
+				}
 			foreach my $t (@{$info->{'table'}}) {
 				my $chart = "";
 				if ($t->{'chart'}) {
@@ -60,13 +63,17 @@ foreach my $info (@info) {
 					$chart = "<br>".$chart;
 					}
 				print &ui_table_row($t->{'desc'},
-						    $t->{'value'}.$chart,
-						    $t->{'wide'} ? 3 : 1);
+				    $t->{'value'}.$chart,
+				    $t->{'wide'} || $t->{'chart'} ? 3 : 1);
 				}
 			}
 		elsif ($info->{'type'} eq 'chart') {
 			# A table of graphs
-			my $ctable = &ui_columns_start($info->{'titles'});
+			my $ctable;
+			if ($info->{'header'}) {
+				$ctable .= $info->{'header'}."<br>\n";
+				}
+			$ctable .= &ui_columns_start($info->{'titles'});
 			foreach my $t (@{$info->{'chart'}}) {
 				$ctable .= &ui_columns_row([
 					$t->{'desc'},
