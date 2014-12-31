@@ -134,6 +134,7 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
     $ENV{'HTTP_USER_AGENT'} !~ /webmin/i) {
 	my $logout = { 'type' => 'item',
 		       'id' => 'logout',
+		       'target' => 'window',
 		       'icon' => '/images/stock_quit.png' };
 	if ($main::session_id) {
 		$logout->{'desc'} = $text{'main_logout'};
