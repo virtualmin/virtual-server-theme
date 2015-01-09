@@ -6,7 +6,7 @@ use warnings;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 &load_theme_library();
-our ($current_theme);
+our ($current_theme, %gconfig);
 our %text = &load_language($current_theme);
 my $bar_width = 500;
 
