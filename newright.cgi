@@ -28,7 +28,9 @@ my @links = grep { $_->{'type'} eq 'link' } @info;
 unshift(@links, { 'link' => 'edit_right.cgi',
 	          'desc' => $text{'right_edit'} });
 my @linkshtml = map {
-	&ui_link($_->{'link'}, $_->{'desc'}, undef,
+	my $lnk = $_->{'link'};
+	$lnk = $gconfig{'webprefix'}.$lnk if ($lnk =~ /^\//);
+	&ui_link($lnk, $_->{'desc'}, undef,
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
 		 $_->{'target'} eq 'window' ? 'target=_top' : '') } @links;
 print "<div align=right>\n";
