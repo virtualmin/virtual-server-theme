@@ -221,7 +221,8 @@ foreach my $item (@$items) {
 	elsif ($item->{'type'} eq 'menu' || $item->{'type'} eq 'input') {
 		# For with an input of some kind
 		if ($item->{'cgi'}) {
-			print "<form action='$item->{'cgi'}' target=right>\n";
+			my $cgi = add_webprefix($item->{'cgi'});
+			print "<form action='$cgi' target=right>\n";
 			}
 		else {
 			print "<form>\n";
