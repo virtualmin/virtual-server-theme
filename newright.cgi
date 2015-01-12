@@ -12,6 +12,20 @@ my $bar_width = 500;
 
 # Get system info to show
 my @info = &list_combined_system_info();
+my %vinfo = &get_module_info("virtual-server");
+if (%vinfo && $vinfo{'version'} < 4.13) {
+	push(@info, { 'type' => 'warning',
+		      'level' => 'danger',
+		      'warning' => &text('right_virtver', 4.13) });
+	}
+my %sinfo = &get_module_info("server-manager");
+if (%sinfo && $vinfo{'version'} < 8.0) {
+	push(@info, { 'type' => 'warning',
+		      'level' => 'danger',
+		      'warning' => &text('right_vm2ver', '8.0') });
+	}
+
+# Redirect if needed
 my ($redir) = grep { $_->{'type'} eq 'redirect' } @info;
 if ($redir) {
 	&redirect($redir->{'url'});
