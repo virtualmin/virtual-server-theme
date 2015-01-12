@@ -105,8 +105,7 @@ local ($d, $action) = @_;
 print "<script>\n";
 if ($action eq 'create') {
 	# Select the new domain
-	my $left = &left_page_cgi();
-	print "top.left.location = '$gconfig{'webprefix'}/$left?dom=$d->{'id'}';\n";
+	print "top.left.location = '$gconfig{'webprefix'}/left.cgi?dom=$d->{'id'}';\n";
 	}
 else {
 	# Just refresh left
@@ -143,7 +142,6 @@ if ($action eq 'create' || $action eq 'delete' ||
 sub theme_select_server
 {
 local ($server) = @_;
-my $left = &left_page_cgi();
 print <<EOF;
 <script>
 if (window.parent && window.parent.frames[0]) {
@@ -157,7 +155,7 @@ if (window.parent && window.parent.frames[0]) {
 			//	// Need to change value of selector
 			//	serversel.value = '$server->{'id'}';
 			//	}
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/$left?mode=vm2&sid=$server->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
 			}
 		}
 	}
@@ -171,7 +169,6 @@ EOF
 sub theme_select_domain
 {
 local ($d) = @_;
-my $left = &left_page_cgi();
 print <<EOF;
 <script>
 if (window.parent && window.parent.frames[0]) {
@@ -182,7 +179,7 @@ if (window.parent && window.parent.frames[0]) {
 		if (domsel && domsel.value != '$d->{'id'}') {
 			// Need to change value
 			// domsel.value = '$d->{'id'}';
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/$left?mode=virtualmin&dom=$d->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
 			}
 		}
 	}
@@ -1077,28 +1074,6 @@ sub theme_ui_yui_grid_section_start {
 sub theme_ui_yui_grid_section_end {
 	my ($id) = @_;
 	return "</div> <!-- grid_$id -->\n";
-}
-
-# This hack is needed until Virtualmin and Cloudmin releases with webmin_menu.pl
-# are commonly available
-sub left_page_cgi
-{
-local %tconfig = &foreign_config("virtual-server-theme");
-if ($tconfig{'newleft'} eq '1') {
-	return 'newleft.cgi';
-	}
-elsif ($tconfig{'newleft'} eq '0') {
-	return 'left.cgi';
-	}
-elsif (&get_product_name() eq 'usermin') {
-	return &get_webmin_version() >= 1.630 ? "newleft.cgi" : "left.cgi";
-	}
-else {
-	local $vdir = &module_root_directory("virtual-server");
-	local $sdir = &module_root_directory("server-manager");
-	return (!-d $vdir || -r "$vdir/webmin_menu.pl") &&
-	       (!-d $sdir || -r "$sdir/webmin_menu.pl") ? "newleft.cgi" : "left.cgi";
-	}
 }
 
 # This hack is needed until Virtualmin and Cloudmin releases with

@@ -15,7 +15,7 @@ if ($in{'dom'} && $hasvirt) {
 		$goto = &virtual_server::can_config_domain($d) ?
 			"virtual-server/edit_domain.cgi?dom=$d->{'id'}" :
 			"virtual-server/view_domain.cgi?dom=$d->{'id'}";
-		$left = &left_page_cgi()."?dom=$d->{'id'}";
+		$left = "left.cgi?dom=$d->{'id'}";
 		}
 	}
 if (!$goto) {
@@ -40,7 +40,7 @@ if (!$goto) {
 		  	"open=common&open=owner&open=reseller&open=vm2limits&".
 			"open=vm2usage";
 		}
-	$left = &left_page_cgi();
+	$left = "left.cgi";
 	if ($minfo) {
 		$left .= "?$minfo->{'category'}=1";
 		}
