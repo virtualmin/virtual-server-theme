@@ -58,5 +58,5 @@ if ($hasvirt && &virtual_server::master_admin() ||
 
 # Save config
 &save_right_frame_sections($sect);
-&redirect(&right_page_cgi());
+&redirect("right.cgi");
 

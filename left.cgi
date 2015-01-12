@@ -116,7 +116,7 @@ if ($mode eq "modules") {
 push(@leftitems, { 'type' => 'item',
 		   'id' => 'home',
 		   'desc' => $text{'left_home'},
-		   'link' => '/'.&right_page_cgi(),
+		   'link' => '/right.cgi',
 		   'icon' => '/images/gohome.png' });
 
 # Show refresh modules link

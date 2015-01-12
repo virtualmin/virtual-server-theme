@@ -95,7 +95,7 @@ print &ui_form_end([ [ "save", $text{'save'} ],
 		     $s ? ( [ "save_next", $text{'config_next'} ] ) : ( ) ]);
 
 if ($m eq "virtual-server") {
-	&ui_print_footer("/".&right_page_cgi(), $text{'config_return'});
+	&ui_print_footer("/right.cgi", $text{'config_return'});
 	}
 else {
 	&ui_print_footer("/$m", $text{'index'});

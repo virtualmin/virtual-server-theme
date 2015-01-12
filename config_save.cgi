@@ -36,7 +36,7 @@ if ($in{'save_next'}) {
 	&redirect("config.cgi?module=$in{'module'}&section=$in{'section_next'}");
 	}
 elsif ($m eq "virtual-server") {
-	&redirect("/".&right_page_cgi());
+	&redirect("/right.cgi");
 	}
 else {
 	&redirect("/$m/");

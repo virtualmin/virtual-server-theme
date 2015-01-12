@@ -106,5 +106,5 @@ if ($hasvirt && &virtual_server::master_admin() ||
 print &ui_table_end();
 print &ui_form_end([ [ "save", $text{'save'} ] ]);
 
-&ui_print_footer(&right_page_cgi(), $text{'right_return'});
+&ui_print_footer("right.cgi", $text{'right_return'});
 
