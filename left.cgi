@@ -63,7 +63,7 @@ if (@has > 1) {
 	foreach my $m (@has) {
 		print "<b>";
 		if ($m->{'id'} ne $mode) {
-			print "<a href='newleft.cgi?mode=$m->{'id'}'>";
+			print "<a href='left.cgi?mode=$m->{'id'}'>";
 			}
 		if ($m->{'icon'}) {
 			my $icon = add_webprefix($m->{'icon'});
