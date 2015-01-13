@@ -12,14 +12,17 @@ my $bar_width = 500;
 
 # Get system info to show
 my @info = &list_combined_system_info();
+# XXX remove this check in a later release
 my %vinfo = &get_module_info("virtual-server");
-if (%vinfo && $vinfo{'version'} < 4.13) {
+if (%vinfo && $vinfo{'version'} < 4.13 &&
+    &foreign_available("virtual-server")) {
 	push(@info, { 'type' => 'warning',
 		      'level' => 'danger',
 		      'warning' => &text('right_virtver', 4.13) });
 	}
 my %sinfo = &get_module_info("server-manager");
-if (%sinfo && $vinfo{'version'} < 8.0) {
+if (%sinfo && $vinfo{'version'} < 8.0 &&
+    &foreign_available("server-manager")) {
 	push(@info, { 'type' => 'warning',
 		      'level' => 'danger',
 		      'warning' => &text('right_vm2ver', '8.0') });
