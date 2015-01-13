@@ -84,31 +84,7 @@ print "<table id='main' width='100%'><tbody><tr><td>\n";
 my $selwidth = (get_left_frame_width() - 70)."px";
 if ($mode eq "modules") {
 	# Work out what modules and categories we have
-	# XXX call list_modules_webmin_menu once Webmin 1.730 is out
-	my @cats = get_visible_modules_categories();
-	my @catnames = map { $_->{'code'} } @cats;
-
-	if ($gconfig{"notabs_${base_remote_user}"} == 2 ||
-	    $gconfig{"notabs_${base_remote_user}"} == 0 && $gconfig{'notabs'}) {
-		# Show modules in one list
-		@leftitems = map { module_to_menu_item($_) }
-				 (map { @{$_->{'modules'}} } @cats);
-		}
-	else {
-		# Show all modules under categories
-		@leftitems = ( );
-		foreach my $c (@cats) {
-			my $citem = { 'type' => 'cat',
-				      'id' => $c->{'code'},
-				      'desc' => $c->{'desc'},
-				      'members' => [ ] };
-			foreach my $minfo (@{$c->{'modules'}}) {
-				push(@{$citem->{'members'}},
-				     module_to_menu_item($minfo));
-				}
-			push(@leftitems, $citem);
-			}
-		}
+	@leftitems = &list_modules_webmin_menu();
 	push(@leftitems, { 'type' => 'hr' });
 	}
 
