@@ -46,45 +46,22 @@ if (!$goto) {
 		}
 	}
 
-if ($gconfig{'os_version'} eq "*") {
-	$ostr = $gconfig{'real_os_type'};
-	}
-else {
-	$ostr = "$gconfig{'real_os_type'} $gconfig{'real_os_version'}";
-	}
-$host = &get_display_hostname();
+# Work out the title that includes the version
 if ($hasvirt) {
-	# Show Virtualmin version
 	%minfo = &get_module_info("virtual-server");
-	$ver = $minfo{'version'};
-	$title = $gconfig{'nohostname'} ? $text{'vmain_title2'} :
-		 $gconfig{'showhost'} ?
-			&text('vmain_title3', $ver, $ostr) :
-			&text('vmain_title', $ver, $host, $ostr);
+	$title = &text('index_virtualmintitle', $minfo{'version'});
 	}
 elsif ($hasvm2) {
-	# Show Cloudmin version
 	%minfo = &get_module_info("server-manager");
-	$ver = $minfo{'version'};
-	$title = $gconfig{'nohostname'} ? $text{'mmain_title2'} :
-		 $gconfig{'showhost'} ?
-			&text('mmain_title3', $ver, $ostr) :
-			&text('mmain_title', $ver, $host, $ostr);
+	$title = &text('index_cloudmintitle', $minfo{'version'});
+	}
+elsif (&get_product_name() eq 'usermin') {
+	$title = &text('index_usermintitle', &get_webmin_version());
 	}
 else {
-	# Show Webmin version
-	$ver = &get_webmin_version();
-	$title = $gconfig{'nohostname'} ? $text{'main_title2'} :
-	 	 $gconfig{'showhost'} ?
-			&text('main_title3', $ver, $ostr) :
-			&text('main_title', $ver, $host, $ostr);
+	$title = &text('index_webmintitle', &get_webmin_version());
 	}
-if ($gconfig{'showlogin'}) {
-	$title = $remote_user." : ".$title;
-	}
-if ($gconfig{'showhost'}) {
-	$title = $host." : ".$title;
-	}
+$title = &get_html_title($title);
 
 # Work out if we have a top frame
 if ($hasvirt) {

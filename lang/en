@@ -244,6 +244,11 @@ mmain_title=Cloudmin $1 on $2 ($3)
 mmain_title2=Cloudmin
 mmain_title3=Cloudmin $1 ($2)
 
+index_virtualmintitle=Virtualmin $1
+index_cloudmintitle=Cloudmin $1
+index_webmintitle=Webmin $1
+index_usermintitle=Usermin $1
+
 config_section=Configuration category:
 config_change=Change
 config_return=system information
