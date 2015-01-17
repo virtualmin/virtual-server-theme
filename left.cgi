@@ -123,6 +123,15 @@ if ($miniserv{'logout'} && !$ENV{'SSL_USER'} && !$ENV{'LOCAL_USER'} &&
 	push(@leftitems, $logout);
 	}
 
+# Show link back to original Webmin server
+if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
+	push(@leftmenu, { 'type' => 'item',
+			  'desc' => $text{'header_servers'},
+			  'link' => $ENV{'HTTP_WEBMIN_SERVERS'},
+			  'icon' => '/images/webmin-small.gif',
+			  'target' => 'window' });
+	}
+
 # Show Webmin search form
 my $cansearch = $gaccess{'webminsearch'} ne '0' && !$sects->{'nosearch'};
 if ($mode eq "modules" && $cansearch) {
