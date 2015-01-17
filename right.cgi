@@ -21,7 +21,7 @@ if (%vinfo && $vinfo{'version'} < 4.13 &&
 		      'warning' => &text('right_virtver', 4.13) });
 	}
 my %sinfo = &get_module_info("server-manager");
-if (%sinfo && $vinfo{'version'} < 8.0 &&
+if (%sinfo && $sinfo{'version'} < 8.0 &&
     &foreign_available("server-manager")) {
 	push(@info, { 'type' => 'warning',
 		      'level' => 'danger',
