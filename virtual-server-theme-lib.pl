@@ -109,9 +109,8 @@ local ($hasvirt, $level, $hasvm2) = &get_virtualmin_user_level();
 local @rv;
 if ($level == 0) {
 	# Master admin
-	@rv = ( 'system' );
 	if ($hasvirt) {
-		push(@rv, 'updates', 'status', 'newfeatures', 'virtualmin',
+		push(@rv, 'updates', 'status', 'newfeatures',
 			  'quotas', 'bw', 'ips', 'sysinfo');
 		}
 	if ($hasvm2) {
@@ -134,7 +133,8 @@ else {
 	# Usermin
 	push(@rv, 'system');
 	}
-@rv = map { { 'name' => $_, 'title' => $text{'right_'.$_.'header'} } } @rv;
+@rv = map { { 'name' => $_,
+	      'title' => $virtual_server::text{'right_'.$_.'header'} } } @rv;
 
 # Add plugin-defined sections
 if (($level == 0 || $level == 1 || $level == 2) && $hasvirt &&

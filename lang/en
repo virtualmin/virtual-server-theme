@@ -4,6 +4,7 @@ left_search=Search:
 right_virtver=Virtualmin version $1 or higher is now required by this theme!
 right_vm2ver=Cloudmin version $1 or higher is now required by this theme!
 right_edit=Configure this page
+right_return=system information
 
 vmain_title=Virtualmin $1 on $2 ($3)
 vmain_title2=Virtualmin
