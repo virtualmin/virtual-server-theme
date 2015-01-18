@@ -34,19 +34,14 @@ elsif (foreign_available("server-manager")) {
 # Find all left-side items from Webmin
 my $sects = get_right_frame_sections();
 my @leftitems = list_combined_webmin_menu($sects, \%in);
-my ($lefttitle) = grep { $_->{'type'} eq 'title' } @leftitems;
+my @lefttitles = grep { $_->{'type'} eq 'title' } @leftitems;
 
-# Default left-side mode
-my $mode = $in{'mode'} ? $in{'mode'} :
-	$sects->{'tab'} =~ /vm2|virtualmin|mail/ ? "items" :
-	@leftitems ? "items" : "modules";
-
-# Show mode selector
+# Work out what mode selector contains
 my @has = ( );
-if (@leftitems) {
-	push(@has, { 'id' => 'items',
-		     'desc' => $lefttitle->{'desc'},
-		     'icon' => $lefttitle->{'icon'} });
+foreach my $title (@lefttitles) {
+	push(@has, { 'id' => $title->{'module'},
+		     'desc' => $title->{'desc'},
+		     'icon' => $title->{'icon'} });
 	}
 if ($sects->{'nowebmin'} == 0 ||
     $sects->{'nowebmin'} == 2 && $is_master) {
@@ -55,6 +50,15 @@ if ($sects->{'nowebmin'} == 0 ||
 		     'desc' => $text{'has_'.$p},
 		     'icon' => '/images/'.$p.'-small.png' });
 	}
+
+# Default left-side mode
+my $mode = $in{'mode'} ? $in{'mode'} :
+	   $sects->{'tab'} =~ /vm2/ ? "server-manager" :
+	   $sects->{'tab'} =~ /virtualmin/ ? "virtual-server" :
+	   $sects->{'tab'} =~ /mail/ ? "mailboxes" :
+	   @leftitems ? $has[0]->{'id'} : "modules";
+
+# Show mode selector
 if (indexof($mode, (map { $_->{'id'} } @has)) < 0) {
 	$mode = $has[0]->{'id'};
 	}
@@ -83,9 +87,14 @@ print "<table id='main' width='100%'><tbody><tr><td>\n";
 
 my $selwidth = (get_left_frame_width() - 70)."px";
 if ($mode eq "modules") {
-	# Work out what modules and categories we have
+	# Only showing Webmin modules
 	@leftitems = &list_modules_webmin_menu();
 	push(@leftitems, { 'type' => 'hr' });
+	}
+else {
+	# Only show items under some title
+	my ($lefttitle) = grep { $_->{'id'} eq $mode } @lefttitles;
+	@leftitems = grep { $_->{'module'} eq $mode } @leftitems;
 	}
 
 # Show system information link
