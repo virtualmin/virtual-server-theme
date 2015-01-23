@@ -830,7 +830,31 @@ for($i=0; $i+1<@_; $i+=2) {
 	}
 print "<br>\n";
 if (!$_[$i]) {
-	print "</body></html>\n";
+	my $postbody = $tconfig{'postbody'};
+	if ($postbody) {
+		my $hostname = &get_display_hostname();
+		my $version = &get_webmin_version();
+		my $os_type = $gconfig{'real_os_type'} ||
+			      $gconfig{'os_type'};
+		my $os_version = $gconfig{'real_os_version'} ||
+				 $gconfig{'os_version'};
+		$postbody =~ s/%HOSTNAME%/$hostname/g;
+		$postbody =~ s/%VERSION%/$version/g;
+		$postbody =~ s/%USER%/$remote_user/g;
+		$postbody =~ s/%OS%/$os_type $os_version/g;
+		print "$postbody\n";
+		}
+	if ($tconfig{'postbodyinclude'}) {
+		local $_;
+		open(INC, "$theme_root_directory/$tconfig{'postbodyinclude'}");
+		while(<INC>) {
+			print;
+			}
+		close(INC);
+		}
+	if (defined(&theme_postbody)) {
+		&theme_postbody(@_);
+		}
 	}
 }
 
