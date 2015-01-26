@@ -92,9 +92,11 @@ if ($mode eq "modules") {
 	push(@leftitems, { 'type' => 'hr' });
 	}
 else {
-	# Only show items under some title
+	# Only show items under some title OR items that have no title
 	my ($lefttitle) = grep { $_->{'id'} eq $mode } @lefttitles;
-	@leftitems = grep { $_->{'module'} eq $mode } @leftitems;
+	my %titlemods = map { $_->{'module'}, $_ } @lefttitles;
+	@leftitems = grep { $_->{'module'} eq $mode ||
+			    !$titlemods{$_->{'module'}} } @leftitems;
 	}
 
 # Show system information link
