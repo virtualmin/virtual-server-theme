@@ -855,6 +855,7 @@ if (!$_[$i]) {
 	if (defined(&theme_postbody)) {
 		&theme_postbody(@_);
 		}
+	print "</body></html>\n";
 	}
 }
 
