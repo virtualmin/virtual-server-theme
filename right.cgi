@@ -6,12 +6,13 @@ use warnings;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 &load_theme_library();
-our ($current_theme, %gconfig);
+our ($current_theme, %gconfig, %in);
 our %text = &load_language($current_theme);
 my $bar_width = 500;
 
 # Get system info to show
-my @info = &list_combined_system_info();
+my $sects = get_right_frame_sections();
+my @info = &list_combined_system_info($sects, \%in);
 # XXX remove this check in a later release
 my %vinfo = &get_module_info("virtual-server");
 if (%vinfo && $vinfo{'version'} < 4.13 &&
