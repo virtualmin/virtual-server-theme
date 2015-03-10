@@ -43,8 +43,8 @@ foreach my $title (@lefttitles) {
 		     'desc' => $title->{'desc'},
 		     'icon' => $title->{'icon'} });
 	}
-if ($sects->{'nowebmin'} == 0 ||
-    $sects->{'nowebmin'} == 2 && $is_master) {
+my $nw = $sects->{'nowebmin'} || 0;
+if ($nw == 0 || $nw == 2 && $is_master) {
 	my $p = get_product_name();
 	push(@has, { 'id' => 'modules',
 		     'desc' => $text{'has_'.$p},
@@ -166,8 +166,9 @@ my ($items, $indent) = @_;
 foreach my $item (@$items) {
 	if ($item->{'type'} eq 'item') {
 		# Link to some page
-		my $t = $item->{'target'} eq 'new' ? '_blank' :
-			$item->{'target'} eq 'window' ? '_top' : 'right';
+		my $it = $item->{'target'} || '';
+		my $t = $it eq 'new' ? '_blank' :
+			$it eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
 			my $icon = add_webprefix($item->{'icon'});
 			print "<div class='linkwithicon'>".
