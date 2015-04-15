@@ -227,6 +227,7 @@ foreach my $item (@$items) {
 		foreach my $h (@{$item->{'hidden'}}) {
 			print ui_hidden(@$h);
 			}
+		print ui_hidden("mode", $mode);
 		print "<div class='leftlink'>";
 		print $item->{'desc'},"\n";
 		if ($item->{'type'} eq 'menu') {
