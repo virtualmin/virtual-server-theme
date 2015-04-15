@@ -105,7 +105,7 @@ local ($d, $action) = @_;
 print "<script>\n";
 if ($action eq 'create') {
 	# Select the new domain
-	print "top.left.location = '$gconfig{'webprefix'}/left.cgi?dom=$d->{'id'}';\n";
+	print "top.left.location = '$gconfig{'webprefix'}/left.cgi?mode=virtual-server&dom=$d->{'id'}';\n";
 	}
 else {
 	# Just refresh left
@@ -155,7 +155,7 @@ if (window.parent && window.parent.frames[0]) {
 			//	// Need to change value of selector
 			//	serversel.value = '$server->{'id'}';
 			//	}
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=vm2&sid=$server->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=server-manager&sid=$server->{'id'}';
 			}
 		}
 	}
@@ -179,7 +179,7 @@ if (window.parent && window.parent.frames[0]) {
 		if (domsel && domsel.value != '$d->{'id'}') {
 			// Need to change value
 			// domsel.value = '$d->{'id'}';
-			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=virtualmin&dom=$d->{'id'}';
+			window.parent.frames[0].location = '$gconfig{'webprefix'}/left.cgi?mode=virtual-server&dom=$d->{'id'}';
 			}
 		}
 	}
@@ -217,7 +217,7 @@ sub theme_post_change_modules
 print <<EOF;
 <script>
 var url = '' + top.left.location;
-if (url.indexOf('mode=webmin') > 0) {
+if (url.indexOf('mode=modules') > 0) {
     top.left.location = url;
     }
 </script>
