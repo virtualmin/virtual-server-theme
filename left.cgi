@@ -144,7 +144,8 @@ if ($ENV{'HTTP_WEBMIN_SERVERS'}) {
 	}
 
 # Show Webmin search form
-my $cansearch = $gaccess{'webminsearch'} ne '0' && !$sects->{'nosearch'};
+my $cansearch = ($gaccess{'webminsearch'} || '') ne '0' &&
+		!$sects->{'nosearch'};
 if ($mode eq "modules" && $cansearch) {
 	push(@leftitems, { 'type' => 'input',
 			   'desc' => $text{'left_search'},

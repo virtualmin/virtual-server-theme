@@ -15,6 +15,7 @@ my $sects = get_right_frame_sections();
 my @info = &list_combined_system_info($sects, \%in);
 # XXX remove this check in a later release
 my %vinfo = &get_module_info("virtual-server");
+$vinfo{'version'} =~ s/\.gpl$//;
 if (%vinfo && $vinfo{'version'} < 4.13 &&
     &foreign_available("virtual-server")) {
 	push(@info, { 'type' => 'warning',
@@ -47,7 +48,8 @@ unshift(@links, { 'link' => 'edit_right.cgi',
 	          'desc' => $text{'right_edit'} });
 my @linkshtml = map {
 	my $lnk = $_->{'link'};
-	$lnk = $gconfig{'webprefix'}.$lnk if ($lnk =~ /^\//);
+	$lnk = $gconfig{'webprefix'}.$lnk
+		if ($gconfig{'webprefix'} && $lnk =~ /^\//);
 	&ui_link($lnk, $_->{'desc'}, undef,
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
 		 $_->{'target'} eq 'window' ? 'target=_top' : '') } @links;
