@@ -276,5 +276,20 @@ return { 'type' => 'item',
 sub add_webprefix
 {
 my ($link) = @_;
-return $link =~ /^\// ? $gconfig{'webprefix'}.$link : $link;
+if ($link !~ /^\//) {
+	# Relative link, doesn't needed fixing
+	return $link;
+	}
+elsif (!$gconfig{'webprefix'}) {
+	# No webprefix set
+	return $link;
+	}
+elsif ($link =~ /^\Q$gconfig{'webprefix'}\E/) {
+	# Link already starts with the prefix, so don't re-add
+	return $link;
+	}
+else {
+	# Add it
+	return $gconfig{'webprefix'}.$link;
+	}
 }
