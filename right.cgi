@@ -122,6 +122,9 @@ print "</center>\n";
 sub bar_chart_three
 {
 my ($total, $used1, $used2, $used3) = @_;
+$used1 ||= 0;
+$used2 ||= 0;
+$used3 ||= 0;
 my $rv;
 my $w1 = int($bar_width*$used1/$total)+1;
 my $w2 = int($bar_width*$used2/$total);
@@ -138,6 +141,8 @@ sub make_bar_chart
 {
 my ($c) = @_;
 my @c = @$c;
+$c[1] ||= 0;
+$c[2] ||= 0;
 if (@c == 2) {
 	return &bar_chart_three(
 		$c[0], $c[1], 0, $c[0]-$c[1]);
