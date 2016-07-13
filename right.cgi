@@ -13,22 +13,6 @@ my $bar_width = 500;
 # Get system info to show
 my $sects = get_right_frame_sections();
 my @info = &list_combined_system_info($sects, \%in);
-# XXX remove this check in a later release
-my %vinfo = &get_module_info("virtual-server");
-$vinfo{'version'} =~ s/\.gpl$//;
-if (%vinfo && $vinfo{'version'} < 4.13 &&
-    &foreign_available("virtual-server")) {
-	push(@info, { 'type' => 'warning',
-		      'level' => 'danger',
-		      'warning' => &text('right_virtver', 4.13) });
-	}
-my %sinfo = &get_module_info("server-manager");
-if (%sinfo && $sinfo{'version'} < 8.0 &&
-    &foreign_available("server-manager")) {
-	push(@info, { 'type' => 'warning',
-		      'level' => 'danger',
-		      'warning' => &text('right_vm2ver', '8.0') });
-	}
 
 # Redirect if needed
 my ($redir) = grep { $_->{'type'} eq 'redirect' } @info;
