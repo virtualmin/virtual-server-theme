@@ -48,7 +48,6 @@ sub theme_ui_print_footer
 {
 local @args = @_;
 print &ui_pre_footer();
-print "<!-- ui_formcount is $ui_formcount -->\n";
 if ($ui_formcount) {
   print <<EOL;
   <script>
