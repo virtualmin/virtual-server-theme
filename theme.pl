@@ -13,6 +13,8 @@ $main::basic_virtualmin_menu = 1;
 $main::nocreate_virtualmin_menu = 1;
 $main::nosingledomain_virtualmin_mode = 1;
 
+our $ui_formcount;
+
 # Global state for wrapper
 # if 0, wrapper isn't on, add one and open it, if 1 close it, if 2+, subtract
 # but don't close
@@ -46,6 +48,24 @@ sub theme_ui_print_footer
 {
 local @args = @_;
 print &ui_pre_footer();
+print "<!-- ui_formcount is $ui_formcount -->\n";
+if ($ui_formcount) {
+  print <<EOL;
+  <script>
+    (function(){
+        var forms = document.forms || [];
+        for(var i = 0; i < forms.length; i++){
+            for(var j = 0; j < forms[i].length; j++){
+                if(!forms[i][j].readonly != undefined && forms[i][j].type != "hidden" && forms[i][j].disabled != true && forms[i][j].style.display != 'none'){
+                    forms[i][j].focus();
+                    return;
+                }
+            }
+        }
+    })();
+</script>
+EOL
+}
 &footer(@args);
 }
 
