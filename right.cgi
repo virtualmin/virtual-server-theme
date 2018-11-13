@@ -35,6 +35,7 @@ my @linkshtml = map {
 	$lnk = $gconfig{'webprefix'}.$lnk
 		if ($gconfig{'webprefix'} && $lnk =~ /^\//);
 	&ui_link($lnk, $_->{'desc'}, undef,
+		 !$_->{'target'} ? '' :
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
 		 $_->{'target'} eq 'window' ? 'target=_top' : '') } @links;
 print "<div align=right>\n";
@@ -47,8 +48,16 @@ print "</div>\n";
 
 foreach my $info (@info) {
 	if ($info->{'type'} eq 'warning') {
-		print &ui_alert_box($info->{'warning'},
-				    $info->{'level'} || 'warn');
+		my $w = &ui_alert_box($info->{'warning'},
+				      $info->{'level'} || 'warn');
+		if ($info->{'desc'}) {
+			print &ui_table_start($info->{'desc'}, "width=100%");
+			print &ui_table_row(undef, $w, 4);
+			print &ui_table_end();
+			}
+		else {
+			print $w;
+			}
 		}
 	else {
                 my $open = defined($info->{'open'}) ? $info->{'open'} : 1;
