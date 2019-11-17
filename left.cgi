@@ -38,10 +38,12 @@ my @lefttitles = grep { $_->{'type'} eq 'title' } @leftitems;
 
 # Work out what mode selector contains
 my @has = ( );
+my %modmenu;
 foreach my $title (@lefttitles) {
 	push(@has, { 'id' => $title->{'module'},
 		     'desc' => $title->{'desc'},
 		     'icon' => $title->{'icon'} });
+	$modmenu{$title->{'module'}}++;
 	}
 my $nw = $sects->{'nowebmin'} || 0;
 if ($nw == 0 || $nw == 2 && $is_master) {
@@ -89,6 +91,9 @@ my $selwidth = (get_left_frame_width() - 70)."px";
 if ($mode eq "modules") {
 	# Only showing Webmin modules
 	@leftitems = &list_modules_webmin_menu();
+	foreach my $l (@leftitems) {
+		$l->{'members'} = [ grep { !$modmenu{$_->{'id'}} } @{$l->{'members'}} ];
+		}
 	push(@leftitems, { 'type' => 'hr' });
 	}
 else {
