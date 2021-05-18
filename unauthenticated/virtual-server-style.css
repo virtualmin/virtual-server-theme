@@ -273,12 +273,12 @@ br[data-x-br] {
 
     .ui_table > thead >tr > td {
         border-bottom: 2px solid #D9D9D9;
-        padding: 10px;
-        position: relative;
         text-align: center;
+        position: relative;
+        padding: 10px;
     }
 
-    .ui_form[action^="reply_mail.cgi"] {
+    body > .header ~ .ui_form[action*=".cgi"]:first-of-type {
         margin-top: -50px;
     }
 
