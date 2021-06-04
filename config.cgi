@@ -21,9 +21,16 @@ else {
 &ui_print_header(&text('config_dir', $module_info{'desc'}),
 		 $text{'config_title'}, "", $help, 0, 1);
 $mdir = &module_root_directory($m);
+my $mdir_conf_file = "$mdir/config.info";
+if ($current_lang && $default_lang &&
+    $current_lang ne $default_lang &&
+    -r "$mdir_conf_file.$current_lang")
+{
+    $mdir_conf_file .= ".$current_lang";
+}
 
 # Read the config.info file to find sections
-&read_file("$mdir/config.info", \%info, \@info_order);
+&read_file($mdir_conf_file, \%info, \@info_order);
 foreach $i (@info_order) {
 	@p = split(/,/, $info{$i});
 	if ($p[1] == 11) {
@@ -56,7 +63,7 @@ if (@sections > 1) {
 	print &ui_submit($text{'config_nnext'}, "nnext");
 	print &ui_form_end();
 	($s) = grep { $_->[0] eq $in{'section'} } @sections;
-	$sname = " ($s->[1])";
+	$sname = $s->[1];
 	}
 
 print &ui_form_start("config_save.cgi", "post");
@@ -72,8 +79,7 @@ if ($s) {
 		print &ui_hidden("section_next", $sections[$idx+1]->[0]);
 		}
 	}
-print &ui_table_start(&text('config_header', $module_info{'desc'}).$sname,
-		      "width=100%", 2);
+print &ui_table_start($sname, "width=100%", 2);
 &read_file("$config_directory/$m/config", \%newconfig);
 
 if (-r "$mdir/config_info.pl") {
@@ -87,7 +93,7 @@ if (-r "$mdir/config_info.pl") {
 	}
 if (!$func) {
 	# Use config.info to create config inputs
-	&generate_config(\%newconfig, "$mdir/config.info", $m, undef, undef,
+	&generate_config(\%newconfig, $mdir_conf_file, $m, undef, undef,
 			 $in{'section'});
 	}
 print &ui_table_end();

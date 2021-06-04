@@ -294,3 +294,7 @@ br[data-x-br] {
         content: none;
     }
 }
+
+form[action="config_save.cgi"] #sortableTable2 > thead > tr > td {
+    text-align: center;
+}
