@@ -81,6 +81,7 @@ if ($s) {
 	}
 print &ui_table_start($sname, "width=100%", 2);
 &read_file("$config_directory/$m/config", \%newconfig);
+&load_module_preferences($m, \%newconfig);
 
 if (-r "$mdir/config_info.pl") {
 	# Module has a custom config editor

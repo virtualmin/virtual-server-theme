@@ -31,6 +31,7 @@ if (!$func) {
 	}
 &write_file("$config_directory/$m/config", \%newconfig);
 &unlock_file("$config_directory/$m/config");
+&save_module_preferences($m, \%newconfig);
 &webmin_log("_config_", undef, undef, \%in, $m);
 if ($in{'save_next'}) {
 	&redirect("config.cgi?module=$in{'module'}&section=$in{'section_next'}");
