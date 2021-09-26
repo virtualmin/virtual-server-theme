@@ -4,7 +4,6 @@ use warnings;
 use strict;
 
 # Globals
-our %gconfig;
 our %in;
 our %text;
 our $base_remote_user;
@@ -12,13 +11,15 @@ our %miniserv;
 our %gaccess;
 our $session_id;
 
+our $webprefix;
+
 our $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 require "virtual-server-theme/theme.pl";
 ReadParse();
 
 popup_header("Virtualmin");
-print "<script type='text/javascript' src='$gconfig{'webprefix'}/unauthenticated/toggleview.js'></script>\n";
+print "<script type='text/javascript' src='$webprefix/unauthenticated/toggleview.js'></script>\n";
 
 my $is_master;
 # Is this user root?
@@ -285,16 +286,16 @@ if ($link !~ /^\//) {
 	# Relative link, doesn't needed fixing
 	return $link;
 	}
-elsif (!$gconfig{'webprefix'}) {
+elsif (!$webprefix) {
 	# No webprefix set
 	return $link;
 	}
-elsif ($link =~ /^\Q$gconfig{'webprefix'}\E/) {
+elsif ($link =~ /^\Q$webprefix\E/) {
 	# Link already starts with the prefix, so don't re-add
 	return $link;
 	}
 else {
 	# Add it
-	return $gconfig{'webprefix'}.$link;
+	return $webprefix.$link;
 	}
 }

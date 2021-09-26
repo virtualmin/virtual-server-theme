@@ -11,6 +11,12 @@ if ($@) {
 $right_frame_sections_file = "$config_directory/$current_theme/sections";
 $default_domains_to_show = 10;
 
+# Get webprefix
+our $webprefix = $gconfig{'webprefix'};
+if (defined(&get_webprefix)) {
+	$webprefix = &get_webprefix();
+	}
+
 # get_left_frame_width()
 # Returns the width of the left frame in pixels
 sub get_left_frame_width

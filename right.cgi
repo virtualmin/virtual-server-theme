@@ -6,7 +6,7 @@ use warnings;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 &ReadParse();
 &load_theme_library();
-our ($current_theme, %gconfig, %in);
+our ($current_theme, $webprefix, %in);
 our %text = &load_language($current_theme);
 my $bar_width = 500;
 
@@ -32,8 +32,8 @@ unshift(@links, { 'link' => 'edit_right.cgi',
 	          'desc' => $text{'right_edit'} });
 my @linkshtml = map {
 	my $lnk = $_->{'link'};
-	$lnk = $gconfig{'webprefix'}.$lnk
-		if ($gconfig{'webprefix'} && $lnk =~ /^\//);
+	$lnk = $webprefix.$lnk
+		if ($webprefix && $lnk =~ /^\//);
 	&ui_link($lnk, $_->{'desc'}, undef,
 		 !$_->{'target'} ? '' :
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
