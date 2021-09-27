@@ -282,20 +282,5 @@ return { 'type' => 'item',
 sub add_webprefix
 {
 my ($link) = @_;
-if ($link !~ /^\//) {
-	# Relative link, doesn't needed fixing
-	return $link;
-	}
-elsif (!$webprefix) {
-	# No webprefix set
-	return $link;
-	}
-elsif ($link =~ /^\Q$webprefix\E/) {
-	# Link already starts with the prefix, so don't re-add
-	return $link;
-	}
-else {
-	# Add it
-	return $webprefix.$link;
-	}
+return $link =~ /^\// ? $webprefix.$link : $link;
 }
