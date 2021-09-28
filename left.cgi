@@ -11,15 +11,13 @@ our %miniserv;
 our %gaccess;
 our $session_id;
 
-our $webprefix;
-
 our $trust_unknown_referers = 1;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
 require "virtual-server-theme/theme.pl";
 ReadParse();
 
 popup_header("Virtualmin");
-print "<script type='text/javascript' src='$webprefix/unauthenticated/toggleview.js'></script>\n";
+print "<script type='text/javascript' src='@{[&theme_get_webprefix_safe()]}/unauthenticated/toggleview.js'></script>\n";
 
 my $is_master;
 # Is this user root?
@@ -282,5 +280,5 @@ return { 'type' => 'item',
 sub add_webprefix
 {
 my ($link) = @_;
-return $link =~ /^\// ? $webprefix.$link : $link;
+return $link =~ /^\// ? &theme_get_webprefix_safe().$link : $link;
 }

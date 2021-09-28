@@ -4,9 +4,10 @@
 use strict;
 use warnings;
 require "virtual-server-theme/virtual-server-theme-lib.pl";
+require "virtual-server-theme/theme.pl";
 &ReadParse();
 &load_theme_library();
-our ($current_theme, $webprefix, %in);
+our ($current_theme, %gconfig, %in);
 our %text = &load_language($current_theme);
 my $bar_width = 500;
 
@@ -32,8 +33,8 @@ unshift(@links, { 'link' => 'edit_right.cgi',
 	          'desc' => $text{'right_edit'} });
 my @linkshtml = map {
 	my $lnk = $_->{'link'};
-	$lnk = $webprefix.$lnk
-		if ($webprefix && $lnk =~ /^\//);
+	$lnk = &theme_get_webprefix_safe().$lnk
+		if (&theme_get_webprefix_safe() && $lnk =~ /^\//);
 	&ui_link($lnk, $_->{'desc'}, undef,
 		 !$_->{'target'} ? '' :
 	         $_->{'target'} eq 'new' ? 'target=_blank' :
