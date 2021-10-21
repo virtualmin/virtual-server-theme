@@ -26,6 +26,11 @@
   margin-left: 20px;
   line-height: 1.6em;
 }
+.linkindented.inactive {
+  pointer-events: none;
+  filter: grayscale(1);
+  opacity: .75;
+}
 .aftericon {
   display: inline;
 }

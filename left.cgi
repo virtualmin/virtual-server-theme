@@ -180,7 +180,9 @@ foreach my $item (@$items) {
 			      "<img src='$icon' alt=''>\n";
 			}
 		my $cls = $item->{'icon'} ? 'aftericon' :
-		          $indent ? 'linkindented' : 'leftlink';
+		          $indent ? 'linkindented'.
+		                    ($item->{'inactive'} ? ' inactive' : '').
+		                    '' : 'leftlink';
 		print "<div class='$cls'>";
 		my $link = add_webprefix($item->{'link'});
 		print "<a href='$link' target=$t>".
