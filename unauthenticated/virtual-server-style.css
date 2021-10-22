@@ -170,10 +170,18 @@ div.wrapper {
   margin-left: 20px;
   line-height: 1.5em;
 }
+.linkwithicon.inactive,
 .linkindented.inactive {
   pointer-events: none;
   filter: grayscale(1);
   opacity: .75;
+}
+.linkindented.inactive {
+  white-space: pre;
+}
+.linkwithicon.inactive sub,
+.linkindented.inactive sub {
+  vertical-align: top;
 }
 .aftericon {
   display: inline;

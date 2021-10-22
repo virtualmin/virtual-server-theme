@@ -176,7 +176,8 @@ foreach my $item (@$items) {
 			$it eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
 			my $icon = add_webprefix($item->{'icon'});
-			print "<div class='linkwithicon'>".
+			print "<div class='linkwithicon".
+			      ($item->{'inactive'} ? ' inactive' : '')."'>".
 			      "<img src='$icon' alt=''>\n";
 			}
 		my $cls = $item->{'icon'} ? 'aftericon' :
