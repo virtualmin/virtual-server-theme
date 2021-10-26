@@ -31,6 +31,14 @@ if ($current_lang && $default_lang &&
 
 # Read the config.info file to find sections
 &read_file($mdir_conf_file, \%info, \@info_order);
+
+# Call any config preload function
+if (&foreign_require($m) &&
+    &foreign_func_exists($m, 'config_pre_load')) {
+    &foreign_call($m, "config_pre_load", \%info, \@info_order);
+    webmin_debug_var_dump(\%info, 'info-after');
+}
+
 foreach $i (@info_order) {
 	@p = split(/,/, $info{$i});
 	if ($p[1] == 11) {
