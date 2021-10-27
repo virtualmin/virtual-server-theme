@@ -88,7 +88,17 @@ if ($s) {
 		}
 	}
 print &ui_table_start($sname, "width=100%", 2);
+
+# Load module config defaults (fill missing)
+my $mdefconf = "$mdir/config";
+$mdefconf = "$mdir/config-$gconfig{'os_type'}"
+    if (-r "$mdir/config-$gconfig{'os_type'}");
+&read_file($mdefconf, \%newconfig);
+
+# Load module config custom
 &read_file("$config_directory/$m/config", \%newconfig);
+
+# Load module config user custom
 &load_module_preferences($m, \%newconfig);
 
 if (-r "$mdir/config_info.pl") {
