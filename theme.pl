@@ -10,6 +10,7 @@ $main::mailbox_no_addressbook_button = 1;
 $main::mailbox_no_folder_button = 1;
 
 $main::basic_virtualmin_menu = 1;
+$main::basic_virtualmin_domain = 1;
 $main::nocreate_virtualmin_menu = 1;
 $main::nosingledomain_virtualmin_mode = 1;
 
