@@ -31,6 +31,14 @@ if ($current_lang && $default_lang &&
 
 # Read the config.info file to find sections
 &read_file($mdir_conf_file, \%info, \@info_order);
+
+# Call any config preload function
+if (&foreign_require($m) &&
+    &foreign_func_exists($m, 'config_pre_load')) {
+    &foreign_call($m, "config_pre_load", \%info, \@info_order);
+    webmin_debug_var_dump(\%info, 'info-after');
+}
+
 foreach $i (@info_order) {
 	@p = split(/,/, $info{$i});
 	if ($p[1] == 11) {
@@ -80,7 +88,17 @@ if ($s) {
 		}
 	}
 print &ui_table_start($sname, "width=100%", 2);
+
+# Load module config defaults (fill missing)
+my $mdefconf = "$mdir/config";
+$mdefconf = "$mdir/config-$gconfig{'os_type'}"
+    if (-r "$mdir/config-$gconfig{'os_type'}");
+&read_file($mdefconf, \%newconfig);
+
+# Load module config custom
 &read_file("$config_directory/$m/config", \%newconfig);
+
+# Load module config user custom
 &load_module_preferences($m, \%newconfig);
 
 if (-r "$mdir/config_info.pl") {

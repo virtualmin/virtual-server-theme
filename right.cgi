@@ -49,8 +49,14 @@ print "</div>\n";
 
 foreach my $info (@info) {
 	if ($info->{'type'} eq 'warning') {
-		my $w = &ui_alert_box($info->{'warning'},
-				      $info->{'level'} || 'warn');
+		my $w;
+		if (ref($info->{'warning'}) eq 'HASH') {
+			$w = $info->{'warning'}->{'alert'};
+			}
+		else {
+			$w = &ui_alert_box($info->{'warning'},
+					      $info->{'level'} || 'warn');
+			}
 		if ($info->{'desc'}) {
 			print &ui_table_start($info->{'desc'}, "width=100%");
 			print &ui_table_row(undef, $w, 4);

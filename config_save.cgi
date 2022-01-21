@@ -14,6 +14,7 @@ $access{'noconfig'} && &error($text{'config_ecannot'});
 mkdir("$config_directory/$m", 0700);
 &lock_file("$config_directory/$m/config");
 &read_file("$config_directory/$m/config", \%newconfig);
+%oldconfig  = %newconfig;
 
 $mdir = &module_root_directory($m);
 if (-r "$mdir/config_info.pl") {
@@ -32,6 +33,13 @@ if (!$func) {
 &write_file("$config_directory/$m/config", \%newconfig);
 &unlock_file("$config_directory/$m/config");
 &save_module_preferences($m, \%newconfig);
+
+# Call any post-config save function
+if (&foreign_require($m) &&
+    &foreign_func_exists($m, 'config_post_save')) {
+	&foreign_call($m, "config_post_save", \%newconfig, \%oldconfig)
+	}
+
 &webmin_log("_config_", undef, undef, \%in, $m);
 if ($in{'save_next'}) {
 	&redirect("config.cgi?module=$in{'module'}&section=$in{'section_next'}");

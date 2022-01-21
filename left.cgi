@@ -176,11 +176,14 @@ foreach my $item (@$items) {
 			$it eq 'window' ? '_top' : 'right';
 		if ($item->{'icon'}) {
 			my $icon = add_webprefix($item->{'icon'});
-			print "<div class='linkwithicon'>".
+			print "<div class='linkwithicon".
+			      ($item->{'inactive'} ? ' inactive' : '')."'>".
 			      "<img src='$icon' alt=''>\n";
 			}
 		my $cls = $item->{'icon'} ? 'aftericon' :
-		          $indent ? 'linkindented' : 'leftlink';
+		          $indent ? 'linkindented'.
+		                    ($item->{'inactive'} ? ' inactive' : '').
+		                    '' : 'leftlink';
 		print "<div class='$cls'>";
 		my $link = add_webprefix($item->{'link'});
 		print "<a href='$link' target=$t>".
