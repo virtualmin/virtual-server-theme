@@ -36,7 +36,6 @@ if ($current_lang && $default_lang &&
 if (&foreign_require($m) &&
     &foreign_func_exists($m, 'config_pre_load')) {
     &foreign_call($m, "config_pre_load", \%info, \@info_order);
-    webmin_debug_var_dump(\%info, 'info-after');
 }
 
 foreach $i (@info_order) {
