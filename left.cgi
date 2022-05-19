@@ -174,6 +174,11 @@ foreach my $item (@$items) {
 		my $it = $item->{'target'} || '';
 		my $t = $it eq 'new' ? '_blank' :
 			$it eq 'window' ? '_top' : 'right';
+		my $link = add_webprefix($item->{'link'});
+		if ($item->{'link'} =~ /^(https?):\/\//) {
+			$t = '_blank';
+			$link = $item->{'link'};
+			}
 		if ($item->{'icon'}) {
 			my $icon = add_webprefix($item->{'icon'});
 			print "<div class='linkwithicon".
@@ -185,7 +190,6 @@ foreach my $item (@$items) {
 		                    ($item->{'inactive'} ? ' inactive' : '').
 		                    '' : 'leftlink';
 		print "<div class='$cls'>";
-		my $link = add_webprefix($item->{'link'});
 		print "<a href='$link' target=$t>".
 		      "$item->{'desc'}</a>";
 		print "</div>";
