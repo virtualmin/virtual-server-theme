@@ -170,9 +170,9 @@ div.wrapper {
   margin-left: 20px;
   line-height: 1.5em;
 }
-.linkwithicon.inactive,
-.linkindented.inactive {
-  pointer-events: none;
+.linkwithicon.inactive a,
+.linkindented.inactive a {
+  /* pointer-events: none; */
   filter: grayscale(1);
   opacity: .75;
 }
